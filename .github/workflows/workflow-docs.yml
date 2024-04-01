@@ -1,0 +1,22 @@
+# @see https://zenn.dev/tmknom/books/pragmatic-composite-action/viewer/docs
+name: Docs
+
+on:
+  pull_request:
+    paths:
+      - "./github/workflows/reusable-*.yml"
+permissions:
+  contents: write
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  generate:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    # env:
+    #   # TODO: 複数ファイルに対してのREADME
+    #   YAML_
+    steps:
+      - run: echo $GITHUB_EVENT_PATH
