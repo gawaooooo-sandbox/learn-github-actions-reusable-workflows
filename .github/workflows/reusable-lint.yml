@@ -92,6 +92,29 @@ jobs:
       contents: read
 
     steps:
+      #  test job summary
+      - name: post test summary
+        uses: actions/github-script@v6
+        with:
+          # github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            parametersTable = [
+              [{ data: 'key', header: true}, { data: 'value', header: true }],
+              ['branch', '${{ github.ref_name }}']
+            ]
+
+            for ([key, value] of Object.entries(context.payload.inputs)) {
+              parametersTable.push([key, value])
+              retryCommand += ` -f ${key}='${value}'`
+            }
+
+            await core.summary
+              .addRaw("### Test Parameters\n")
+              .addTable(parametersTable)
+              .addRaw("\n### Retry Command\n")
+              .addCodeBlock(retryCommand)
+              .write()
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
