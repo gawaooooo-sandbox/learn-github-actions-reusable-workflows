@@ -4,6 +4,8 @@ name: Lint yaml files
 on:
   pull_request:
     paths: ["**.yml", "**.yaml"]
+  push:
+    paths: ["**.yml", "**.yaml"]
 defaults:
   run:
     shell: bash
