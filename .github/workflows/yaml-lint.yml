@@ -4,8 +4,6 @@ name: Lint yaml files
 on:
   pull_request:
     paths: ["**.yml", "**.yaml"]
-  push:
-    paths: ["**.yml", "**.yaml"]
 defaults:
   run:
     shell: bash
@@ -44,7 +42,7 @@ jobs:
           bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
           ./actionlint
 
-      - name: Format check bu prettier
+      - name: Format check by prettier
         run: |
           npm install prettier@latest
           npx prettier --parser="yaml" --check "**/*.y*ml"
