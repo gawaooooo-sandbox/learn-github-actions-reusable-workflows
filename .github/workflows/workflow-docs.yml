@@ -5,7 +5,7 @@ on:
   pull_request:
     paths:
       - "./github/workflows/reusable-*.yml"
-  push:
+  # push:
 permissions:
   contents: write
 defaults:
@@ -19,8 +19,31 @@ jobs:
   generate:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
-    # env:
-    #   # TODO: 複数ファイルに対してのREADME
-    #   YAML_
+    env:
+      # TODO: 複数ファイルに対してのREADME
+      YAML_FILE: "./github/workflows/reusable-lint.yml"
+      MD_FILE: README.md
     steps:
       - run: cat "${GITHUB_EVENT_PATH}"
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Inject document
+        run: |
+          docker run --rm -v "$(pwd):/work" -w "/work" \
+          ghcr.io/tmknom/actdocs inject --sort \
+          --file "${MD_FILE}" "${YAML_FILE}"
+
+      - name: Push
+        run: |
+          if [[ "$(git status -s)" == "" ]]; then
+            echo 'skipped'
+            exit 0
+          fi
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${MD_FILE}"
+          git commit -m "Update ${MD_FILE}"
+          git push
