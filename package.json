@@ -9,8 +9,8 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "**/*.y*ml": [
-      "npm run format:check"
+    "*.{yml,yaml}": [
+      "npx prettier --parser=yaml --check"
     ]
   },
   "keywords": [],
