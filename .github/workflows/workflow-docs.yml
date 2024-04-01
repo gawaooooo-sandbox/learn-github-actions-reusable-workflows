@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - "./github/workflows/reusable-*.yml"
+  workflow_dispatch:
 permissions:
   contents: write
 defaults:
