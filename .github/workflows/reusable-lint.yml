@@ -98,23 +98,23 @@ jobs:
         with:
           script: |
             console.log(context)
-            # const parametersTable = [
-            #   [{ data: 'key', header: true}, { data: 'value', header: true }],
-            #   ['branch', '${{ github.ref_name }}']
-            # ]
-            # console.log(parametersTable)
+            // const parametersTable = [
+              // [{ data: 'key', header: true}, { data: 'value', header: true }],
+              // ['branch', '${{ github.ref_name }}']
+            // ]
+            // console.log(parametersTable)
 
-            # console.log(context.payload.inputs)
+            // console.log(context.payload.inputs)
 
-            # for ([key, value] of Object.entries(context.payload.inputs)) {
-            #   parametersTable.push([key, value])
-            #   retryCommand += ` -f ${key}='${value}'`
-            # }
+            // for ([key, value] of Object.entries(context.payload.inputs)) {
+              // parametersTable.push([key, value])
+              // retryCommand += ` -f ${key}='${value}'`
+            // }
 
-            # await core.summary
-            #   .addRaw("### Test Parameters\n")
-            #   .addTable(parametersTable)
-            #   .write()
+            // await core.summary
+              // .addRaw("### Test Parameters\n")
+              // .addTable(parametersTable)
+              // .write()
 
       - name: Checkout code
         uses: actions/checkout@v4
