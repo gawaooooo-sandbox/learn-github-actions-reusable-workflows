@@ -98,10 +98,13 @@ jobs:
         with:
           # github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            parametersTable = [
+            const parametersTable = [
               [{ data: 'key', header: true}, { data: 'value', header: true }],
               ['branch', '${{ github.ref_name }}']
             ]
+            console.log(parametersTable);
+
+            console.log(context.payload.inputs);
 
             for ([key, value] of Object.entries(context.payload.inputs)) {
               parametersTable.push([key, value])
