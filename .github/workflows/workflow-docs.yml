@@ -5,12 +5,15 @@ on:
   pull_request:
     paths:
       - "./github/workflows/reusable-*.yml"
-  workflow_dispatch:
+  push:
 permissions:
   contents: write
 defaults:
   run:
     shell: bash
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   generate:
