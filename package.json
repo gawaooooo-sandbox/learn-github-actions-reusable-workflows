@@ -1,0 +1,23 @@
+{
+  "name": "learn-github-actions-reusable-workflows",
+  "version": "1.0.0",
+  "description": "GitHub Actions reusable workflows",
+  "main": "index.js",
+  "scripts": {
+    "format:check": "npx prettier --parser=\"yaml\" --check \"**/*.y*ml\"",
+    "format:fix": "npx prettier --parser=\"yaml\" --write \"**/*.y*ml\"",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*.y*ml": [
+      "npm run format:check"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2"
+  }
+}
