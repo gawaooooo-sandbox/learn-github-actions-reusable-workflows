@@ -48,7 +48,7 @@ on:
         required: false
         type: string
         default: 'npm run lint'
-      enable-typecheck:
+      enable-type-check:
         description: 'Optional input to enable the type check'
         required: false
         type: boolean
@@ -100,7 +100,7 @@ jobs:
           LINT_SCRIPT: ${{ inputs.lint-script }}
 
       - name: Run type check
-        if: ${{ inputs.enable-typecheck }}
+        if: ${{ inputs.enable-type-check }}
         run: "${TYPECHECK_SCRIPT}"
         env:
           TYPECHECK_SCRIPT: ${{ inputs.typecheck-script }}
