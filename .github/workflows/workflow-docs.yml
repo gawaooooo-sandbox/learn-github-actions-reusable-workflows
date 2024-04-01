@@ -4,7 +4,8 @@ name: Docs
 on:
   pull_request:
     paths:
-      - "./github/workflows/reusable-*.yml"
+      - ".github/workflows/reusable-*.yml"
+  push:
 permissions:
   contents: write
 defaults:
@@ -20,7 +21,7 @@ jobs:
     timeout-minutes: 5
     env:
       # TODO: 複数ファイルに対してのREADME
-      YAML_FILE: "./github/workflows/reusable-lint.yml"
+      YAML_FILE: ".github/workflows/reusable-lint.yml"
       MD_FILE: README.md
     steps:
       - run: cat "${GITHUB_EVENT_PATH}"
