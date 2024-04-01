@@ -19,4 +19,4 @@ jobs:
     #   # TODO: 複数ファイルに対してのREADME
     #   YAML_
     steps:
-      - run: echo $GITHUB_EVENT_PATH
+      - run: echo "${GITHUB_EVENT_PATH}"
