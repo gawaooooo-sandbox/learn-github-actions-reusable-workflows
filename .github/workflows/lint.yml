@@ -1,0 +1,106 @@
+name: Lint code
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "Optional input to set the version of Node.js used to build the project. The input syntax corresponds to the setup-node's one"
+        required: false
+        type: string
+      node-version-file:
+        description: "Optional input to set the file that contains the version of Node.js used to build the project. The input syntax corresponds to the setup-node's one"
+        required: false
+        type: string
+        default: '.nvmrc'
+      node-caching:
+        description: "Optional input to set up caching for the setup-node action. The input syntax corresponds to the setup-node's one. Set to an empty string if caching isn't needed"
+        required: false
+        type: string
+        default: 'npm'
+      checkout-ref:
+        description: "Optional input to set the ref to checkout. The input syntax corresponds to the actions/checkout's one"
+        required: false
+        type: string
+        # TODO: github.ref?
+        # default: プルリクエストのソースブランチ
+        default: ${{ github.head_ref }}
+      install-options:
+        description: 'Optional input to set the options to pass to the `npm ci` command'
+        required: false
+        type: string
+      enable-format-check:
+        description: 'Optional input to enable the format check'
+        required: false
+        type: boolean
+        default: false
+      format-check-script:
+        description: 'Optional input to set the script to run the format check'
+        required: false
+        type: string
+        default: 'npm run format:check'
+      enable-lint:
+        description: 'Optional input to enable the lint'
+        required: false
+        type: boolean
+        default: true
+      lint-script:
+        description: 'Optional input to set the script to run the lint'
+        required: false
+        type: string
+        default: 'npm run lint'
+      enable-typecheck:
+        description: 'Optional input to enable the type check'
+        required: false
+        type: boolean
+        default: false
+      typecheck-script:
+        description: 'Optional input to set the script to run the type check'
+        required: false
+        type: string
+        default: 'npm run type-check'
+
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.checkout-ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          node-version-file: ${{ inputs.node-version-file }}
+          cache: ${{ inputs.node-caching }}
+
+      - name: Install dependencies
+        run: npm ci "${INSTALL_OPTIONS}"
+        env:
+          # CI上では Husky を install しない
+          # https://typicode.github.io/husky/how-to.html#ci-server-and-docker
+          HUSKY: 0
+          INSTALL_OPTIONS: ${{ inputs.install-options }}
+
+      - name: Run format check
+        if: ${{ inputs.enable-format-check }}
+        run: "${FORMAT_CHECK_SCRIPT}"
+        env:
+          FORMAT_CHECK_SCRIPT: ${{ inputs.format-check-script }}
+
+      - name: Run linter
+        if: ${{ inputs.enable-lint }}
+        run: "${LINT_SCRIPT}"
+        env:
+          LINT_SCRIPT: ${{ inputs.lint-script }}
+
+      - name: Run type check
+        if: ${{ inputs.enable-typecheck }}
+        run: "${TYPECHECK_SCRIPT}"
+        env:
+          TYPECHECK_SCRIPT: ${{ inputs.typecheck-script }}
