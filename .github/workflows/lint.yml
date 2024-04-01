@@ -16,7 +16,7 @@ on:
           The input syntax corresponds to the setup-node's one.
         required: false
         type: string
-        default: '.nvmrc'
+        default: ".nvmrc"
 
       node-caching:
         description: |
@@ -25,7 +25,7 @@ on:
           Set to an empty string if caching isn't needed.
         required: false
         type: string
-        default: 'npm'
+        default: "npm"
 
       checkout-ref:
         description: |
@@ -54,7 +54,7 @@ on:
           Optional input to set the script to run the format check.
         required: false
         type: string
-        default: 'npm run format:check'
+        default: "npm run format:check"
 
       enable-lint:
         description: |
@@ -68,7 +68,7 @@ on:
           Optional input to set the script to run the lint.
         required: false
         type: string
-        default: 'npm run lint'
+        default: "npm run lint"
 
       enable-type-check:
         description: |
@@ -82,7 +82,7 @@ on:
           Optional input to set the script to run the type check.
         required: false
         type: string
-        default: 'npm run type-check'
+        default: "npm run type-check"
 
 jobs:
   lint:
