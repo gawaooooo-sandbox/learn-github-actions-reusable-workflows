@@ -1,6 +1,6 @@
 # reusable workflow の ドキュメントを生成する
-
-name: Docs
+name: Generate actions / reusable workflow docs
+run-name: ${{ github.workflow }}
 
 on:
   pull_request:
