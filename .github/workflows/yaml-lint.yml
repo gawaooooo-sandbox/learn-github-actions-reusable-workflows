@@ -1,5 +1,6 @@
 # @see https://zenn.dev/tmknom/books/pragmatic-composite-action/viewer/lint
 name: Lint yaml files
+run-name: ${{ github.workflow }}
 
 on:
   pull_request:
@@ -7,6 +8,9 @@ on:
 defaults:
   run:
     shell: bash
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
