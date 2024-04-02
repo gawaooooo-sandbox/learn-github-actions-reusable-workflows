@@ -91,13 +91,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.checkout-ref }}
-
       - name: test summury
-        uses: ./.github/actions/create-inputs-summary/
+        uses: gawaooooo-sandbox/learn-github-actions-reusable-workflows/.github/actions/create-inputs-summary@feature/test-lint
         with:
           inputs: inputs
 
