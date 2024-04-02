@@ -141,7 +141,7 @@ jobs:
             }
 
             await core.summary
-              .addRaw("### Test Parameters\n")
+              .addRaw("### 📝Input Parameters\n")
               .addTable(parametersTable)
               .write()
 
