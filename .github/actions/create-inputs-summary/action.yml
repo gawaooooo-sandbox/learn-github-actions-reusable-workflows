@@ -3,7 +3,7 @@ description: |
   This action creates a summary of the inputs provided to the workflow.
 
 inputs:
-  inputs:
+  workflow-inputs:
     description: "The inputs provided to the workflow."
     required: true
 
@@ -17,7 +17,6 @@ runs:
 
     - run: |
         echo $TARGET
-        # echo "${fromJSON(inputs.inputs)}"
       shell: bash
       env:
-        TARGET: ${{ toJSON(inputs.inputs) }}
+        TARGET: ${{ toJSON(inputs.workflow-inputs }}
