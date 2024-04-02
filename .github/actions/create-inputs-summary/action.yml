@@ -16,7 +16,7 @@ runs:
     #     ref: ${{ github.head_ref }}
 
     - run: |
-        echo "Hello, ${TARGET}!"
+        echo $TARGET
         # echo "${fromJSON(inputs.inputs)}"
       shell: bash
       env:
