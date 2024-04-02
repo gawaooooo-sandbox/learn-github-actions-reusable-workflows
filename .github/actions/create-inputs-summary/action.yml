@@ -19,4 +19,4 @@ runs:
         echo $TARGET
       shell: bash
       env:
-        TARGET: ${{ toJSON(inputs.workflow-inputs) }}
+        TARGET: ${{ inputs.workflow-inputs }}
