@@ -94,7 +94,8 @@ jobs:
       - name: test summury
         uses: gawaooooo-sandbox/learn-github-actions-reusable-workflows/.github/actions/create-inputs-summary@feature/test-lint
         with:
-          workflow-inputs: ${{ toJSON(inputs) }}
+          # workflow-inputs: ${{ toJSON(inputs) }}
+          workflow-inputs: ${{ inputs }}
 
   lint:
     runs-on: ubuntu-22.04
