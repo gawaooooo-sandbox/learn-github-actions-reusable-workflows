@@ -6,6 +6,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/reusable-*.yml"
+      - ".github/actions/**/action.yml"
 permissions:
   contents: write
 defaults:
@@ -29,4 +30,11 @@ jobs:
     with:
       yaml-file: .github/workflows/reusable-make-wf-docs.yml
       markdown-file: docs/reusable-make-wf-docs.md
+      ref: ${{ github.head_ref }}
+
+  docs-create-inputs-summary-actions-docs:
+    uses: ./.github/workflows/reusable-make-wf-docs.yml
+    with:
+      yaml-file: .github/actions/create-inputs-summary/action.yml
+      markdown-file: docs/actions/create-inputs-summary.md
       ref: ${{ github.head_ref }}
