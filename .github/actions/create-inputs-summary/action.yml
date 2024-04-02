@@ -27,6 +27,7 @@ runs:
         script: |
           const { INPUTS: inputs } = process.env;
           console.log(inputs);
+          console.log(typeof inputs);
 
           const parametersTable = [
             [{ data: 'key', header: true}, { data: 'value', header: true }],
@@ -43,4 +44,4 @@ runs:
               .addTable(parametersTable)
               .write()
       env:
-        INPUTS: ${{ inputs.workflow-inputs }}
+        INPUTS: ${{ fromJSON(inputs.workflow-inputs) }}
