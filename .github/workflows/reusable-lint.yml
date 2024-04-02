@@ -85,13 +85,13 @@ on:
         default: "npm run type-check"
 
 jobs:
-  pre-proceccins:
+  pre-processing:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:
       contents: read
     steps:
-      - name: test summury
+      - name: create inputs summary
         uses: gawaooooo-sandbox/learn-github-actions-reusable-workflows/.github/actions/create-inputs-summary@feature/test-lint
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
@@ -103,59 +103,6 @@ jobs:
       contents: read
 
     steps:
-      # #  test job summary
-      # - name: post test summary
-      #   uses: actions/github-script@v7
-      #   env:
-      #     NODE_VERSION: ${{ inputs.node-version }}
-      #     NODE_VERSION_FILE: ${{ inputs.node-version-file }}
-      #     NODE_CACHING: ${{ inputs.node-caching }}
-      #     CHECKOUT_REF: ${{ inputs.checkout-ref }}
-      #     INSTALL_OPTIONS: ${{ inputs.install-options }}
-      #     ENABLE_FORMAT_CHECK: ${{ inputs.enable-format-check }}
-      #     FORMAT_CHECK_SCRIPT: ${{ inputs.format-check-script }}
-      #     ENABLE_LINT: ${{ inputs.enable-lint }}
-      #     LINT_SCRIPT: ${{ inputs.lint-script }}
-      #     ENABLE_TYPE_CHECK: ${{ inputs.enable-type-check }}
-      #     TYPECHECK_SCRIPT: ${{ inputs.typecheck-script }}
-
-      #   with:
-      #     script: |
-      #       console.log(context);
-      #       console.log(process.env);
-      #       const inputs = {
-      #         'node-version': process.env.NODE_VERSION,
-      #         'node-version-file': process.env.NODE_VERSION_FILE,
-      #         'node-caching': process.env.NODE_CACHING,
-      #         'checkout-ref': process.env.CHECKOUT_REF,
-      #         'install-options': process.env.INSTALL_OPTIONS,
-      #         'enable-format-check': process.env.ENABLE_FORMAT_CHECK,
-      #         'format-check-script': process.env.FORMAT_CHECK_SCRIPT,
-      #         'enable-lint': process.env.ENABLE_LINT,
-      #         'lint-script': process.env.LINT_SCRIPT,
-      #         'enable-type-check': process.env.ENABLE_TYPE_CHECK,
-      #         'typecheck-script': process.env.TYPECHECK_SCRIPT
-      #       };
-      #       console.log(inputs);
-
-      #       const parametersTable = [
-      #         [{ data: 'key', header: true}, { data: 'value', header: true }],
-      #         ['branch', '${{ github.ref_name }}']
-      #       ];
-      #       console.log(parametersTable)
-
-      #       // console.log(context.payload.inputs)
-
-      #       for ([key, value] of Object.entries(inputs)) {
-      #         parametersTable.push([key, value])
-      #         // retryCommand += ` -f ${key}='${value}'`
-      #       }
-
-      #       await core.summary
-      #         .addRaw("### 📝Input Parameters\n")
-      #         .addTable(parametersTable)
-      #         .write()
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
