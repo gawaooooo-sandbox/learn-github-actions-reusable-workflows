@@ -17,7 +17,7 @@ runs:
 
     - run: |
         echo "Hello, ${TARGET}!"
-        echo "${fromJSON(inputs.inputs)}"
+        # echo "${fromJSON(inputs.inputs)}"
       shell: bash
       env:
         TARGET: ${{ inputs.inputs }}
