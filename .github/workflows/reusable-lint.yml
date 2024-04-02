@@ -97,7 +97,7 @@ jobs:
           ref: ${{ inputs.checkout-ref }}
 
       - name: test summury
-        uses: ./.github/actions/creeate-inputs-summary/
+        uses: ./.github/actions/create-inputs-summary/
         with:
           inputs: inputs
 
