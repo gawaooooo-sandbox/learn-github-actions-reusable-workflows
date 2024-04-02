@@ -137,7 +137,7 @@ jobs:
 
             for ([key, value] of Object.entries(inputs)) {
               parametersTable.push([key, value])
-              retryCommand += ` -f ${key}='${value}'`
+              // retryCommand += ` -f ${key}='${value}'`
             }
 
             await core.summary
