@@ -113,17 +113,17 @@ jobs:
             console.log(context);
             console.log(process.env);
             const inputs = {
-              NODE_VERSION: process.env.NODE_VERSION,
-              NODE_VERSION_FILE: process.env.NODE_VERSION_FILE,
-              NODE_CACHING: process.env.NODE_CACHING,
-              CHECKOUT_REF: process.env.CHECKOUT_REF,
-              INSTALL_OPTIONS: process.env.INSTALL_OPTIONS,
-              ENABLE_FORMAT_CHECK: process.env.ENABLE_FORMAT_CHECK,
-              FORMAT_CHECK_SCRIPT: process.env.FORMAT_CHECK_SCRIPT,
-              ENABLE_LINT: process.env.ENABLE_LINT,
-              LINT_SCRIPT: process.env.LINT_SCRIPT,
-              ENABLE_TYPE_CHECK: process.env.ENABLE_TYPE_CHECK,
-              TYPECHECK_SCRIPT: process.env.TYPECHECK_SCRIPT
+              'node-version': process.env.NODE_VERSION,
+              'node-version-file': process.env.NODE_VERSION_FILE,
+              'node-caching': process.env.NODE_CACHING,
+              'checkout-ref': process.env.CHECKOUT_REF,
+              'install-options': process.env.INSTALL_OPTIONS,
+              'enable-format-check': process.env.ENABLE_FORMAT_CHECK,
+              'format-check-script': process.env.FORMAT_CHECK_SCRIPT,
+              'enable-lint': process.env.ENABLE_LINT,
+              'lint-script': process.env.LINT_SCRIPT,
+              'enable-type-check': process.env.ENABLE_TYPE_CHECK,
+              'typecheck-script': process.env.TYPECHECK_SCRIPT
             };
             console.log(inputs);
 
@@ -135,15 +135,15 @@ jobs:
 
             // console.log(context.payload.inputs)
 
-            // for ([key, value] of Object.entries(context.payload.inputs)) {
-              // parametersTable.push([key, value])
-              // retryCommand += ` -f ${key}='${value}'`
-            // }
+            for ([key, value] of Object.entries(inputs)) {
+              parametersTable.push([key, value])
+              retryCommand += ` -f ${key}='${value}'`
+            }
 
-            // await core.summary
-              // .addRaw("### Test Parameters\n")
-              // .addTable(parametersTable)
-              // .write()
+            await core.summary
+              .addRaw("### Test Parameters\n")
+              .addTable(parametersTable)
+              .write()
 
       - name: Checkout code
         uses: actions/checkout@v4
