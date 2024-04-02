@@ -20,4 +20,4 @@ runs:
         # echo "${fromJSON(inputs.inputs)}"
       shell: bash
       env:
-        TARGET: ${{ inputs.inputs }}
+        TARGET: ${{ toJSON(inputs.inputs) }}
