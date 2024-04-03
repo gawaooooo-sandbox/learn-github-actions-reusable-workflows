@@ -26,7 +26,7 @@ jobs:
             .github/workflows/reusable-make-wf-docs.yml,
           ]
         include:
-          - yaml-file: github/workflows/reusable-lint.yml
+          - yaml-file: .github/workflows/reusable-lint.yml
             markdown-file: docs/reusable-lint.md
           - yaml-file: .github/workflows/reusable-make-wf-docs.yml
             markdown-file: docs/reusable-make-wf-docs.md
