@@ -34,7 +34,7 @@ jobs:
       contents: read
     steps:
       - name: create inputs summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@fix/action-error
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@main
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
 
