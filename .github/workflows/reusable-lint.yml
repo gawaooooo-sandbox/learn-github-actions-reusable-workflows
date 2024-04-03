@@ -94,8 +94,7 @@ jobs:
       - name: create inputs summary
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@fix/action-error
         with:
-          # workflow-inputs: ${{ toJSON(inputs) }}
-          workflow-inputs: "${{ inputs }}"
+          workflow-inputs: ${{ toJSON(inputs) }}
 
   lint:
     runs-on: ubuntu-22.04
