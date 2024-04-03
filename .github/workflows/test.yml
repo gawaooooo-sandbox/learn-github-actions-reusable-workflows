@@ -8,4 +8,4 @@ jobs:
   test:
     uses: ./.github/workflows/reusable-lint.yml
     with:
-      install-options: "--ignore-scripts --no-audit"
+      install-options: "--ignore-scripts --no-audit --dry-run"
