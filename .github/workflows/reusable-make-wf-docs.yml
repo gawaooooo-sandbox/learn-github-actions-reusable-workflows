@@ -60,11 +60,11 @@ jobs:
 
       - name: Git push
         run: |
-          echo "### 📖 Inject document result" >> $GITHUB_STEP_SUMMARY
+          echo "### 📖 Inject document result" >> "$GITHUB_STEP_SUMMARY"
 
           if [[ "$(git status -s)" == "" ]]; then
             echo 'skipped'
-            echo "- ⏭️ skipp: ${MD_FILE}" >> $GITHUB_STEP_SUMMARY
+            echo "- ⏭️ skipp: ${MD_FILE}" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           git config --global user.name "github-actions[bot]"
@@ -73,4 +73,4 @@ jobs:
           git commit -m "Update ${MD_FILE}"
           git push
 
-          echo "- ✅ update: ${MD_FILE}" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ update: ${MD_FILE}" >> "$GITHUB_STEP_SUMMARY"
