@@ -131,7 +131,7 @@ jobs:
 
       - name: Run linter
         if: ${{ inputs.enable-lint }}
-        run: "${LINT_SCRIPT}"
+        run: ${LINT_SCRIPT}
         env:
           LINT_SCRIPT: ${{ inputs.lint-script }}
 
