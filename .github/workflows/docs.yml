@@ -22,10 +22,9 @@ jobs:
       matrix:
         yaml-file:
           [
-            github/workflows/reusable-lint.yml,
+            .github/workflows/reusable-lint.yml,
             .github/workflows/reusable-make-wf-docs.yml,
           ]
-        # ref: ${{ github.head_ref }}
         include:
           - yaml-file: github/workflows/reusable-lint.yml
             markdown-file: docs/reusable-lint.md
@@ -36,24 +35,3 @@ jobs:
       yaml-file: ${{ matrix.yaml-file }}
       markdown-file: ${{ matrix.markdown-file }}
       ref: ${{ github.head_ref }}
-
-    # docs-lint:
-    #   uses: ./.github/workflows/reusable-make-wf-docs.yml
-    #   with:
-    #     yaml-file: .github/workflows/reusable-lint.yml
-    #     markdown-file: docs/reusable-lint.md
-    #     ref: ${{ github.head_ref }}
-
-    # docs-make-wf-docs:
-    #   uses: ./.github/workflows/reusable-make-wf-docs.yml
-    #   with:
-    #     yaml-file: .github/workflows/reusable-make-wf-docs.yml
-    #     markdown-file: docs/reusable-make-wf-docs.md
-    #     ref: ${{ github.head_ref }}
-
-    # docs-create-inputs-summary-actions-docs:
-    #   uses: ./.github/workflows/reusable-make-wf-docs.yml
-    #   with:
-    #     yaml-file: .github/actions/create-inputs-summary/action.yml
-    #     markdown-file: docs/actions/create-inputs-summary.md
-    #     ref: ${{ github.head_ref }}
