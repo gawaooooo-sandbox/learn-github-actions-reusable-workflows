@@ -6,7 +6,9 @@
   "scripts": {
     "format:check": "npx prettier --parser=\"yaml\" --check \"**/*.y*ml\"",
     "format:fix": "npx prettier --parser=\"yaml\" --write \"**/*.y*ml\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "echo \"Error: no test specified\"",
+    "test:script": "npm run format:check"
   },
   "lint-staged": {
     "*.{yml,yaml}": [

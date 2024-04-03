@@ -1,0 +1,12 @@
+# workflowのテスト用
+name: Workflow test
+
+on:
+  push:
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-lint.yml
+    with:
+      install-options: --no-audit --ignore-scripts
+      lint-script: npm run test && npm run test:script

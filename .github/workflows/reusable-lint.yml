@@ -116,27 +116,20 @@ jobs:
           cache: ${{ inputs.node-caching }}
 
       - name: Install dependencies
-        run: npm ci "${INSTALL_OPTIONS}"
+        run: npm ci ${{ inputs.install-options }}
         env:
           # CI上では Husky を install しない
           # https://typicode.github.io/husky/how-to.html#ci-server-and-docker
           HUSKY: 0
-          INSTALL_OPTIONS: ${{ inputs.install-options }}
 
       - name: Run format check
         if: ${{ inputs.enable-format-check }}
-        run: "${FORMAT_CHECK_SCRIPT}"
-        env:
-          FORMAT_CHECK_SCRIPT: ${{ inputs.format-check-script }}
+        run: ${{ inputs.format-check-script }}
 
       - name: Run linter
         if: ${{ inputs.enable-lint }}
-        run: "${LINT_SCRIPT}"
-        env:
-          LINT_SCRIPT: ${{ inputs.lint-script }}
+        run: ${{ inputs.lint-script }}
 
       - name: Run type check
         if: ${{ inputs.enable-type-check }}
-        run: "${TYPECHECK_SCRIPT}"
-        env:
-          TYPECHECK_SCRIPT: ${{ inputs.typecheck-script }}
+        run: ${{ inputs.typecheck-script }}
