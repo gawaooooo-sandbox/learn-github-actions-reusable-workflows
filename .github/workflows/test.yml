@@ -8,5 +8,5 @@ jobs:
   test:
     uses: ./.github/workflows/reusable-lint.yml
     with:
-      install-options: --no-audit
+      install-options: --no-audit --omit=dev
       lint-script: npm run test && npm run test:script
