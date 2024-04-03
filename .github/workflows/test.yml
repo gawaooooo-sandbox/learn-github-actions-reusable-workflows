@@ -8,5 +8,5 @@ jobs:
   test:
     uses: ./.github/workflows/reusable-lint.yml
     with:
-      # install-options: "--dry-run"
-      lint-script: "npm run test"
+      install-options: --dry-run
+      lint-script: npm run test && npm run test:script
