@@ -140,6 +140,7 @@ jobs:
           node-auth-token: ${{ inputs.node-auth-token }}
           checkout-ref: ${{ inputs.checkout-ref }}
           npm-install-options: ${{ inputs.install-options }}
+          create-inputs-summary: "true"
 
       # - name: Checkout code
       #   uses: actions/checkout@v4
