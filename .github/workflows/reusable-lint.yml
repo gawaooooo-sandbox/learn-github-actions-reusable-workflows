@@ -129,7 +129,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Setup
+      - name: Setup Node.js
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-npm-setup@feature/setup-action
         with:
           node-version: ${{ inputs.node-version }}
