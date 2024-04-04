@@ -27,6 +27,32 @@ on:
         type: string
         default: "npm"
 
+      npm-registry-url:
+        description: |
+          Optional input to set the registry URL to use for the npm commands.
+          The input syntax corresponds to the setup-node's one.
+          When using GitHub Packages, specify `https://npm.pkg.github.com`
+        required: false
+        type: string
+
+      npm-scope:
+        description: |
+          Optional input to set the scope to use for the npm commands.
+          The input syntax corresponds to the setup-node's one.
+          `hoge package` -> `@hoge`
+          GitHub Packages -> `@owner` (use `github.repository_owner`)
+        required: false
+        type: string
+
+      node-auth-token:
+        description: |
+          Optional input to set the authentication token to use for the npm commands.
+          The input syntax corresponds to the setup-node's one.
+          When using GitHub Packages, specify `secrets.GITHUB_TOKEN`
+          When using npm, specify `secrets.NPM_AUTH_TOKEN`
+        required: false
+        type: string
+
       checkout-ref:
         description: |
           Optional input to set the ref to checkout.
@@ -103,24 +129,18 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.checkout-ref }}
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-npm-setup@main
         with:
           node-version: ${{ inputs.node-version }}
           node-version-file: ${{ inputs.node-version-file }}
-          cache: ${{ inputs.node-caching }}
-
-      - name: Install dependencies
-        run: npm ci ${{ inputs.install-options }}
-        env:
-          # CI上では Husky を install しない
-          # https://typicode.github.io/husky/how-to.html#ci-server-and-docker
-          HUSKY: 0
+          node-caching: ${{ inputs.node-caching }}
+          npm-registry-url: ${{ inputs.npm-registry-url }}
+          npm-scope: ${{ inputs.npm-scope }}
+          node-auth-token: ${{ inputs.node-auth-token }}
+          checkout-ref: ${{ inputs.checkout-ref }}
+          npm-install-options: ${{ inputs.install-options }}
+          create-inputs-summary: "true"
 
       - name: Run format check
         if: ${{ inputs.enable-format-check }}
