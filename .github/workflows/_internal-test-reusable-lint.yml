@@ -54,7 +54,7 @@ jobs:
       lint-script: ${{ matrix.lint-script }}
       checkout-ref: ${{ matrix.checkout-ref }}
       working-directory: test
-      node-version-file: package.json
+      node-version-file: test/package.json
 
   test-with-token:
     needs: [test]
@@ -65,6 +65,6 @@ jobs:
     with:
       enable-format-check: true
       working-directory: test
-      node-version-file: package.json
+      node-version-file: test/package.json
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
