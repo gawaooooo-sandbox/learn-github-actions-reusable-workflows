@@ -57,7 +57,7 @@ jobs:
           pwd
           la -lah
   exercise:
-    needs: [test]
+    needs: [setup]
     uses: ./.github/workflows/reusable-deploy.yml
     with:
       environment: ${{ inputs.environment }}
