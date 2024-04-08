@@ -205,9 +205,9 @@ jobs:
       - name: Build ${{ inputs.environment }}
         run: |
           set -x
-          echo "Build command: ${{ inputs.build-command }}"
-          echo "Build environments: ${{ inputs.build-environments }}"
+
           echo "GITHUB_ENV: $GITHUB_ENV"
+          cat "$GITHUB_ENV"
           npm run ${{ inputs.build-command }}
 
       # - name: deploy
