@@ -218,13 +218,12 @@ jobs:
           set -x
           npm run ${{ inputs.build-command }}
 
-      # - name: Setup AWS Credentials
-      #   # if: ${{ fromJSON(inputs.use-aws) }}
-      #   if: ${{ inputs.use-aws }}
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: ${{ secrets.aws-role-arn }}
-      #     aws-region: ${{ inputs.s3-aws-region}}
+      - name: Setup AWS Credentials
+        if: ${{ inputs.use-aws }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.aws-role-arn }}
+          aws-region: ${{ inputs.s3-aws-region}}
 
       - name: Deploy to ${{ inputs.environment }} [${{ inputs.s3-uri }}]
         id: deploy

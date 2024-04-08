@@ -114,7 +114,7 @@ jobs:
             build-environments: '{"TEST_CONFIG": "production test", "PROD": "true", "BASE_URL": "https://example.com/prod", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
             s3-uri: "s3://example-prod-bucket"
             s3-sync-options: "--delete --dryrun --exclude 'node_modules/*'"
-            use-aws: true
+            use-aws: false
     uses: ./.github/workflows/reusable-deploy.yml
     with:
       working-directory: test
