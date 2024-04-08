@@ -3,6 +3,13 @@ name: Lint code
 on:
   workflow_call:
     inputs:
+      working-directory:
+        description: |
+          Optional input to set the working directory.
+        required: false
+        type: string
+        default: "."
+
       node-version:
         description: |
           Optional input to set the version of Node.js used to build the project.
@@ -126,6 +133,10 @@ jobs:
     permissions:
       contents: read
       packages: read
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
     steps:
       - name: Setup Node.js and Install dependencies
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-npm-setup@main

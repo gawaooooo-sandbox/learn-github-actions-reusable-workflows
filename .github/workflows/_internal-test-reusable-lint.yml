@@ -21,6 +21,10 @@ defaults:
 jobs:
   test:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,11 +32,12 @@ jobs:
         run: |
           echo "working-directory: $PWD"
           ls -la
+
+  test-matrix:
+    needs: [test]
     permissions:
       contents: read
       packages: read
-  test-matrix:
-    needs: [test]
     strategy:
       matrix:
         install-options: ["", "--no-audit --ignore-scripts"]
@@ -48,17 +53,14 @@ jobs:
       install-options: ${{ matrix.install-options }}
       lint-script: ${{ matrix.lint-script }}
       checkout-ref: ${{ matrix.checkout-ref }}
-    permissions:
-      contents: read
-      packages: read
 
   test-with-token:
     needs: [test]
+    permissions:
+      contents: read
+      packages: read
     uses: ./.github/workflows/reusable-lint.yml
     with:
       enable-format-check: true
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      contents: read
-      packages: read
