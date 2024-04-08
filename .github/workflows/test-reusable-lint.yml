@@ -10,7 +10,7 @@ defaults:
   run:
     shell: bash
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: test-reusable-lint-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

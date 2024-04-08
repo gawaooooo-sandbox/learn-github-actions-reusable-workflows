@@ -111,7 +111,7 @@ on:
         default: "npm run type-check"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: reusable-lint-${{ github.workflow }}-${{ github.ref }}-${{ inputs.checkout-ref}}
   cancel-in-progress: true
 
 jobs:
