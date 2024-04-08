@@ -59,7 +59,7 @@ jobs:
       environment: ${{ inputs.environment }}
       node-version-file: test/package.json
       build-command: build
-      build-environments: '{"TEST_CONFIG": "test", "PROD": "prod", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+      build-environments: '["TEST_CONFIG=test", "PROD=prod", "BASE_URL=https://example.com", "TEST_VAR=${{ vars.TEST_VAR }}"]'
       s3-uri: "s3://example-bucket"
       use-aws: false
     secrets:
@@ -103,7 +103,7 @@ jobs:
             checkout-ref: ${{ github.head_ref }}
             npm-install-options: "--no-audit --if-presets"
             build-command: build
-            build-environments: '{"TEST_CONFIG": "develop test", "PROD": "false", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+            build-environments: '["TEST_CONFIG=develop-test", "PROD=false", "BASE_URL=https://example.com", "TEST_VAR=${{ vars.TEST_VAR }}"]'
             dist-dir: ./dist
             s3-uri: "s3://example-bucket"
             s3-sync-options: "--delete --dryrun --exclude '*.json'"
@@ -111,7 +111,7 @@ jobs:
           - environment: prod
             build-command: generate
             checkout-ref: ${{ github.ref }}
-            build-environments: '{"TEST_CONFIG": "production test", "PROD": "true", "BASE_URL": "https://example.com/prod", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+            build-environments: '["TEST_CONFIG=production-test", "PROD=true", "BASE_URL=https://example.com/prod", "TEST_VAR=${{ vars.TEST_VAR }}"]'
             dist-dir: ./outputs/public
             s3-uri: "s3://example-prod-bucket"
             s3-sync-options: "--delete --dryrun --exclude 'node_modules/*'"
