@@ -60,6 +60,7 @@ jobs:
       build-command: build
       build-environments: "{'TEST': 123, 'BASE_URL': 'http://example.com'}"
       s3-uri: "s3://example-bucket"
+      node-version-file: package.json
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
