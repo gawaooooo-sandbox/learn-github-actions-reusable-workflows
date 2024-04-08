@@ -1,0 +1,61 @@
+# @see https://zenn.dev/tmknom/books/pragmatic-composite-action/viewer/lint
+name: Internal Lint (YAML)
+run-name: ${{ github.workflow }}
+
+on:
+  pull_request:
+    paths: ["**.yml", "**.yaml"]
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call:
+    uses: ./.github/workflows/reusable-yaml-lint.yml
+    permission:
+      contents: read
+  # lint:
+  #   runs-on: ubuntu-22.04
+  #   timeout-minutes: 5
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Run yamllint
+  #       run: |
+  #         set -x
+  #         CONFIG="${RUNNER_TEMP}/.yamllint.yml"
+  #         cat <<EOF >"${CONFIG}"
+  #         extends: default
+  #         rules:
+  #           document-start: disable
+  #           truthy:
+  #             allowed-values: ["true", "false", "on"]
+  #           comments:
+  #             min-spaces-from-content: 1
+  #           braces:
+  #             max-spaces-inside: 1
+  #           line-length:
+  #             max: 200
+  #         EOF
+  #         if [ -e ".yamllint.yml" ]; then
+  #           CONFIG=".yamllint.yml"
+  #         fi
+  #         yamllint --strict --format github --config-file "${CONFIG}" .
+
+  #     - name: Run actionlint
+  #       run: |
+  #         set -x
+  #         bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+  #         ./actionlint -color
+
+  #     - name: Run Prettier
+  #       run: |
+  #         npm install prettier@latest
+  #         npx prettier --parser="yaml" --check "**/*.y*ml"
