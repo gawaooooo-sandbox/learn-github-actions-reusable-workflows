@@ -126,9 +126,12 @@ jobs:
   lint:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     permissions:
       contents: read
-
+      package: read
     steps:
       - name: Setup Node.js and Install dependencies
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-npm-setup@main
