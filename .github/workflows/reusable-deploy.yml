@@ -183,8 +183,8 @@ jobs:
           #   echo "export $key=$value" >> "$GITHUB_ENV"
           # done
 
-          for key in $(echo "$buildEnvironments" | jq -r 'keys[]'); do
-            value=$(echo "$buildEnvironments" | jq -r ".$key")
+          for key in $(jq -r 'keys[]' <<< "$buildEnvironments"); do
+            value=$(jq -r ".$key" <<< "$buildEnvironments")
             echo "$key: $value"
           done
 
