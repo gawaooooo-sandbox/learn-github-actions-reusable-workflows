@@ -104,14 +104,14 @@ jobs:
             npm-install-options: "--no-audit --if-presets"
             build-environments: '{"TEST_CONFIG": "develop test", "PROD": "false", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
             s3-uri: "s3://example-bucket"
-            s3-sync-options: "--delete --dry-run --exclude '*.json'"
+            s3-sync-options: "--delete --dryrun --exclude '*.json'"
             print-deploy-command: true
           - environment: prod
             build-command: generate
             checkout-ref: ${{ github.ref }}
             build-environments: '{"TEST_CONFIG": "production test", "PROD": "true", "BASE_URL": "https://example.com/prod", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
             s3-uri: "s3://example-prod-bucket"
-            s3-sync-options: "--delete --dry-run --exclude 'node_modules/*'"
+            s3-sync-options: "--delete --dryrun --exclude 'node_modules/*'"
     uses: ./.github/workflows/reusable-deploy.yml
     with:
       working-directory: test
