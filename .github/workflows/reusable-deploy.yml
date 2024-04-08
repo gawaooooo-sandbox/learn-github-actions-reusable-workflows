@@ -194,9 +194,9 @@ jobs:
             const buildEnvironmentsObj = typeof buildEnvironments === 'string' ? JSON.parse(buildEnvironments) : buildEnvironments;
             console.log(buildEnvironmentsObj);
 
-            // buildEnvironmentsObj を GITHUB_ENV にセットする
+            // buildEnvironmentsObj を core.exportVariable でセットする
             for (const [key, value] of Object.entries(buildEnvironmentsObj)) {
-              process.env[key] = value;
+              core.exportVariable(key, value);
             }
 
             console.log('---- process.env');
@@ -206,8 +206,8 @@ jobs:
         run: |
           set -x
 
-          echo "GITHUB_ENV: $GITHUB_ENV"
-          cat "$GITHUB_ENV"
+          echo "BASE_URL: ${{ env.BASE_URL }}"
+
           npm run ${{ inputs.build-command }}
 
       # - name: deploy
