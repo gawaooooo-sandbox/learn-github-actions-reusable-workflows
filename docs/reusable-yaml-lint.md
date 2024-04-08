@@ -4,4 +4,22 @@ GitHub Actions で YAML ファイルの静的解析を行うための再利用�
 
 <!-- actdocs start -->
 
+## Inputs
+
+N/A
+
+## Secrets
+
+N/A
+
+## Outputs
+
+N/A
+
+## Permissions
+
+N/A
+
 <!-- actdocs end -->
+
+
