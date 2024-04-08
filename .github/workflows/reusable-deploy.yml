@@ -93,9 +93,9 @@ on:
         description: |
           Optional input to set the environment variables to set for the build command.
           This needs to be specified in JSON string format.
-          Passing the inputs context wrapped in a `toJSON` expression.
         required: false
         type: string
+        default: "{}"
 
       # Deploy inputs
       s3-uri:
@@ -176,17 +176,8 @@ jobs:
           echo "env BUILD_ENVIRONMENTS: ${{ env.BUILD_ENVIRONMENTS}}"
           echo "env BUILD_ENVIRONMENTS: fromJSON: ${{ fromJSON(env.BUILD_ENVIRONMENTS) }}"
 
-          # buildEnvironments=$(echo ${{ fromJSON(env.BUILD_ENVIRONMENTS) }})
-          buildEnvironments=${{ inputs.build-environments }}
-          # for key in $(echo "$buildEnvironments" | jq -r 'keys[]'); do
-          #   value=$(echo "$buildEnvironments" | jq -r ".$key")
-          #   echo "export $key=$value" >> "$GITHUB_ENV"
-          # done
-
-          for key in $(jq -r 'keys[]' <<< "$buildEnvironments"); do
-            value=$(jq -r ".$key" <<< "$buildEnvironments")
-            echo "$key: $value"
-          done
+          BUILD_ENVIRONMENTS="${{ env.BUILD_ENVIRONMENTS }}"
+          jq -r 'to_entries[] | "\(.key)=\(.value)"' <<< "BUILD_ENVIRONMENTS" >> $GITHUB_ENV
 
         env:
           BUILD_ENVIRONMENTS: ${{ inputs.build-environments }}
@@ -196,6 +187,7 @@ jobs:
           set -x
           echo "Build command: ${{ inputs.build-command }}"
           echo "Build environments: ${{ inputs.build-environments }}"
+          echo "GITHUB_ENV: $GITHUB_ENV"
           npm run ${{ inputs.build-command }}
 
       # - name: deploy
