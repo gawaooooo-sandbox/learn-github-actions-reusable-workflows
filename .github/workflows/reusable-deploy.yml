@@ -129,7 +129,6 @@ on:
           Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.
           `true` -> use AWS credentials and deploy the build artifacts to the S3 URI
           `false` -> print the command to deploy the build artifacts to the S3 URI
-          **Note**: When using `false`, the deployment won't be executed.
         required: false
         type: boolean
         default: true

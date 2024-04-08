@@ -96,15 +96,15 @@ jobs:
       fail-fast: false
       matrix:
         environment: [develop, prod]
-        build-command: [build, generate]
-        dist-dir: [./dist, ./outputs/public]
         include:
           - environment: develop
             npm-registry-url: https://npm.pkg.github.com
             npm-scope: "@${{ github.repository_owner }}"
             checkout-ref: ${{ github.head_ref }}
             npm-install-options: "--no-audit --if-presets"
+            build-command: build
             build-environments: '{"TEST_CONFIG": "develop test", "PROD": "false", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+            dist-dir: ./dist
             s3-uri: "s3://example-bucket"
             s3-sync-options: "--delete --dryrun --exclude '*.json'"
             use-aws: false
@@ -112,6 +112,7 @@ jobs:
             build-command: generate
             checkout-ref: ${{ github.ref }}
             build-environments: '{"TEST_CONFIG": "production test", "PROD": "true", "BASE_URL": "https://example.com/prod", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+            dist-dir: ./outputs/public
             s3-uri: "s3://example-prod-bucket"
             s3-sync-options: "--delete --dryrun --exclude 'node_modules/*'"
             use-aws: false
