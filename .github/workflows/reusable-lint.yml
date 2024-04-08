@@ -110,13 +110,14 @@ on:
         type: string
         default: "npm run type-check"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pre-processing:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
     steps:
       - name: create inputs summary
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@main
@@ -126,9 +127,6 @@ jobs:
   lint:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
     permissions:
       contents: read
       package: read
