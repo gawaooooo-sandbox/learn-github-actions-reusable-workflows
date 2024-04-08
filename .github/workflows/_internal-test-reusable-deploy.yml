@@ -107,14 +107,20 @@ jobs:
             build-environments: '{"TEST_CONFIG": "develop test", "PROD": "false", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
             s3-uri: "s3://example-bucket"
             s3-sync-options: "--delete --dryrun --exclude '*.json'"
-            print-deploy-command: true
+            use-aws: false
           - environment: prod
             build-command: generate
             checkout-ref: ${{ github.ref }}
-            build-environments: '{"TEST_CONFIG": "production test", "PROD": "true", "BASE_URL": "https://example.com/prod", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+            build-environments: >-
+              '{
+                "TEST_CONFIG": "production test",
+                "PROD": "true",
+                "BASE_URL": "https://example.com/prod",
+                "TEST_VAR": "${{ vars.TEST_VAR }}"
+              }'
             s3-uri: "s3://example-prod-bucket"
             s3-sync-options: "--delete --dryrun --exclude 'node_modules/*'"
-            print-deploy-command: false
+            # use-aws: true
     uses: ./.github/workflows/reusable-deploy.yml
     with:
       working-directory: test
@@ -129,7 +135,7 @@ jobs:
       npm-install-options: ${{ matrix.npm-install-options }}
       build-environments: ${{ matrix.build-environments }}
       s3-uri: ${{ matrix.s3-uri }}
-      print-deploy-command: ${{ matrix.print-deploy-command }}
+      use-aws: ${{ matrix.use-aws }}
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}

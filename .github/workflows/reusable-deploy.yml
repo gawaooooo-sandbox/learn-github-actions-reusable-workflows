@@ -123,16 +123,16 @@ on:
         type: string
         default: "ap-northeast-1"
 
-      #  Deploy command print (Debug)
-      print-deploy-command:
+      #  Set up AWS credentials inputs & s3 sync
+      use-aws:
         description: |
-          Optional input to print the deploy command.
-          `true` -> not execute the deploy command
-          `false` -> execute the deploy command
-          **Note**: This is for debugging purposes. Do not set this to `true` in production.
+          Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.
+          `true` -> use AWS credentials and deploy the build artifacts to the S3 URI
+          `false` -> print the command to deploy the build artifacts to the S3 URI
+          **Note**: When using `false`, the deployment won't be executed.
         required: false
         type: boolean
-        default: false
+        default: true
 
     outputs:
       s3-deploy-command:
@@ -219,8 +219,7 @@ jobs:
           npm run ${{ inputs.build-command }}
 
       - name: Setup AWS Credentials
-        # if: ${{ inputs.print-deploy-command == 'false' }}
-        if: ${{ fromJSON( inputs.print-deploy-command ) == false }}
+        if: ${{ fromJSON(inputs.use-aws) }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.aws-role-arn }}
@@ -234,18 +233,18 @@ jobs:
           s3_uri="${{ inputs.s3-uri }}"
           dist_dir="${{ inputs.dist-dir }}"
           s3_sync_options="${{ inputs.s3-sync-options }}"
-          print_deploy_command="${{ inputs.print-deploy-command }}"
+          use_aws="${{ inputs.use-aws }}"
 
           echo "Deploying to $s3_uri from $dist_dir with options: $s3_sync_options ..."
-          echo "print_deploy_command: $print_deploy_command"
+          echo "use_aws: use_aws"
 
           s3_deploy_command="aws s3 sync $dist_dir $s3_uri $s3_sync_options"
           # echo "path=${valid}" >> "${GITHUB_OUTPUT}" のように、s3_deploy_commandを出力する
           echo "s3-deploy-command=${s3_deploy_command}" >> "${GITHUB_OUTPUT}"
 
-          if [ "$print_deploy_command" = "true" ]; then
-            echo "Deploy Command: $s3_deploy_command"
-          else
+          if [ "use_aws" = "true" ]; then
             echo "Executing Deploy Command..."
             eval "$s3_deploy_command"
+          else
+            echo "Deploy Command: $s3_deploy_command"
           fi
