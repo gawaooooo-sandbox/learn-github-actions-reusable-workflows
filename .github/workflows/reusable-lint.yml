@@ -44,15 +44,6 @@ on:
         required: false
         type: string
 
-      node-auth-token:
-        description: |
-          Optional input to set the authentication token to use for the npm commands.
-          The input syntax corresponds to the setup-node's one.
-          When using GitHub Packages, specify `secrets.GITHUB_TOKEN`
-          When using npm, specify `secrets.NPM_AUTH_TOKEN`
-        required: false
-        type: string
-
       checkout-ref:
         description: |
           Optional input to set the ref to checkout.
@@ -110,6 +101,15 @@ on:
         type: string
         default: "npm run type-check"
 
+    secrets:
+      node-auth-token:
+        description: |
+          Optional secret to set the authentication token to use for the npm commands.
+          The input syntax corresponds to the setup-node's one.
+          When using GitHub Packages, specify `secrets.GITHUB_TOKEN`
+          When using npm, specify `secrets.NPM_AUTH_TOKEN`
+        required: false
+
 concurrency:
   group: reusable-lint-${{ github.workflow }}-${{ github.ref }}-${{ inputs.checkout-ref}}
   cancel-in-progress: true
@@ -139,7 +139,7 @@ jobs:
           node-caching: ${{ inputs.node-caching }}
           npm-registry-url: ${{ inputs.npm-registry-url }}
           npm-scope: ${{ inputs.npm-scope }}
-          node-auth-token: ${{ inputs.node-auth-token }}
+          node-auth-token: ${{ secrets.node-auth-token }}
           checkout-ref: ${{ inputs.checkout-ref }}
           npm-install-options: ${{ inputs.install-options }}
           create-inputs-summary: "true"

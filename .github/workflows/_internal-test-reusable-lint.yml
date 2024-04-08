@@ -41,6 +41,8 @@ jobs:
   test-with-token:
     uses: ./.github/workflows/reusable-lint.yml
     with:
+      enable-format-check: true
+    secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: read
