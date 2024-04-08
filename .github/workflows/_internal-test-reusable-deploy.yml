@@ -58,7 +58,7 @@ jobs:
       working-directory: test
       environment: ${{ inputs.environment }}
       build-command: build
-      build-environments: "{'TEST': 123, 'BASE_URL': 'http://example.com'}"
+      build-environments: "{'TEST': '123', 'BASE_URL': 'http://example.com'}"
       s3-uri: "s3://example-bucket"
       node-version-file: test/package.json
     secrets:
