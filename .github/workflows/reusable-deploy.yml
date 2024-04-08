@@ -234,7 +234,7 @@ jobs:
           s3-deploy-command="echo ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}"
           echo "s3-deploy-command=${s3-deploy-command}" >> "${GITHUB_OUTPUT}"
 
-          if [ "${{ inputs.print-deploy-command }}" = "true" ]; then
+          if [[ "${{ inputs.print-deploy-command }}" = "true" ]]; then
             echo "${s3-deploy-command}"
           else
             eval "${s3-deploy-command}"
