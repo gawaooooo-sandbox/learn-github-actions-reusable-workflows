@@ -59,7 +59,14 @@ jobs:
       environment: ${{ inputs.environment }}
       node-version-file: test/package.json
       build-command: build
-      build-environments: '{"TEST_CONFIG": "test", "PROD": "prod", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+      # build-environments: '{"TEST_CONFIG": "test", "PROD": "prod", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+      build-environment:
+        [
+          "TEST_CONFIG=test",
+          "PROD=prod",
+          "BASE_URL=https://example.com",
+          "TEST_VAR=${{ vars.TEST_VAR }}",
+        ]
       s3-uri: "s3://example-bucket"
       use-aws: false
     secrets:
