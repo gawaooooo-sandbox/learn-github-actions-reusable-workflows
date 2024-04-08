@@ -93,6 +93,7 @@ on:
         description: |
           Optional input to set the environment variables to set for the build command.
           This needs to be specified in JSON string format.
+          e.g. `'{"BASE_URL": "https://example.com"}'`
         required: false
         type: string
         default: "{}"
@@ -169,45 +170,31 @@ jobs:
           npm-install-options: ${{ inputs.npm-install-options }}
           create-inputs-summary: "true"
 
-      # - name: Set Environments to GITHUB_ENV
-      #   run: |
-      #     set -x
-      #     echo "Inputs Build environments: ${{ inputs.build-environments }}"
-      #     echo "env BUILD_ENVIRONMENTS: ${{ env.BUILD_ENVIRONMENTS}}"
-      #     echo "env BUILD_ENVIRONMENTS: fromJSON: ${{ fromJSON(env.BUILD_ENVIRONMENTS) }}"
-
-      #     BUILD_ENVIRONMENTS="${{ env.BUILD_ENVIRONMENTS }}"
-      #     jq -r 'to_entries[] | "\(.key)=\(.value)"' <<< "$BUILD_ENVIRONMENTS" >> "$GITHUB_ENV"
-
-      #   env:
-      #     BUILD_ENVIRONMENTS: ${{ inputs.build-environments }}
-
-      - name: Set Environment to GITHUB_ENV
+      - name: Set Environment to process.env
         uses: actions/github-script@v7
         with:
           script: |
             // env で inputs.build-environmentsを受け取る
-            const buildEnvironments = ${{ inputs.build-environments }};
+            const buildEnvironments = process.env.BUILD_ENVIRONMENTS;
             console.log(buildEnvironments);
 
             // buildEnvironments が string の場合はJSON.parseする
             const buildEnvironmentsObj = typeof buildEnvironments === 'string' ? JSON.parse(buildEnvironments) : buildEnvironments;
             console.log(buildEnvironmentsObj);
 
-            // buildEnvironmentsObj を core.exportVariable でセットする
+            // buildEnvironmentsObj を core.exportVariable で環境変数にセットする
             for (const [key, value] of Object.entries(buildEnvironmentsObj)) {
               core.exportVariable(key, value);
             }
 
             console.log('---- process.env');
             console.log(process.env);
+        env:
+          BUILD_ENVIRONMENTS: ${{ inputs.build-environments }}
 
       - name: Build ${{ inputs.environment }}
         run: |
           set -x
-
-          echo "BASE_URL: ${{ env.BASE_URL }}"
-
           npm run ${{ inputs.build-command }}
 
       # - name: deploy
