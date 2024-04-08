@@ -179,7 +179,7 @@ jobs:
           buildEnvironments=$(echo ${{ fromJSON(env.BUILD_ENVIRONMENTS) }})
           for key in $(echo $buildEnvironments | jq -r 'keys[]'); do
             value=$(echo $buildEnvironments | jq -r ".$key")
-            echo "export $key=$value" >> $GITHUB_ENV
+            echo "export $key=$value" >> "$GITHUB_ENV"
           done
 
         env:
