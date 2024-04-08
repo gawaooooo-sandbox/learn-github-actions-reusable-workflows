@@ -4,11 +4,14 @@
   "description": "GitHub Actions reusable workflows",
   "main": "index.js",
   "scripts": {
+    "prepare": "husky",
     "format:check": "npx prettier --parser=\"yaml\" --check \"**/*.y*ml\"",
     "format:fix": "npx prettier --parser=\"yaml\" --write \"**/*.y*ml\"",
-    "prepare": "husky",
-    "test": "echo \"Error: no test specified\"",
-    "test:script": "npm run format:check"
+    "test": "echo \"call test \"",
+    "test:script": "npm run format:check",
+    "lint": "echo \"call lint \"",
+    "build": "echo \"call build \"",
+    "generate": "echo \"call generate \""
   },
   "lint-staged": {
     "*.{yml,yaml}": [
