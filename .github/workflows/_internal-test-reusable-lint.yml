@@ -53,6 +53,7 @@ jobs:
       install-options: ${{ matrix.install-options }}
       lint-script: ${{ matrix.lint-script }}
       checkout-ref: ${{ matrix.checkout-ref }}
+      working-directory: test
 
   test-with-token:
     needs: [test]
@@ -62,5 +63,6 @@ jobs:
     uses: ./.github/workflows/reusable-lint.yml
     with:
       enable-format-check: true
+      working-directory: test
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}

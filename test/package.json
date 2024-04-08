@@ -6,11 +6,11 @@
   "scripts": {
     "format:check": "npx prettier --parser=\"yaml\" --check \"**/*.y*ml\"",
     "format:fix": "npx prettier --parser=\"yaml\" --write \"**/*.y*ml\"",
-    "test": "echo \"call test \"",
+    "test": "echo \"call test (test directory) \"",
     "test:script": "npm run format:check",
-    "lint": "echo \"call lint \"",
-    "build": "echo \"call build \"",
-    "generate": "echo \"call generate \""
+    "lint": "echo \"call lint  (test directory) \"",
+    "build": "echo \"call build  (test directory) \"",
+    "generate": "echo \"call generate  (test directory) \""
   },
   "engines": {
     "node": ">=20"
