@@ -110,10 +110,6 @@ on:
           When using npm, specify `secrets.NPM_AUTH_TOKEN`
         required: false
 
-concurrency:
-  group: reusable-lint-${{ github.workflow }}-${{ github.ref }}-${{ inputs.checkout-ref}}
-  cancel-in-progress: true
-
 jobs:
   pre-processing:
     runs-on: ubuntu-22.04
