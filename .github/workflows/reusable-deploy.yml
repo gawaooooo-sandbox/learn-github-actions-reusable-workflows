@@ -219,7 +219,8 @@ jobs:
           npm run ${{ inputs.build-command }}
 
       - name: Setup AWS Credentials
-        if: ${{ fromJSON(inputs.use-aws) }}
+        # if: ${{ fromJSON(inputs.use-aws) }}
+        if: ${{ inputs.use-aws }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.aws-role-arn }}
