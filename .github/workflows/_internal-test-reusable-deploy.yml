@@ -49,13 +49,13 @@ jobs:
           # Create a temporary directory
           TEST_TEMP_DIR="${RUNNER_TEMP}/test"
           mkdir -p "${TEST_TEMP_DIR}"
-          la -lah
+          ls -lah
           cd "${TEST_TEMP_DIR}"
 
           # Create test js file to TEST_TEMP_DIR
           echo "console.log('Hello, World!');" > test.js
           pwd
-          la -lah
+          ls -lah
   exercise:
     needs: [setup]
     uses: ./.github/workflows/reusable-deploy.yml
