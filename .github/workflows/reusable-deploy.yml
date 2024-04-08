@@ -227,31 +227,13 @@ jobs:
 
       - name: Deploy to ${{ inputs.environment }} [${{ inputs.s3-uri }}]
         id: deploy
-        env:
-          DIST_DIR: ${{ inputs.dist-dir }}
-          S3_URI: ${{ inputs.s3-uri }}
-          S3_SYNC_OPTIONS: ${{ inputs.s3-sync-options }}
-          PRINT_DEPLOY_COMMAND: ${{ inputs.print-deploy-command }}
         run: |
           set -x
 
-          # s3-deploy-command="aws s3 sync $DIST_DIR $S3_URI $S3_SYNC_OPTIONS"
-          s3-deploy-command="echo$DIST_DIR $S3_URI $S3_SYNC_OPTIONS"
-          echo "${s3-deploy-command}"
-          echo "s3-deploy-command=${s3-deploy-command}" >> "${GITHUB_OUTPUT}"
+          s3_uri="${{ inputs.s3-uri }}"
+          dist_dir="${{ inputs.dist-dir }}"
+          s3_sync_options="${{ inputs.s3-sync-options }}"
+          print_deploy_command="${{ inputs.print-deploy-command }}"
 
-          # if [[ "${PRINT_DEPLOY_COMMAND}" = "true" ]]; then
-          #   echo "${s3-deploy-command}"
-          # else
-          #   eval "${s3-deploy-command}"
-          # fi
-
-          # # s3-deploy-command="aws s3 sync ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}"
-          # s3-deploy-command="echo ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}"
-          # echo "s3-deploy-command=${s3-deploy-command}" >> "${GITHUB_OUTPUT}"
-
-          # if [[ "${{ inputs.print-deploy-command }}" = "true" ]]; then
-          #   echo "${s3-deploy-command}"
-          # else
-          #   eval "${s3-deploy-command}"
-          # fi
+          echo "Deploying to $s3_uri from $dist_dir with options: $s3_sync_options ..."
+          echo "print_deploy_command: $print_deploy_command"
