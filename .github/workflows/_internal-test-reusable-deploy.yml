@@ -3,7 +3,14 @@ run-name: ${{ github.workflow }} on ${{ github.ref_type }} ${{ github.ref_name }
 
 on:
   workflow_call:
-  workflow_diepatch:
+    inputs:
+      environment:
+        descritpion: |
+          Required input to set the environment to deploy.
+        required: false
+        type: string
+        default: "develop"
+  workflow_dispatch:
     inputs:
       environment:
         type: choice
