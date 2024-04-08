@@ -129,7 +129,7 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-      package: read
+      packages: read
     steps:
       - name: Setup Node.js and Install dependencies
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-npm-setup@main
