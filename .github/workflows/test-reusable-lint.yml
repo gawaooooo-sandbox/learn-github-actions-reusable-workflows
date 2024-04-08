@@ -15,8 +15,6 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
-    timeout-minutes: 10
     strategy:
       matrix:
         install-options: ["", "--no-audit --ignore-scripts"]
