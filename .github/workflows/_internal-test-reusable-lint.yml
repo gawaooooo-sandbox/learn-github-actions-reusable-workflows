@@ -19,6 +19,12 @@ defaults:
     working-directory: test
 
 jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: working-directory
+        run: |
+          echo "working-directory: $PWD"
   test-matrix:
     strategy:
       matrix:
