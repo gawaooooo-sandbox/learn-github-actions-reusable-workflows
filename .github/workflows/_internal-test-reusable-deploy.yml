@@ -87,7 +87,6 @@ jobs:
 
   exercise-matrix:
     needs: [setup]
-    timeout-minutes: 10
     permissions:
       contents: read
       packages: read
