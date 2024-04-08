@@ -51,6 +51,7 @@ jobs:
           if [ -f index.js ]; then
             cat index.js
           fi
+  # TODO: matrix test
   exercise:
     needs: [setup]
     uses: ./.github/workflows/reusable-deploy.yml
@@ -61,6 +62,7 @@ jobs:
       build-command: build
       build-environments: '{"TEST": "test", "PROD": "prod", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
       s3-uri: "s3://example-bucket"
+      print-deploy-command: true
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
@@ -68,3 +70,15 @@ jobs:
       contents: read
       packages: read
       id-token: write
+
+  verify:
+    needs: [exercise]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    env:
+      S3_DEPLOY_COMMAND: ${{ needs.exercise.outputs.s3-deploy-command }}
+    steps:
+      - name: Verify
+        run: |
+          set -x
+          echo "S3_DEPLOY_COMMAND: $S3_DEPLOY_COMMAND"

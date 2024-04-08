@@ -123,6 +123,23 @@ on:
         type: string
         default: "ap-northeast-1"
 
+      #  Deploy command print (Debug)
+      print-deploy-command:
+        description: |
+          Optional input to print the deploy command.
+          `true` -> not execute the deploy command
+          `false` -> execute the deploy command
+          **Note**: This is for debugging purposes. Do not set this to `true` in production.
+        required: false
+        type: boolean
+        default: false
+
+    outputs:
+      s3-deploy-command:
+        description: |
+          The command to deploy the build artifacts to the S3 URI.
+        value: ${{ jobs.deploy.outputs.s3-deploy-command }}
+
     secrets:
       node-auth-token:
         description: |
@@ -135,10 +152,6 @@ on:
         description: |
           Required secret to set the AWS IAM Role ARN to assume for the deployment.
         required: true
-
-concurrency:
-  group: reusable-deploy-${{ github.workflow }}-${{ github.ref }}-${{ inputs.checkout-ref}}-${{ inputs.environment}}
-  cancel-in-progress: true
 
 jobs:
   pre-processing:
@@ -161,6 +174,8 @@ jobs:
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
+    outputs:
+      s3-deploy-command: ${{ steps.deploy.outputs.s3-deploy-command }}
 
     steps:
       - name: Setup Node.js and Install dependencies
@@ -203,14 +218,24 @@ jobs:
           set -x
           npm run ${{ inputs.build-command }}
 
-      # - name: Setup AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     # role-to-assume: ${{ secrets.aws-role-arn }}
-      #     aws-region: ${{ inputs.s3-aws-region}}
+      - name: Setup AWS Credentials
+        if: ${{ inputs.print-deploy-command == 'false' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.aws-role-arn }}
+          aws-region: ${{ inputs.s3-aws-region}}
 
       - name: Deploy to ${{ inputs.environment }} [${{ inputs.s3-uri }}]
+        id: deploy
         run: |
           set -x
-          # aws s3 sync ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}
-          echo "aws s3 sync ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}"
+
+          # s3-deploy-command="aws s3 sync ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}"
+          s3-deploy-command="echo ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}"
+          echo "s3-deploy-command=${s3-deploy-command}" >> "${GITHUB_OUTPUT}"
+
+          if [ "${{ inputs.print-deploy-command }}" = "true" ]; then
+            echo "${s3-deploy-command}"
+          else
+            eval "${s3-deploy-command}"
+          fi
