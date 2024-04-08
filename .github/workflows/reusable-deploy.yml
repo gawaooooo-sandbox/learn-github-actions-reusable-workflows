@@ -236,13 +236,13 @@ jobs:
           use_aws="${{ inputs.use-aws }}"
 
           echo "Deploying to $s3_uri from $dist_dir with options: $s3_sync_options ..."
-          echo "use_aws: use_aws"
+          echo "use_aws: $use_aws"
 
           s3_deploy_command="aws s3 sync $dist_dir $s3_uri $s3_sync_options"
           # echo "path=${valid}" >> "${GITHUB_OUTPUT}" のように、s3_deploy_commandを出力する
           echo "s3-deploy-command=${s3_deploy_command}" >> "${GITHUB_OUTPUT}"
 
-          if [ "use_aws" = "true" ]; then
+          if [ "$use_aws" = "true" ]; then
             echo "Executing Deploy Command..."
             eval "$s3_deploy_command"
           else
