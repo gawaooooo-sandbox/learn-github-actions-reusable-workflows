@@ -236,14 +236,15 @@ jobs:
           set -x
 
           # s3-deploy-command="aws s3 sync $DIST_DIR $S3_URI $S3_SYNC_OPTIONS"
-          s3-deploy-command="echo $DIST_DIR $S3_URI $S3_SYNC_OPTIONS"
+          s3-deploy-command="echo$DIST_DIR $S3_URI $S3_SYNC_OPTIONS"
+          echo "${s3-deploy-command}"
           echo "s3-deploy-command=${s3-deploy-command}" >> "${GITHUB_OUTPUT}"
 
-          if [[ "${PRINT_DEPLOY_COMMAND}" = "true" ]]; then
-            echo "${s3-deploy-command}"
-          else
-            eval "${s3-deploy-command}"
-          fi
+          # if [[ "${PRINT_DEPLOY_COMMAND}" = "true" ]]; then
+          #   echo "${s3-deploy-command}"
+          # else
+          #   eval "${s3-deploy-command}"
+          # fi
 
           # # s3-deploy-command="aws s3 sync ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}"
           # s3-deploy-command="echo ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}"
