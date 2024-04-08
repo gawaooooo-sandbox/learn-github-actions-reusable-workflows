@@ -11,7 +11,7 @@ GitHub Actions で デプロイを行うための再利用可能なワークフ�
 | environment | <pre>Required input to set the environment to deploy.</pre> | `string` | n/a | yes |
 | s3-uri | <pre>Required input to set the S3 URI to deploy the build artifacts.</pre> | `string` | n/a | yes |
 | build-command | <pre>Optional input to set the build command to run.<br>`npm run build` -> `build`<br>`npm run generate` -> `generate` (default)</pre> | `string` | `generate` | no |
-| build-environments | <pre>Optional input to set the environment variables to set for the build command.<br>This needs to be specified in JSON string format.<br>e.g. `'{"BASE_URL": "https://example.com"}'`</pre> | `string` | `{}` | no |
+| build-environments | <pre>Optional input to set the environment variables to set for the build command.<br>'Environment variables in json array (e.g., ["BASE_URL=http://example.com", "SERVICE=app"])'</pre> | `string` | `[]` | no |
 | checkout-ref | <pre>Optional input to set the ref to checkout.<br>The input syntax corresponds to the actions/checkout's one.</pre> | `string` | `${{ github.head_ref }}` | no |
 | dist-dir | <pre>Optional input to set the directory to deploy.</pre> | `string` | `./dist` | no |
 | node-caching | <pre>Optional input to set up caching for the setup-node action.<br>The input syntax corresponds to the setup-node's one.<br>Set to an empty string if caching isn't needed.</pre> | `string` | `npm` | no |
