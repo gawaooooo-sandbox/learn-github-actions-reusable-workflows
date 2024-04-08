@@ -11,7 +11,7 @@ on:
   workflow_call:
     inputs:
       environment:
-        descritpion: |
+        description: |
           Required input to set the environment to deploy.
         required: true
         type: string
@@ -99,7 +99,7 @@ on:
         required: true
 
 concurrency:
-  group: reusable-deploy-${{ github.workflow }}-${{ github.ref }}-${{ inputs.checkout-ref}}-${{ inpouts.environment}}
+  group: reusable-deploy-${{ github.workflow }}-${{ github.ref }}-${{ inputs.checkout-ref}}-${{ inputs.environment}}
   cancel-in-progress: true
 
 jobs:
