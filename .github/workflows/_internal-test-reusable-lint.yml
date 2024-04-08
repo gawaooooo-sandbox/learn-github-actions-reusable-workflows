@@ -1,0 +1,70 @@
+name: Test for reusable-lint
+run-name: ${{ github.workflow }} on ${{ github.ref_type }} ${{ github.ref_name }} [${{ github.sha }}]
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/reusable-lint.yml
+      - .github/workflows/_internal-test-reusable-lint.yml
+
+concurrency:
+  group: test-reusable-lint-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+    working-directory: test
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: working-directory
+        run: |
+          echo "working-directory: $PWD"
+          ls -la
+
+  test-matrix:
+    needs: [test]
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      matrix:
+        install-options: ["", "--no-audit --ignore-scripts"]
+        include:
+          - install-options: ""
+            lint-script: "npm run test"
+            checkout-ref: ${{ github.ref }}
+          - install-options: "--no-audit --ignore-scripts"
+            lint-script: "npm run test && npm run test:script"
+            checkout-ref: ${{ github.head_ref}}
+    uses: ./.github/workflows/reusable-lint.yml
+    with:
+      install-options: ${{ matrix.install-options }}
+      lint-script: ${{ matrix.lint-script }}
+      checkout-ref: ${{ matrix.checkout-ref }}
+      working-directory: test
+      node-version-file: test/package.json
+
+  test-with-token:
+    needs: [test]
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/reusable-lint.yml
+    with:
+      enable-format-check: true
+      working-directory: test
+      node-version-file: test/package.json
+    secrets:
+      node-auth-token: ${{ secrets.GITHUB_TOKEN }}

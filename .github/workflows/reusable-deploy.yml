@@ -1,0 +1,249 @@
+# deploy flow
+# checkout code
+# setup node.js
+# install dependencies
+# build
+# deploy
+
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: |
+          Optional input to set the working directory.
+        required: false
+        type: string
+        default: "."
+
+      environment:
+        description: |
+          Required input to set the environment to deploy.
+        required: true
+        type: string
+
+      # Set up Node.js  & install dependencies inputs
+      node-version:
+        description: |
+          Optional input to set the version of Node.js used to build the project.
+          The input syntax corresponds to the setup-node's one.
+        required: false
+        type: string
+
+      node-version-file:
+        description: |
+          Optional input to set the file that contains the version of Node.js used to build the project.
+          The input syntax corresponds to the setup-node's one.
+        required: false
+        type: string
+        default: ".nvmrc"
+
+      node-caching:
+        description: |
+          Optional input to set up caching for the setup-node action.
+          The input syntax corresponds to the setup-node's one.
+          Set to an empty string if caching isn't needed.
+        required: false
+        type: string
+        default: "npm"
+
+      npm-registry-url:
+        description: |
+          Optional input to set the registry URL to use for the npm commands.
+          The input syntax corresponds to the setup-node's one.
+          When using GitHub Packages, specify `https://npm.pkg.github.com`
+        required: false
+        type: string
+
+      npm-scope:
+        description: |
+          Optional input to set the scope to use for the npm commands.
+          The input syntax corresponds to the setup-node's one.
+          `hoge package` -> `@hoge`
+          GitHub Packages -> `@owner` (use `github.repository_owner`)
+        required: false
+        type: string
+
+      checkout-ref:
+        description: |
+          Optional input to set the ref to checkout.
+          The input syntax corresponds to the actions/checkout's one.
+        required: false
+        type: string
+        # TODO: github.ref?
+        default: ${{ github.head_ref }}
+
+      npm-install-options:
+        description: |
+          Optional input to set the options to pass to the `npm ci` command.
+        required: false
+        type: string
+
+      # Build inputs
+      build-command:
+        description: |
+          Optional input to set the build command to run.
+          `npm run build` -> `build`
+          `npm run generate` -> `generate` (default)
+        required: false
+        type: string
+        default: "generate"
+      build-environments:
+        description: |
+          Optional input to set the environment variables to set for the build command.
+          This needs to be specified in JSON string format.
+          e.g. `'{"BASE_URL": "https://example.com"}'`
+        required: false
+        type: string
+        default: "{}"
+
+      # Deploy inputs
+      s3-uri:
+        description: |
+          Required input to set the S3 URI to deploy the build artifacts.
+        required: true
+        type: string
+      dist-dir:
+        description: |
+          Optional input to set the directory to deploy.
+        required: false
+        type: string
+        default: "./dist"
+      s3-sync-options:
+        description: |
+          Optional input to set the options to pass to the `aws s3 sync` command.
+          e.g. `-delete --exclude "hoge/*"`
+        required: false
+        type: string
+      s3-aws-region:
+        description: |
+          Optional input to set the AWS region to deploy the build artifacts.
+        required: false
+        type: string
+        default: "ap-northeast-1"
+
+      #  Set up AWS credentials inputs & s3 sync
+      use-aws:
+        description: |
+          Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.
+          `true` -> use AWS credentials and deploy the build artifacts to the S3 URI
+          `false` -> print the command to deploy the build artifacts to the S3 URI
+        required: false
+        type: boolean
+        default: true
+
+    outputs:
+      s3-deploy-command:
+        description: |
+          The command to deploy the build artifacts to the S3 URI.
+        value: ${{ jobs.deploy.outputs.s3-deploy-command }}
+
+    secrets:
+      node-auth-token:
+        description: |
+          Optional secret to set the authentication token to use for the npm commands.
+          The input syntax corresponds to the setup-node's one.
+          When using GitHub Packages, specify `secrets.GITHUB_TOKEN`
+          When using npm, specify `secrets.NPM_AUTH_TOKEN`
+        required: false
+      aws-role-arn:
+        description: |
+          Required secret to set the AWS IAM Role ARN to assume for the deployment.
+        required: true
+
+jobs:
+  pre-processing:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - name: create inputs summary
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@main
+        with:
+          workflow-inputs: ${{ toJSON(inputs) }}
+
+  deploy:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: read
+      id-token: write
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    outputs:
+      s3-deploy-command: ${{ steps.deploy.outputs.s3-deploy-command }}
+
+    steps:
+      - name: Setup Node.js and Install dependencies
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-npm-setup@main
+        with:
+          node-version: ${{ inputs.node-version }}
+          node-version-file: ${{ inputs.node-version-file }}
+          node-caching: ${{ inputs.node-caching }}
+          npm-registry-url: ${{ inputs.npm-registry-url }}
+          npm-scope: ${{ inputs.npm-scope }}
+          node-auth-token: ${{ secrets.node-auth-token }}
+          checkout-ref: ${{ inputs.checkout-ref }}
+          npm-install-options: ${{ inputs.npm-install-options }}
+          create-inputs-summary: "true"
+
+      - name: Set Environment to process.env
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // env で inputs.build-environmentsを受け取る
+            const buildEnvironments = process.env.BUILD_ENVIRONMENTS;
+            console.log(buildEnvironments);
+
+            // buildEnvironments が string の場合はJSON.parseする
+            const buildEnvironmentsObj = typeof buildEnvironments === 'string' ? JSON.parse(buildEnvironments) : buildEnvironments;
+            console.log(buildEnvironmentsObj);
+
+            // buildEnvironmentsObj を core.exportVariable で環境変数にセットする
+            for (const [key, value] of Object.entries(buildEnvironmentsObj)) {
+              core.exportVariable(key, value);
+            }
+
+            console.log('---- process.env');
+            console.log(process.env);
+        env:
+          BUILD_ENVIRONMENTS: ${{ inputs.build-environments }}
+
+      - name: Build ${{ inputs.environment }}
+        run: |
+          set -x
+          npm run ${{ inputs.build-command }}
+
+      - name: Setup AWS Credentials
+        if: ${{ inputs.use-aws }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.aws-role-arn }}
+          aws-region: ${{ inputs.s3-aws-region}}
+
+      - name: Deploy to ${{ inputs.environment }} [${{ inputs.s3-uri }}]
+        id: deploy
+        run: |
+          set -x
+
+          s3_uri="${{ inputs.s3-uri }}"
+          dist_dir="${{ inputs.dist-dir }}"
+          s3_sync_options="${{ inputs.s3-sync-options }}"
+          use_aws="${{ inputs.use-aws }}"
+
+          echo "Deploying to $s3_uri from $dist_dir with options: $s3_sync_options ..."
+          echo "use_aws: $use_aws"
+
+          s3_deploy_command="aws s3 sync $dist_dir $s3_uri $s3_sync_options"
+          # echo "path=${valid}" >> "${GITHUB_OUTPUT}" のように、s3_deploy_commandを出力する
+          echo "s3-deploy-command=${s3_deploy_command}" >> "${GITHUB_OUTPUT}"
+
+          if [ "$use_aws" = "true" ]; then
+            echo "Executing Deploy Command..."
+            eval "$s3_deploy_command"
+          else
+            echo "Deploy Command: $s3_deploy_command"
+          fi

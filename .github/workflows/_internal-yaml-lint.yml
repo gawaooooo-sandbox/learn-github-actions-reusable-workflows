@@ -1,0 +1,22 @@
+# @see https://zenn.dev/tmknom/books/pragmatic-composite-action/viewer/lint
+name: Internal Lint (YAML)
+run-name: ${{ github.workflow }}
+
+on:
+  pull_request:
+    paths: ["**.yml", "**.yaml"]
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call:
+    uses: ./.github/workflows/reusable-yaml-lint.yml
+    permissions:
+      contents: read

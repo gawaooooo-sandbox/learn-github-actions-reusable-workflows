@@ -1,12 +1,10 @@
-# reusable workflow の ドキュメントを生成する
-name: Generate actions / reusable workflow docs
+name: Generate reusable workflow docs
 run-name: ${{ github.workflow }}
 
 on:
   pull_request:
     paths:
       - ".github/workflows/reusable-*.yml"
-      - ".github/actions/**/action.yml"
 permissions:
   contents: write
 defaults:
@@ -24,12 +22,18 @@ jobs:
           [
             .github/workflows/reusable-lint.yml,
             .github/workflows/reusable-make-wf-docs.yml,
+            .github/workflows/reusable-deploy.yml,
+            .github/workflows/reusable-yaml-lint.yml,
           ]
         include:
           - yaml-file: .github/workflows/reusable-lint.yml
             markdown-file: docs/reusable-lint.md
           - yaml-file: .github/workflows/reusable-make-wf-docs.yml
             markdown-file: docs/reusable-make-wf-docs.md
+          - yaml-file: .github/workflows/reusable-deploy.yml
+            markdown-file: docs/reusable-deploy.md
+          - yaml-file: .github/workflows/reusable-yaml-lint.yml
+            markdown-file: docs/reusable-yaml-lint.md
     uses: ./.github/workflows/reusable-make-wf-docs.yml
     with:
       yaml-file: ${{ matrix.yaml-file }}

@@ -1,0 +1,136 @@
+name: Test for reusable-deploy
+run-name: ${{ github.workflow }} on ${{ github.ref_type }} ${{ github.ref_name }} [${{ github.sha }}]
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: |
+          Required input to set the environment to deploy.
+        required: false
+        type: string
+        default: "develop"
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        required: true
+        description: "Choose the environment"
+        default: "develop"
+        options:
+          - develop
+          - prod
+  pull_request:
+    paths:
+      - .github/workflows/reusable-deploy.yml
+      - .github/workflows/_internal-test-reusable-deploy.yml
+
+concurrency:
+  group: test-reusable-deploy-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+    working-directory: test
+
+jobs:
+  setup:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        run: |
+          set -x
+          pwd
+          ls -lah
+
+          if [ -f index.js ]; then
+            cat index.js
+          fi
+  exercise:
+    needs: [setup]
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      working-directory: test
+      environment: ${{ inputs.environment }}
+      node-version-file: test/package.json
+      build-command: build
+      build-environments: '{"TEST_CONFIG": "test", "PROD": "prod", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+      s3-uri: "s3://example-bucket"
+      use-aws: false
+    secrets:
+      node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+    permissions:
+      contents: read
+      packages: read
+      id-token: write
+
+  verify:
+    needs: [exercise]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    env:
+      S3_DEPLOY_COMMAND: ${{ needs.exercise.outputs.s3-deploy-command }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify
+        run: |
+          set -x
+          echo "S3_DEPLOY_COMMAND: $S3_DEPLOY_COMMAND"
+
+  exercise-matrix:
+    needs: [setup]
+    permissions:
+      contents: read
+      packages: read
+      id-token: write
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        environment: [develop, prod]
+        include:
+          - environment: develop
+            npm-registry-url: https://npm.pkg.github.com
+            npm-scope: "@${{ github.repository_owner }}"
+            checkout-ref: ${{ github.head_ref }}
+            npm-install-options: "--no-audit --if-presets"
+            build-command: build
+            build-environments: '{"TEST_CONFIG": "develop test", "PROD": "false", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+            dist-dir: ./dist
+            s3-uri: "s3://example-bucket"
+            s3-sync-options: "--delete --dryrun --exclude '*.json'"
+            use-aws: false
+          - environment: prod
+            build-command: generate
+            checkout-ref: ${{ github.ref }}
+            build-environments: '{"TEST_CONFIG": "production test", "PROD": "true", "BASE_URL": "https://example.com/prod", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+            dist-dir: ./outputs/public
+            s3-uri: "s3://example-prod-bucket"
+            s3-sync-options: "--delete --dryrun --exclude 'node_modules/*'"
+            use-aws: false
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      working-directory: test
+      environment: ${{ matrix.environment }}
+      node-version-file: test/package.json
+      build-command: ${{ matrix.build-command }}
+      dist-dir: ${{ matrix.dist-dir }}
+      s3-sync-options: ${{ matrix.s3-sync-options }}
+      npm-registry-url: ${{ matrix.npm-registry-url }}
+      npm-scope: ${{ matrix.npm-scope }}
+      checkout-ref: ${{ matrix.checkout-ref }}
+      npm-install-options: ${{ matrix.npm-install-options }}
+      build-environments: ${{ matrix.build-environments }}
+      s3-uri: ${{ matrix.s3-uri }}
+      use-aws: ${{ matrix.use-aws }}
+    secrets:
+      node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}

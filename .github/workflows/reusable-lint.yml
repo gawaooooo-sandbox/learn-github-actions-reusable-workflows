@@ -3,6 +3,13 @@ name: Lint code
 on:
   workflow_call:
     inputs:
+      working-directory:
+        description: |
+          Optional input to set the working directory.
+        required: false
+        type: string
+        default: "."
+
       node-version:
         description: |
           Optional input to set the version of Node.js used to build the project.
@@ -41,15 +48,6 @@ on:
           The input syntax corresponds to the setup-node's one.
           `hoge package` -> `@hoge`
           GitHub Packages -> `@owner` (use `github.repository_owner`)
-        required: false
-        type: string
-
-      node-auth-token:
-        description: |
-          Optional input to set the authentication token to use for the npm commands.
-          The input syntax corresponds to the setup-node's one.
-          When using GitHub Packages, specify `secrets.GITHUB_TOKEN`
-          When using npm, specify `secrets.NPM_AUTH_TOKEN`
         required: false
         type: string
 
@@ -110,12 +108,19 @@ on:
         type: string
         default: "npm run type-check"
 
+    secrets:
+      node-auth-token:
+        description: |
+          Optional secret to set the authentication token to use for the npm commands.
+          The input syntax corresponds to the setup-node's one.
+          When using GitHub Packages, specify `secrets.GITHUB_TOKEN`
+          When using npm, specify `secrets.NPM_AUTH_TOKEN`
+        required: false
+
 jobs:
   pre-processing:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
-    permissions:
-      contents: read
     steps:
       - name: create inputs summary
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@main
@@ -127,6 +132,10 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
+      packages: read
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
 
     steps:
       - name: Setup Node.js and Install dependencies
@@ -137,19 +146,25 @@ jobs:
           node-caching: ${{ inputs.node-caching }}
           npm-registry-url: ${{ inputs.npm-registry-url }}
           npm-scope: ${{ inputs.npm-scope }}
-          node-auth-token: ${{ inputs.node-auth-token }}
+          node-auth-token: ${{ secrets.node-auth-token }}
           checkout-ref: ${{ inputs.checkout-ref }}
           npm-install-options: ${{ inputs.install-options }}
           create-inputs-summary: "true"
 
       - name: Run format check
         if: ${{ inputs.enable-format-check }}
-        run: ${{ inputs.format-check-script }}
+        run: |
+          set -x
+          ${{ inputs.format-check-script }}
 
       - name: Run linter
         if: ${{ inputs.enable-lint }}
-        run: ${{ inputs.lint-script }}
+        run: |
+          set -x
+          ${{ inputs.lint-script }}
 
       - name: Run type check
         if: ${{ inputs.enable-type-check }}
-        run: ${{ inputs.typecheck-script }}
+        run: |
+          set -x
+          ${{ inputs.typecheck-script }}
