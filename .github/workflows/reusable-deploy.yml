@@ -202,9 +202,6 @@ jobs:
             console.log('---- process.env');
             console.log(process.env);
 
-            console.log('---- GITHUB_ENV');
-            console.log($GITHUB_ENV);
-
       - name: Build ${{ inputs.environment }}
         run: |
           set -x
