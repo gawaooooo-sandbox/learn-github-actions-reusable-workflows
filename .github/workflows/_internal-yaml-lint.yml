@@ -18,7 +18,7 @@ concurrency:
 jobs:
   call:
     uses: ./.github/workflows/reusable-yaml-lint.yml
-    permission:
+    permissions:
       contents: read
   # lint:
   #   runs-on: ubuntu-22.04
