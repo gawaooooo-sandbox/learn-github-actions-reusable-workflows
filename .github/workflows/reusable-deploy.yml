@@ -144,6 +144,7 @@ jobs:
 
       - name: Build ${{ inputs.environment }}
         run: |
+          set -x
           echo "Build command: ${{ inputs.build-command }}"
           echo "Build environments: ${{ inputs.build-environments }}"
           npm run ${{ inputs.build-command }}
