@@ -21,6 +21,7 @@ GitHub Actions で 静的解析・フォーマットチェック・型チェッ�
 | npm-registry-url | <pre>Optional input to set the registry URL to use for the npm commands.<br>The input syntax corresponds to the setup-node's one.<br>When using GitHub Packages, specify `https://npm.pkg.github.com`</pre> | `string` | n/a | no |
 | npm-scope | <pre>Optional input to set the scope to use for the npm commands.<br>The input syntax corresponds to the setup-node's one.<br>`hoge package` -> `@hoge`<br>GitHub Packages -> `@owner` (use `github.repository_owner`)</pre> | `string` | n/a | no |
 | typecheck-script | <pre>Optional input to set the script to run the type check.</pre> | `string` | `npm run type-check` | no |
+| working-directory | <pre>Optional input to set the working directory.</pre> | `string` | `.` | no |
 
 ## Secrets
 
