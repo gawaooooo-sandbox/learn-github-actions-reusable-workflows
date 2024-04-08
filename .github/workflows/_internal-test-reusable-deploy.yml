@@ -1,0 +1,62 @@
+name: Test for reusable-deploy
+run-name: ${{ github.workflow }} on ${{ github.ref_type }} ${{ github.ref_name }} [${{ github.sha }}]
+
+on:
+  workflow_call:
+  workflow_diepatch:
+    inputs:
+      environment:
+        type: choice
+        required: true
+        description: "Choose the environment"
+        default: "develop"
+        options:
+          - develop
+          - prod
+  pull_request:
+    paths:
+      - .github/workflows/reusable-deploy.yml
+      - .github/workflows/_internal-test-reusable-deploy.yml
+
+concurrency:
+  group: test-reusable-deploy-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        run: |
+          echo "Setting up..."
+          pwd
+
+          # Create a temporary directory
+          TEST_TEMP_DIR="${RUNNER_TEMP}/test"
+          mkdir -p "${TEST_TEMP_DIR}"
+          la -lah
+          cd "${TEST_TEMP_DIR}"
+
+          # Create test js file to TEST_TEMP_DIR
+          echo "console.log('Hello, World!');" > test.js
+          pwd
+          la -lah
+  exercise:
+    needs: [test]
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      environment: ${{ inputs.environment }}
+      build-command: build
+      build-environments: "{'TEST': 123, 'BASE_URL': 'http://example.com'}"
+    secrets:
+      node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: read
+      packages: read
+      id-token: write
