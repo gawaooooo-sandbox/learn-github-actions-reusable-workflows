@@ -177,7 +177,7 @@ jobs:
           echo "env BUILD_ENVIRONMENTS: fromJSON: ${{ fromJSON(env.BUILD_ENVIRONMENTS) }}"
 
           BUILD_ENVIRONMENTS="${{ env.BUILD_ENVIRONMENTS }}"
-          jq -r 'to_entries[] | "\(.key)=\(.value)"' <<< "BUILD_ENVIRONMENTS" >> $GITHUB_ENV
+          jq -r 'to_entries[] | "\(.key)=\(.value)"' <<< "$BUILD_ENVIRONMENTS" >> "$GITHUB_ENV"
 
         env:
           BUILD_ENVIRONMENTS: ${{ inputs.build-environments }}
