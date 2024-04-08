@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "format:check": "npx prettier --parser=\"yaml\" --check \"**/*.y*ml\"",
-    "format:fix": "npx prettier --parser=\"yaml\" --write \"**/*.y*ml\"",
+    "format:check": "npx prettier --parser=\"yaml\" --check --no-error-on-unmatched-pattern \"**/*.y*ml\"",
+    "format:fix": "npx prettier --parser=\"yaml\" --write --no-error-on-unmatched-pattern \"**/*.y*ml\"",
     "test": "echo \"call test (test directory) \"",
     "test:script": "npm run format:check",
     "lint": "echo \"call lint  (test directory) \"",
