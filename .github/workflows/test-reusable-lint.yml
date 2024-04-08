@@ -30,3 +30,6 @@ jobs:
       install-options: ${{ matrix.install-options }}
       lint-script: ${{ matrix.lint-script }}
       checkout-ref: ${{ matrix.checkout-ref }}
+    permission:
+      contents: read
+      packages: read
