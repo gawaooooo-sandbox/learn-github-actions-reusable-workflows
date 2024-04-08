@@ -24,6 +24,30 @@ on:
         type: string
 
       # Set up Node.js  & install dependencies inputs
+      node-version:
+        description: |
+          Optional input to set the version of Node.js used to build the project.
+          The input syntax corresponds to the setup-node's one.
+        required: false
+        type: string
+
+      node-version-file:
+        description: |
+          Optional input to set the file that contains the version of Node.js used to build the project.
+          The input syntax corresponds to the setup-node's one.
+        required: false
+        type: string
+        default: ".nvmrc"
+
+      node-caching:
+        description: |
+          Optional input to set up caching for the setup-node action.
+          The input syntax corresponds to the setup-node's one.
+          Set to an empty string if caching isn't needed.
+        required: false
+        type: string
+        default: "npm"
+
       npm-registry-url:
         description: |
           Optional input to set the registry URL to use for the npm commands.
