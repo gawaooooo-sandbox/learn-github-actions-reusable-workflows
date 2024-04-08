@@ -22,7 +22,7 @@ GitHub Actions で デプロイを行うための再利用可能なワークフ�
 | npm-scope | <pre>Optional input to set the scope to use for the npm commands.<br>The input syntax corresponds to the setup-node's one.<br>`hoge package` -> `@hoge`<br>GitHub Packages -> `@owner` (use `github.repository_owner`)</pre> | `string` | n/a | no |
 | s3-aws-region | <pre>Optional input to set the AWS region to deploy the build artifacts.</pre> | `string` | `ap-northeast-1` | no |
 | s3-sync-options | <pre>Optional input to set the options to pass to the `aws s3 sync` command.<br>e.g. `-delete --exclude "hoge/*"`</pre> | `string` | n/a | no |
-| use-aws | <pre>Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.<br>`true` -> use AWS credentials and deploy the build artifacts to the S3 URI<br>`false` -> print the command to deploy the build artifacts to the S3 URI<br>**Note**: When using `false`, the deployment won't be executed.</pre> | `boolean` | `true` | no |
+| use-aws | <pre>Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.<br>`true` -> use AWS credentials and deploy the build artifacts to the S3 URI<br>`false` -> print the command to deploy the build artifacts to the S3 URI</pre> | `boolean` | `true` | no |
 | working-directory | <pre>Optional input to set the working directory.</pre> | `string` | `.` | no |
 
 ## Secrets
