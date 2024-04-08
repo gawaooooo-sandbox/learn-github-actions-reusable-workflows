@@ -116,6 +116,12 @@ on:
           e.g. `-delete --exclude "hoge/*"`
         required: false
         type: string
+      s3-aws-region:
+        description: |
+          Optional input to set the AWS region to deploy the build artifacts.
+        required: false
+        type: string
+        default: "ap-northeast-1"
 
     secrets:
       node-auth-token:
@@ -197,7 +203,14 @@ jobs:
           set -x
           npm run ${{ inputs.build-command }}
 
-      # - name: deploy
-      #   run: aws s3 sync ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}
-      #   env:
-      #     AWS_S3_DEPLOY_ROLE_ARN: ${{ secrets.AWS_S3_DEPLOY_ROLE_ARN }}
+      - name: Setup AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # role-to-assume: ${{ secrets.aws-role-arn }}
+          aws-region: ${{ inputs.s3-aws-region}}
+
+      - name: deploy
+        run: |
+          set -x
+          # aws s3 sync ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}
+          echo "aws s3 sync ${{ inputs.dist-dir }} ${{ inputs.s3-uri }} ${{ inputs.s3-sync-options }}"

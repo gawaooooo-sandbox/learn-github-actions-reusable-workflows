@@ -57,10 +57,10 @@ jobs:
     with:
       working-directory: test
       environment: ${{ inputs.environment }}
+      node-version-file: test/package.json
       build-command: build
       build-environments: '{"TEST": "test", "PROD": "prod", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
       s3-uri: "s3://example-bucket"
-      node-version-file: test/package.json
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
