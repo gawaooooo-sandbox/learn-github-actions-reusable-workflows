@@ -27,6 +27,10 @@ jobs:
       - name: working-directory
         run: |
           echo "working-directory: $PWD"
+          ls -la
+    permissions:
+      contents: read
+      packages: read
   test-matrix:
     needs: [test]
     strategy:
