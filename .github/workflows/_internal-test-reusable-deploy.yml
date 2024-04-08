@@ -5,7 +5,7 @@ on:
   workflow_call:
     inputs:
       environment:
-        descritpion: |
+        description: |
           Required input to set the environment to deploy.
         required: false
         type: string
@@ -34,7 +34,9 @@ defaults:
     shell: bash
 
 jobs:
-  test:
+  setup:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,8 +63,10 @@ jobs:
       environment: ${{ inputs.environment }}
       build-command: build
       build-environments: "{'TEST': 123, 'BASE_URL': 'http://example.com'}"
+      s3-uri: "s3://example-bucket"
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
     permissions:
       contents: read
       packages: read
