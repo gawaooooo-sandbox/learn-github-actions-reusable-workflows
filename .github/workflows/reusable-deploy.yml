@@ -169,18 +169,41 @@ jobs:
           npm-install-options: ${{ inputs.npm-install-options }}
           create-inputs-summary: "true"
 
-      - name: Set Environments to GITHUB_ENV
-        run: |
-          set -x
-          echo "Inputs Build environments: ${{ inputs.build-environments }}"
-          echo "env BUILD_ENVIRONMENTS: ${{ env.BUILD_ENVIRONMENTS}}"
-          echo "env BUILD_ENVIRONMENTS: fromJSON: ${{ fromJSON(env.BUILD_ENVIRONMENTS) }}"
+      # - name: Set Environments to GITHUB_ENV
+      #   run: |
+      #     set -x
+      #     echo "Inputs Build environments: ${{ inputs.build-environments }}"
+      #     echo "env BUILD_ENVIRONMENTS: ${{ env.BUILD_ENVIRONMENTS}}"
+      #     echo "env BUILD_ENVIRONMENTS: fromJSON: ${{ fromJSON(env.BUILD_ENVIRONMENTS) }}"
 
-          BUILD_ENVIRONMENTS="${{ env.BUILD_ENVIRONMENTS }}"
-          jq -r 'to_entries[] | "\(.key)=\(.value)"' <<< "$BUILD_ENVIRONMENTS" >> "$GITHUB_ENV"
+      #     BUILD_ENVIRONMENTS="${{ env.BUILD_ENVIRONMENTS }}"
+      #     jq -r 'to_entries[] | "\(.key)=\(.value)"' <<< "$BUILD_ENVIRONMENTS" >> "$GITHUB_ENV"
 
-        env:
-          BUILD_ENVIRONMENTS: ${{ inputs.build-environments }}
+      #   env:
+      #     BUILD_ENVIRONMENTS: ${{ inputs.build-environments }}
+
+      - name: Set Environment to GITHUB_ENV
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // env で inputs.build-environmentsを受け取る
+            const buildEnvironments = ${{ inputs.build-environments }};
+            console.log(buildEnvironments);
+
+            // buildEnvironments が string の場合はJSON.parseする
+            const buildEnvironmentsObj = typeof buildEnvironments === 'string' ? JSON.parse(buildEnvironments) : buildEnvironments;
+            console.log(buildEnvironmentsObj);
+
+            // buildEnvironmentsObj を GITHUB_ENV にセットする
+            for (const [key, value] of Object.entries(buildEnvironmentsObj)) {
+              process.env[key] = value;
+            }
+
+            console.log('---- process.env');
+            console.log(process.env);
+
+            console.log('---- GITHUB_ENV');
+            console.log($GITHUB_ENV);
 
       - name: Build ${{ inputs.environment }}
         run: |
