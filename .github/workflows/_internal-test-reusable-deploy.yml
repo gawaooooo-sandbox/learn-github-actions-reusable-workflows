@@ -92,6 +92,8 @@ jobs:
       packages: read
       id-token: write
     strategy:
+      max-parallel: 2
+      fail-fast: false
       matrix:
         environment: [develop, prod]
         build-command: [build, generate]
