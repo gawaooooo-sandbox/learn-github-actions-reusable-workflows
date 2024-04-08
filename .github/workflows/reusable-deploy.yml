@@ -159,6 +159,9 @@ jobs:
       - name: Setup Node.js and Install dependencies
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-npm-setup@main
         with:
+          node-version: ${{ inputs.node-version }}
+          node-version-file: ${{ inputs.node-version-file }}
+          node-caching: ${{ inputs.node-caching }}
           npm-registry-url: ${{ inputs.npm-registry-url }}
           npm-scope: ${{ inputs.npm-scope }}
           node-auth-token: ${{ secrets.node-auth-token }}
