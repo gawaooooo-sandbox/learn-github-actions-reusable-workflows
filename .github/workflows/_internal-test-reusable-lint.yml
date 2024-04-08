@@ -22,10 +22,13 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: working-directory
         run: |
           echo "working-directory: $PWD"
   test-matrix:
+    needs: [test]
     strategy:
       matrix:
         install-options: ["", "--no-audit --ignore-scripts"]
@@ -46,6 +49,7 @@ jobs:
       packages: read
 
   test-with-token:
+    needs: [test]
     uses: ./.github/workflows/reusable-lint.yml
     with:
       enable-format-check: true
