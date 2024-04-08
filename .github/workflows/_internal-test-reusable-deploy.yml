@@ -51,7 +51,6 @@ jobs:
           if [ -f index.js ]; then
             cat index.js
           fi
-  # TODO: matrix test
   exercise:
     needs: [setup]
     uses: ./.github/workflows/reusable-deploy.yml
@@ -85,3 +84,50 @@ jobs:
         run: |
           set -x
           echo "S3_DEPLOY_COMMAND: $S3_DEPLOY_COMMAND"
+
+  exercise-matrix:
+    needs: [setup]
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
+      id-token: write
+    strategy:
+      matrix:
+        environment: [develop, prod]
+        build-command: [build, generate]
+        dist-dir: [./dist, ./outputs/public]
+        include:
+          - environment: develop
+            npm-registry-url: https://npm.pkg.github.com
+            npm-scope: "@${{ github.repository_owner }}"
+            checkout-ref: ${{ github.head_ref }}
+            npm-install-options: "--no-audit --if-presets"
+            build-environments: '{"TEST_CONFIG": "develop test", "PROD": "false", "BASE_URL": "https://example.com", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+            s3-uri: "s3://example-bucket"
+            s3-sync-options: "--delete --dry-run --exclude '*.json'"
+            print-deploy-command: true
+          - environment: prod
+            build-command: generate
+            checkout-ref: ${{ github.ref }}
+            build-environments: '{"TEST_CONFIG": "production test", "PROD": "true", "BASE_URL": "https://example.com/prod", "TEST_VAR": "${{ vars.TEST_VAR }}"}'
+            s3-uri: "s3://example-prod-bucket"
+            s3-sync-options: "--delete --dry-run --exclude 'node_modules/*'"
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      working-directory: test
+      environment: ${{ matrix.environment }}
+      node-version-file: test/package.json
+      build-command: ${{ matrix.build-command }}
+      dist-dir: ${{ matrix.dist-dir }}
+      s3-sync-options: ${{ matrix.s3-sync-options }}
+      npm-registry-url: ${{ matrix.npm-registry-url }}
+      npm-scope: ${{ matrix.npm-scope }}
+      checkout-ref: ${{ matrix.checkout-ref }}
+      npm-install-options: ${{ matrix.npm-install-options }}
+      build-environments: ${{ matrix.build-environments }}
+      s3-uri: ${{ matrix.s3-uri }}
+      print-deploy-command: ${{ matrix.print-deploy-command }}
+    secrets:
+      node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
