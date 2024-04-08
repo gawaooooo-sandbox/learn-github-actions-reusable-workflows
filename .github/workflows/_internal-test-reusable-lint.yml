@@ -29,15 +29,12 @@ jobs:
           - install-options: "--no-audit --ignore-scripts"
             lint-script: "npm run test && npm run test:script"
             checkout-ref: ${{ github.head_ref}}
-            node-auth-token: ${{ env.GITHUB_TOKEN }}
     uses: ./.github/workflows/reusable-lint.yml
     with:
       install-options: ${{ matrix.install-options }}
       lint-script: ${{ matrix.lint-script }}
       checkout-ref: ${{ matrix.checkout-ref }}
-      node-auth-token: ${{ matrix.node-auth-token }}
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      node-auth-token: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: read
       packages: read
