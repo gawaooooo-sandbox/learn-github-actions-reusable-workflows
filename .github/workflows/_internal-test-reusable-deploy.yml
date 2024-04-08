@@ -45,12 +45,11 @@ jobs:
       - name: Setup
         run: |
           set -x
-          echo "Working directory is ${{ github.workspace }}"
           pwd
           ls -lah
 
-          if [ -f test.js ]; then
-            cat test.js
+          if [ -f index.js ]; then
+            cat index.js
           fi
   exercise:
     needs: [setup]
