@@ -237,3 +237,14 @@ jobs:
 
           echo "Deploying to $s3_uri from $dist_dir with options: $s3_sync_options ..."
           echo "print_deploy_command: $print_deploy_command"
+
+          s3_deploy_command="aws s3 sync $dist_dir $s3_uri $s3_sync_options"
+          # echo "path=${valid}" >> "${GITHUB_OUTPUT}" のように、s3_deploy_commandを出力する
+          echo "s3-deploy-command=${s3_deploy_command}" >> "${GITHUB_OUTPUT}"
+
+          if [ "$print_deploy_command" = "true" ]; then
+            echo "Deploy Command: $s3_deploy_command"
+          else
+            echo "Executing Deploy Command..."
+            eval "$s3_deploy_command"
+          fi
