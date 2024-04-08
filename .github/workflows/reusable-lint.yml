@@ -146,12 +146,18 @@ jobs:
 
       - name: Run format check
         if: ${{ inputs.enable-format-check }}
-        run: ${{ inputs.format-check-script }}
+        run: |
+          set -x
+          ${{ inputs.format-check-script }}
 
       - name: Run linter
         if: ${{ inputs.enable-lint }}
-        run: ${{ inputs.lint-script }}
+        run: |
+          set -x
+          ${{ inputs.lint-script }}
 
       - name: Run type check
         if: ${{ inputs.enable-type-check }}
-        run: ${{ inputs.typecheck-script }}
+        run: |
+          set -x
+          ${{ inputs.typecheck-script }}

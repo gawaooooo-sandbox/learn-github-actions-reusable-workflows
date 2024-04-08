@@ -1,17 +1,21 @@
-name: Workflow test (reusable-lint)
+name: Test for reusable-lint
 run-name: ${{ github.workflow }} on ${{ github.ref_type }} ${{ github.ref_name }} [${{ github.sha }}]
 
 on:
+  workflow_call:
+  workflow_dispatch:
   pull_request:
     paths:
-      - ".github/workflows/reusable-lint.yml"
-  workflow_dispatch:
-defaults:
-  run:
-    shell: bash
+      - .github/workflows/reusable-lint.yml
+      - .github/workflows/_internal-test-reusable-lint.yml
+
 concurrency:
   group: test-reusable-lint-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   test:
@@ -25,6 +29,7 @@ jobs:
           - install-options: "--no-audit --ignore-scripts"
             lint-script: "npm run test && npm run test:script"
             checkout-ref: ${{ github.head_ref}}
+            node-auth-token: ${{ secrets.GITHUB_TOKEN }}
     uses: ./.github/workflows/reusable-lint.yml
     with:
       install-options: ${{ matrix.install-options }}
