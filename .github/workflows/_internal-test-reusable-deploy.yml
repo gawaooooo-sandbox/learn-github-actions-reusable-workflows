@@ -126,7 +126,7 @@ jobs:
       npm-install-options: ${{ matrix.npm-install-options }}
       build-environments: ${{ matrix.build-environments }}
       s3-uri: ${{ matrix.s3-uri }}
-      print-deploy-command: ${{ matrix.print-deploy-command }}
+      # print-deploy-command: ${{ matrix.print-deploy-command }}
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
