@@ -9,7 +9,7 @@
     "test": "echo \"call test (test directory) \"",
     "test:script": "npm run format:check",
     "lint": "echo \"call lint  (test directory) \"",
-    "build": "echo \"call build  (test directory) \"",
+    "build": "echo \"call build  (test directory) \" && node index.js",
     "generate": "echo \"call generate  (test directory) \""
   },
   "engines": {
