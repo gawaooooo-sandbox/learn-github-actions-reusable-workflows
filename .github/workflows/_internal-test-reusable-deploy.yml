@@ -108,14 +108,11 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     needs: [exercise-fail]
+    if: ${{ failure() }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Verify or Handle Error
         run: |
-          echo "error OK!"
-        if: ${{ needs.exercise-fail.result == 'failure' }} # exercise-failが失敗した場合にこのステップを実行
+          echo "exercise-fail failed. OK! ${{ job.status }}"
 
   exercise-matrix:
     needs: [setup]
