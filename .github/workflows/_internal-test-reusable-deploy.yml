@@ -110,9 +110,12 @@ jobs:
     needs: [exercise-fail]
     if: ${{ failure() }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Verify or Handle Error
         run: |
-          echo "exercise-fail failed. OK! ${{ job.status }}"
+          echo "exercise-fail failed. OK!"
 
   exercise-matrix:
     needs: [setup]
