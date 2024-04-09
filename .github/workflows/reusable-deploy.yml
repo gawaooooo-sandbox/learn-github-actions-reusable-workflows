@@ -174,8 +174,7 @@ jobs:
       - name: Validate input environment values
         run: |
           set -e
-          echo '${{ inputs.build-environments }}' | jq '.' > /dev/null
-          if [ $? -ne 0 ]; then
+          if ! echo '${{ inputs.build-environments }}' | jq '.' > /dev/null; then
             echo "Error: The input 'build-environments' is not a valid JSON array."
             exit 1
           fi
