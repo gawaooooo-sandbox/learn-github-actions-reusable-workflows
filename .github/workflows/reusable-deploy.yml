@@ -171,26 +171,10 @@ jobs:
           npm-install-options: ${{ inputs.npm-install-options }}
           create-inputs-summary: "true"
 
-      - name: Validate input environment values
-        run: |
-          set -e
-          if ! echo '${{ inputs.build-environments }}' | jq '.' > /dev/null; then
-            echo "Error: The input 'build-environments' is not a valid JSON array."
-            exit 1
-          fi
-
       - name: Set environment variables
-        run: |
-          set -x
-          set -e  # 任意のコマンドが非ゼロステータスで終了した場合にスクリプトを終了させる
-          echo '${{ inputs.build-environments }}' | jq -r '.[]' | while IFS= read -r line; do
-            IFS='=' read -r key value <<< "$line"
-            if [ -z "$key" ] || [ -z "$value" ]; then
-              echo "Error: Environment variable format is incorrect: $line" >&2
-              exit 1
-            fi
-            echo "$key=\"$value\"" >> "$GITHUB_ENV"
-          done
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/setup-environment-variables@main
+        with:
+          environment-variables: ${{ inputs.build-environments }}
 
       - name: Build ${{ inputs.environment }}
         run: |
