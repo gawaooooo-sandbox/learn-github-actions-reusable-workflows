@@ -1,10 +1,3 @@
-# deploy flow
-# checkout code
-# setup node.js
-# install dependencies
-# build
-# deploy
-
 name: Deploy
 
 on:
@@ -98,22 +91,11 @@ on:
         default: "[]"
 
       # Deploy inputs
-      s3-uri:
+      s3-sync-command:
         description: |
-          Required input to set the S3 URI to deploy the build artifacts.
+          Optional input to set the command to deploy the build artifacts to the S3 URI.
+          e.g. `./dist s3://example-bucket --delete --exclude "hoge/*"`
         required: true
-        type: string
-      dist-dir:
-        description: |
-          Optional input to set the directory to deploy.
-        required: false
-        type: string
-        default: "./dist"
-      s3-sync-options:
-        description: |
-          Optional input to set the options to pass to the `aws s3 sync` command.
-          e.g. `-delete --exclude "hoge/*"`
-        required: false
         type: string
       s3-aws-region:
         description: |
@@ -208,26 +190,23 @@ jobs:
           role-to-assume: ${{ secrets.aws-role-arn }}
           aws-region: ${{ inputs.s3-aws-region}}
 
-      - name: Deploy to ${{ inputs.environment }} [${{ inputs.s3-uri }}]
+      - name: Deploy to ${{ inputs.environment }} [aws s3 sync ${{ inputs.s3-sync-command }}]
         id: deploy
         run: |
           set -x
 
-          s3_uri="${{ inputs.s3-uri }}"
-          dist_dir="${{ inputs.dist-dir }}"
-          s3_sync_options="${{ inputs.s3-sync-options }}"
+          s3_sync_command="${{ inputs.s3-sync-command }}"
           use_aws="${{ inputs.use-aws }}"
 
-          echo "Deploying to $s3_uri from $dist_dir with options: $s3_sync_options ..."
+          echo "s3 sync command: $s3_sync_command"
           echo "use_aws: $use_aws"
 
-          s3_deploy_command="aws s3 sync $dist_dir $s3_uri $s3_sync_options"
-          # echo "path=${valid}" >> "${GITHUB_OUTPUT}" のように、s3_deploy_commandを出力する
-          echo "s3-deploy-command=${s3_deploy_command}" >> "${GITHUB_OUTPUT}"
+          exec_command="aws s3 sync $s3_sync_command"
+          echo "s3-deploy-command=${exec_command}" >> "${GITHUB_OUTPUT}"
 
           if [ "$use_aws" = "true" ]; then
             echo "Executing Deploy Command..."
-            eval "$s3_deploy_command"
+            eval "$exec_command"
           else
-            echo "Deploy Command: $s3_deploy_command"
+            echo "Deploy Command: $exec_command"
           fi
