@@ -171,11 +171,19 @@ jobs:
           npm-install-options: ${{ inputs.npm-install-options }}
           create-inputs-summary: "true"
 
+      # - name: Set environment variables
+      #   run: |
+      #     set -x
+      #     for v in $(echo '${{ inputs.build-environments }}' | jq -r '.[]'); do
+      #       echo "${v}" >> "$GITHUB_ENV"
+      #     done
       - name: Set environment variables
         run: |
           set -x
           for v in $(echo '${{ inputs.build-environments }}' | jq -r '.[]'); do
-            echo "${v}" >> "$GITHUB_ENV"
+            key=$(echo "$v" | cut -d '=' -f 1)
+            value=$(echo "$v" | cut -d '=' -f 2-)
+            echo "${key}=\"${value}\"" >> "$GITHUB_ENV"
           done
 
       - name: Build ${{ inputs.environment }}
