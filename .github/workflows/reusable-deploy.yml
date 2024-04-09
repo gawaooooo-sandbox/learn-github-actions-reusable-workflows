@@ -180,10 +180,14 @@ jobs:
       - name: Set environment variables
         run: |
           set -x
-          for v in $(echo '${{ inputs.build-environments }}' | jq -r '.[]'); do
-            key=$(echo "$v" | cut -d '=' -f 1)
-            value=$(echo "$v" | cut -d '=' -f 2-)
-            echo "${key}=\"${value}\"" >> "$GITHUB_ENV"
+          set -e  # 任意のコマンドが非ゼロステータスで終了した場合にスクリプトを終了させる
+          echo '${{ inputs.build-environments }}' | jq -r '.[]' | while IFS= read -r line; do
+            IFS='=' read -r key value <<< "$line"
+            if [ -z "$key" ] || [ -z "$value" ]; then
+              echo "Error: Environment variable format is incorrect: $line" >&2
+              exit 1
+            fi
+            echo "$key=\"$value\"" >> "$GITHUB_ENV"
           done
 
       - name: Build ${{ inputs.environment }}
