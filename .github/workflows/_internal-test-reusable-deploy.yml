@@ -85,6 +85,40 @@ jobs:
           set -x
           echo "S3_DEPLOY_COMMAND: $S3_DEPLOY_COMMAND"
 
+  exercise-fail:
+    needs: [setup]
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      working-directory: test
+      environment: ${{ inputs.environment }}
+      node-version-file: test/package.json
+      build-command: build
+      build-environments: '["BLANK=abc space" "TEST_CONFIG=test", "PROD=prod", "BASE_URL=https://example.com", "TEST_VAR=${{ vars.TEST_VAR }}"]'
+      s3-sync-command: ./dist s3://example-bucket -dryrun --exclude '*.js'
+      use-aws: false
+    secrets:
+      node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+    permissions:
+      contents: read
+      packages: read
+      id-token: write
+
+  verify-fail:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    needs: [exercise-fail]
+    env:
+      S3_DEPLOY_COMMAND: ${{ needs.exercise.outputs.s3-deploy-command }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify or Handle Error
+        run: |
+          echo "error OK!"
+        if: ${{ needs.exercise-fail.result == 'failure' }} # exercise-failが失敗した場合にこのステップを実行
+
   exercise-matrix:
     needs: [setup]
     permissions:
