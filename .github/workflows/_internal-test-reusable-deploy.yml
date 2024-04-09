@@ -119,14 +119,11 @@ jobs:
       environment: ${{ matrix.environment }}
       node-version-file: test/package.json
       build-command: ${{ matrix.build-command }}
-      dist-dir: ${{ matrix.dist-dir }}
-      s3-sync-options: ${{ matrix.s3-sync-options }}
-      npm-registry-url: ${{ matrix.npm-registry-url }}
       npm-scope: ${{ matrix.npm-scope }}
       checkout-ref: ${{ matrix.checkout-ref }}
       npm-install-options: ${{ matrix.npm-install-options }}
       build-environments: ${{ matrix.build-environments }}
-      s3-uri: ${{ matrix.s3-uri }}
+      s3-sync-command: ${{ matrix.s3-sync-command }}
       use-aws: ${{ matrix.use-aws }}
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
