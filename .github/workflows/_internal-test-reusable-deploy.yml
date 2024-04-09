@@ -60,7 +60,7 @@ jobs:
       node-version-file: test/package.json
       build-command: build
       build-environments: '["TEST_CONFIG=test", "PROD=prod", "BASE_URL=https://example.com", "TEST_VAR=${{ vars.TEST_VAR }}"]'
-      s3-uri: "s3://example-bucket"
+      s3-sync-command: ./dist s3://example-bucket -dryrun --exclude '*.js'
       use-aws: false
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
@@ -104,17 +104,14 @@ jobs:
             npm-install-options: "--no-audit --if-presets"
             build-command: build
             build-environments: '["TEST_CONFIG=develop-test", "PROD=false", "BASE_URL=https://example.com", "TEST_VAR=${{ vars.TEST_VAR }}"]'
-            dist-dir: ./dist
-            s3-uri: "s3://example-bucket"
-            s3-sync-options: "--delete --dryrun --exclude '*.json'"
+            s3-sync-command: ./dist s3://example-bucket --delete --dryrun --exclude '*.json'
             use-aws: false
+
           - environment: prod
             build-command: generate
             checkout-ref: ${{ github.ref }}
             build-environments: '["TEST_CONFIG=production-test", "PROD=true", "BASE_URL=https://example.com/prod", "TEST_VAR=${{ vars.TEST_VAR }}"]'
-            dist-dir: ./outputs/public
-            s3-uri: "s3://example-prod-bucket"
-            s3-sync-options: "--delete --dryrun --exclude 'node_modules/*'"
+            s3-sync-command: ./outputs/public s3://example-prod-bucket --delete --dryrun --exclude 'node_modules/*'
             use-aws: false
     uses: ./.github/workflows/reusable-deploy.yml
     with:
