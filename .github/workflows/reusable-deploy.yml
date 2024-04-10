@@ -171,29 +171,12 @@ jobs:
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
 
-  merge-branch:
-    if: ${{ inputs.enable-auto-merge }}
-    name: Merge branch ${{ inputs.auto-merge-source-ref }} into ${{ inputs.auto-merge-target-branch }}
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    permissions:
-      contents: write
-
-    steps:
-      - name: Merge branch
-        uses: everlytic/branch-merge@c4a244dc23143f824ae6c022a10732566cb8e973 # v1.1.5
-        with:
-          github_token: ${{ secrets.github-token }}
-          target_branch: ${{ inputs.auto-merge-target-branch }}
-          source_ref: ${{ inputs.auto-merge-source-ref }}
-
   deploy:
-    needs: [merge-branch]
     name: Deploy to ${{ inputs.environment }}
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     permissions:
-      contents: read
+      contents: write
       packages: read
       id-token: write
     environment: ${{ inputs.environment }}
@@ -204,6 +187,14 @@ jobs:
       s3-deploy-command: ${{ steps.deploy.outputs.s3-deploy-command }}
 
     steps:
+      - name: Merge branch if auto-merge is enabled (${{ inputs.auto-merge-source-ref }} -> ${{ inputs.auto-merge-target-branch }})
+        if: ${{ inputs.enable-auto-merge }}
+        uses: everlytic/branch-merge@c4a244dc23143f824ae6c022a10732566cb8e973 # v1.1.5
+        with:
+          github_token: ${{ secrets.github-token }}
+          target_branch: ${{ inputs.auto-merge-target-branch }}
+          source_ref: ${{ inputs.auto-merge-source-ref }}
+
       - name: Setup Node.js and Install dependencies
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-npm-setup@main
         with:
