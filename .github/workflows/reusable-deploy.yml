@@ -190,31 +190,3 @@ jobs:
           aws-region: ${{ inputs.s3-aws-region }}
           s3-sync-command: ${{ inputs.s3-sync-command }}
           enable-aws-deploy: ${{ inputs.enable-aws-deploy }}
-
-        # - name: Setup AWS Credentials
-        #   if: ${{ inputs.use-aws }}
-        #   uses: aws-actions/configure-aws-credentials@v4
-        #   with:
-        #     role-to-assume: ${{ secrets.aws-role-arn }}
-        #     aws-region: ${{ inputs.s3-aws-region}}
-
-        # - name: Deploy to ${{ inputs.environment }} [aws s3 sync ${{ inputs.s3-sync-command }}]
-        #   id: deploy
-        #   run: |
-        #     set -x
-
-        #     s3_sync_command="${{ inputs.s3-sync-command }}"
-        #     use_aws="${{ inputs.use-aws }}"
-
-        #     echo "s3 sync command: $s3_sync_command"
-        #     echo "use_aws: $use_aws"
-
-        #     exec_command="aws s3 sync $s3_sync_command"
-        #     echo "s3-deploy-command=${exec_command}" >> "${GITHUB_OUTPUT}"
-
-        #     if [ "$use_aws" = "true" ]; then
-        #       echo "Executing Deploy Command..."
-        #       eval "$exec_command"
-        #     else
-        #       echo "Deploy Command: $exec_command"
-        #     fi
