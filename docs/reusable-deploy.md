@@ -13,6 +13,7 @@ GitHub Actions で デプロイを行うための再利用可能なワークフ�
 | build-command | <pre>Optional input to set the build command to run.<br>`npm run build` -> `build`<br>`npm run generate` -> `generate` (default)</pre> | `string` | `generate` | no |
 | build-environments | <pre>Optional input to set the environment variables to set for the build command.<br>'Environment variables in json array (e.g., ["BASE_URL=http://example.com", "SERVICE=app"])'</pre> | `string` | `[]` | no |
 | checkout-ref | <pre>Optional input to set the ref to checkout.<br>The input syntax corresponds to the actions/checkout's one.</pre> | `string` | `${{ github.head_ref }}` | no |
+| enable-aws-deploy | <pre>Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.<br>`true` -> use AWS credentials and deploy the build artifacts to the S3 URI<br>`false` -> print the command to deploy the build artifacts to the S3 URI</pre> | `boolean` | `true` | no |
 | node-caching | <pre>Optional input to set up caching for the setup-node action.<br>The input syntax corresponds to the setup-node's one.<br>Set to an empty string if caching isn't needed.</pre> | `string` | `npm` | no |
 | node-version | <pre>Optional input to set the version of Node.js used to build the project.<br>The input syntax corresponds to the setup-node's one.</pre> | `string` | n/a | no |
 | node-version-file | <pre>Optional input to set the file that contains the version of Node.js used to build the project.<br>The input syntax corresponds to the setup-node's one.</pre> | `string` | `.nvmrc` | no |
@@ -20,7 +21,6 @@ GitHub Actions で デプロイを行うための再利用可能なワークフ�
 | npm-registry-url | <pre>Optional input to set the registry URL to use for the npm commands.<br>The input syntax corresponds to the setup-node's one.<br>When using GitHub Packages, specify `https://npm.pkg.github.com`</pre> | `string` | n/a | no |
 | npm-scope | <pre>Optional input to set the scope to use for the npm commands.<br>The input syntax corresponds to the setup-node's one.<br>`hoge package` -> `@hoge`<br>GitHub Packages -> `@owner` (use `github.repository_owner`)</pre> | `string` | n/a | no |
 | s3-aws-region | <pre>Optional input to set the AWS region to deploy the build artifacts.</pre> | `string` | `ap-northeast-1` | no |
-| use-aws | <pre>Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.<br>`true` -> use AWS credentials and deploy the build artifacts to the S3 URI<br>`false` -> print the command to deploy the build artifacts to the S3 URI</pre> | `boolean` | `true` | no |
 | working-directory | <pre>Optional input to set the working directory.</pre> | `string` | `.` | no |
 
 ## Secrets
