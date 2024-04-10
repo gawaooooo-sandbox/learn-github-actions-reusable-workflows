@@ -1,5 +1,5 @@
 # @see https://zenn.dev/tmknom/books/pragmatic-composite-action/viewer/lint
-name: Internal Lint Reusable Workflows
+name: YAML Lint
 
 on:
   workflow_call:
