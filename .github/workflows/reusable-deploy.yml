@@ -105,7 +105,7 @@ on:
         default: "ap-northeast-1"
 
       #  Set up AWS credentials inputs & s3 sync
-      use-aws:
+      enable-aws-deploy:
         description: |
           Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.
           `true` -> use AWS credentials and deploy the build artifacts to the S3 URI
@@ -181,30 +181,40 @@ jobs:
           set -x
           npm run ${{ inputs.build-command }}
 
-      - name: Setup AWS Credentials
-        if: ${{ inputs.use-aws }}
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.aws-role-arn }}
-          aws-region: ${{ inputs.s3-aws-region}}
-
-      - name: Deploy to ${{ inputs.environment }} [aws s3 sync ${{ inputs.s3-sync-command }}]
+      - name: Deploy to ${{ inputs.environment }} [${{ inputs.s3-sync-command }}]
         id: deploy
-        run: |
-          set -x
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/aws-s3-deploy-conditionally@main
+        with:
+          environment: ${{ inputs.environment }}
+          aws-role-arn: ${{ secrets.aws-role-arn }}
+          aws-region: ${{ inputs.s3-aws-region }}
+          s3-sync-command: ${{ inputs.s3-sync-command }}
+          enable-aws-deploy: ${{ inputs.enable-aws-deploy }}
 
-          s3_sync_command="${{ inputs.s3-sync-command }}"
-          use_aws="${{ inputs.use-aws }}"
+      # - name: Setup AWS Credentials
+      #   if: ${{ inputs.use-aws }}
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: ${{ secrets.aws-role-arn }}
+      #     aws-region: ${{ inputs.s3-aws-region}}
 
-          echo "s3 sync command: $s3_sync_command"
-          echo "use_aws: $use_aws"
+      # - name: Deploy to ${{ inputs.environment }} [aws s3 sync ${{ inputs.s3-sync-command }}]
+      #   id: deploy
+      #   run: |
+      #     set -x
 
-          exec_command="aws s3 sync $s3_sync_command"
-          echo "s3-deploy-command=${exec_command}" >> "${GITHUB_OUTPUT}"
+      #     s3_sync_command="${{ inputs.s3-sync-command }}"
+      #     use_aws="${{ inputs.use-aws }}"
 
-          if [ "$use_aws" = "true" ]; then
-            echo "Executing Deploy Command..."
-            eval "$exec_command"
-          else
-            echo "Deploy Command: $exec_command"
-          fi
+      #     echo "s3 sync command: $s3_sync_command"
+      #     echo "use_aws: $use_aws"
+
+      #     exec_command="aws s3 sync $s3_sync_command"
+      #     echo "s3-deploy-command=${exec_command}" >> "${GITHUB_OUTPUT}"
+
+      #     if [ "$use_aws" = "true" ]; then
+      #       echo "Executing Deploy Command..."
+      #       eval "$exec_command"
+      #     else
+      #       echo "Deploy Command: $exec_command"
+      #     fi
