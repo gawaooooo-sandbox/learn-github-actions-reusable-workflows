@@ -35,7 +35,7 @@ defaults:
     working-directory: test
 
 jobs:
-  setup:
+  debug:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
@@ -52,7 +52,6 @@ jobs:
             cat index.js
           fi
   exercise:
-    needs: [setup]
     uses: ./.github/workflows/reusable-deploy.yml
     with:
       working-directory: test
@@ -66,7 +65,7 @@ jobs:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
     permissions:
-      contents: read
+      contents: write
       packages: read
       id-token: write
 
@@ -87,7 +86,6 @@ jobs:
 
           # job自体がfailになり、WFがfail状態になるので、エラー確認jobは実行しない
   # exercise-fail:
-  #   needs: [setup]
   #   uses: ./.github/workflows/reusable-deploy.yml
   #   with:
   #     working-directory: test
@@ -101,7 +99,7 @@ jobs:
   #     node-auth-token: ${{ secrets.GITHUB_TOKEN }}
   #     aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
   #   permissions:
-  #     contents: read
+  #     contents: write
   #     packages: read
   #     id-token: write
 
@@ -119,9 +117,8 @@ jobs:
   #         echo "exercise-fail failed. OK!"
 
   exercise-matrix:
-    needs: [setup]
     permissions:
-      contents: read
+      contents: write
       packages: read
       id-token: write
     strategy:
@@ -161,3 +158,24 @@ jobs:
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+
+  exercise-auto-merge:
+    permissions:
+      contents: write
+      packages: read
+      id-token: write
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      working-directory: test
+      environment: ${{ inputs.environment }}
+      node-version-file: test/package.json
+      build-command: build
+      build-environments: '["BLANK=abc space", "TEST_CONFIG=test", "PROD=prod", "BASE_URL=https://example.com", "TEST_VAR=${{ vars.TEST_VAR }}"]'
+      s3-sync-command: ./dist s3://example-bucket -dryrun --exclude "*.js"
+      enable-aws-deploy: false
+      enable-auto-merge: true
+      auto-merge-target-branch: develop
+    secrets:
+      node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}

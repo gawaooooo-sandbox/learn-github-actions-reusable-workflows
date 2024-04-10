@@ -82,6 +82,7 @@ on:
         required: false
         type: string
         default: "generate"
+
       build-environments:
         description: |
           Optional input to set the environment variables to set for the build command.
@@ -97,6 +98,7 @@ on:
           e.g. `./dist s3://example-bucket --delete --exclude "hoge/*"`
         required: true
         type: string
+
       s3-aws-region:
         description: |
           Optional input to set the AWS region to deploy the build artifacts.
@@ -104,7 +106,6 @@ on:
         type: string
         default: "ap-northeast-1"
 
-      #  Set up AWS credentials inputs & s3 sync
       enable-aws-deploy:
         description: |
           Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.
@@ -113,6 +114,27 @@ on:
         required: false
         type: boolean
         default: true
+
+      # auto merge
+      enable-auto-merge:
+        description: |
+          Whether to perform an automatic merge before deployment.
+        required: false
+        default: false
+        type: boolean
+
+      auto-merge-target-branch:
+        description: |
+          The target branch to merge into. Used if enable-auto-merge is true.
+        required: false
+        type: string
+
+      auto-merge-source-ref:
+        description: |
+          The source ref to merge from. Used if enable-auto-merge is true.
+        required: false
+        type: string
+        default: ${{ github.ref }}
 
     outputs:
       s3-deploy-command:
@@ -128,6 +150,12 @@ on:
           When using GitHub Packages, specify `secrets.GITHUB_TOKEN`
           When using npm, specify `secrets.NPM_AUTH_TOKEN`
         required: false
+
+      github-token:
+        description: |
+          Optional secret to set the GitHub token to use for the auto merge.
+        required: false
+
       aws-role-arn:
         description: |
           Required secret to set the AWS IAM Role ARN to assume for the deployment.
@@ -143,7 +171,25 @@ jobs:
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
 
+  merge-branch:
+    if: ${{ inputs.enable-auto-merge }}
+    name: Merge branch ${{ inputs.auto-merge-source-ref }} into ${{ inputs.auto-merge-target-branch }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+
+    steps:
+      - name: Merge branch
+        uses: everlytic/branch-merge@c4a244dc23143f824ae6c022a10732566cb8e973 # v1.1.5
+        with:
+          github_token: ${{ secrets.github-token }}
+          target_branch: ${{ inputs.auto-merge-target-branch }}
+          source_ref: ${{ inputs.auto-merge-source-ref }}
+
   deploy:
+    needs: [merge-branch]
+    name: Deploy to ${{ inputs.environment }}
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     permissions:
