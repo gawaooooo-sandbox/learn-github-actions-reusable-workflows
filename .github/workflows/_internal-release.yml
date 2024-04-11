@@ -1,5 +1,5 @@
 name: Internal Release
-run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} [${{ github.sha }}]"
+run-name: "${{ github.workflow }} for ${{ github.ref_name }} level ${{ inputs.level }} [${{ github.sha }}]"
 
 on:
   workflow_dispatch:
