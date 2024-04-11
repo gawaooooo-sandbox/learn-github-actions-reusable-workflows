@@ -1,22 +1,22 @@
-# @see https://zenn.dev/tmknom/books/pragmatic-composite-action/viewer/lint
-name: Internal Lint (YAML)
+name: Internal Label
 run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} [${{ github.sha }}]"
 
 on:
   pull_request:
-    paths: ["**.yml", "**.yaml"]
-  workflow_dispatch:
-
-defaults:
-  run:
-    shell: bash
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  call:
-    uses: ./.github/workflows/reusable-yaml-lint.yml
+  triage:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
     permissions:
       contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          sync-labels: true
