@@ -1,6 +1,6 @@
 # @see https://zenn.dev/tmknom/books/pragmatic-composite-action/viewer/lint
 name: Internal Lint (YAML)
-run-name: ${{ github.workflow }}
+run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} [${{ github.sha }}]"
 
 on:
   pull_request:

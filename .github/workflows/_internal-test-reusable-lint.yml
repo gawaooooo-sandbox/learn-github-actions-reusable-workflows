@@ -1,5 +1,5 @@
 name: Test for reusable-lint
-run-name: ${{ github.workflow }} on ${{ github.ref_type }} ${{ github.ref_name }} [${{ github.sha }}]
+run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} [${{ github.sha }}]"
 
 on:
   workflow_call:
