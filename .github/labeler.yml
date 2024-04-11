@@ -1,0 +1,32 @@
+# Labeler configuration
+# @see https://github.com/tmknom/configurations/tree/main/labeler
+
+# A new feature
+enhancement:
+  - head-branch: ["^feat"]
+
+# A bug fix
+bug:
+  - head-branch: ["^fix"]
+
+# Documentation only changes
+docs:
+  - head-branch: ["^docs"]
+  - changed-files:
+      - any-glob-to-any-file: ["**.md"]
+
+# Adding missing tests or correcting existing tests
+test:
+  - head-branch: ["^test"]
+  - changed-files:
+      - any-glob-to-any-file: [".github/workflows/*test*.yml"]
+
+# Changes to workflow files GitHub Actions.
+workflows:
+  - changed-files:
+      - any-glob-to-any-file: [".github/workflows/*.yml"]
+
+# Changes to internal workflow files GitHub Actions.
+internal:
+  - changed-files:
+      - any-glob-to-any-file: [".github/workflows/*internal*.yml"]
