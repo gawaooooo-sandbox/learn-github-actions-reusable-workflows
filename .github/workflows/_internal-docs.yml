@@ -25,6 +25,7 @@ jobs:
             .github/workflows/reusable-deploy.yml,
             .github/workflows/reusable-yaml-lint.yml,
             .github/workflows/reusable-github-release.yml,
+            .github/workflows/reusable-label.yml,
           ]
         include:
           - yaml-file: .github/workflows/reusable-lint.yml
@@ -37,6 +38,8 @@ jobs:
             markdown-file: docs/reusable-yaml-lint.md
           - yaml-file: .github/workflows/reusable-github-release.yml
             markdown-file: docs/reusable-github-release.md
+          - yaml-file: .github/workflows/reusable-label.yml
+            markdown-file: docs/reusable-label.md
     uses: ./.github/workflows/reusable-make-wf-docs.yml
     with:
       yaml-file: ${{ matrix.yaml-file }}
