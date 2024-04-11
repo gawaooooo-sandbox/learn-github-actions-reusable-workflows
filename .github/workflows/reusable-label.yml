@@ -34,9 +34,10 @@ jobs:
     steps:
       - uses: actions/labeler@v5
         with:
-          repo-token: ${{ secrets.github-token }}
+          repo-token: ${{ env.GITHUB_TOKEN }}
           sync-labels: ${{ env.SYNC_LABELS }}
           configuration-path: ${{ env.CONFIGURATION_PATH }}
         env:
+          GITHUB_TOKEN: ${{ secrets.repo-token }}
           SYNC_LABELS: ${{ inputs.sync-labels }}
           CONFIGURATION_PATH: ${{ inputs.configuration-path }}

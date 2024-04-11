@@ -11,7 +11,7 @@ concurrency:
 jobs:
   call:
     uses: ./.github/workflows/reusable-label.yml
-    with:
+    secrets:
       repo-token: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: read
