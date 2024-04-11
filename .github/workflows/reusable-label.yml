@@ -1,0 +1,42 @@
+name: Label
+
+on:
+  workflow_call:
+    inputs:
+      sync-labels:
+        description: |
+          Whether or not to remove labels when matching files are reverted or no longer changed by the PR
+        type: boolean
+        required: false
+        default: true
+
+      configuration-path:
+        description: |
+          The path to the label configuration file.
+        type: string
+        required: false
+        default: .github/labeler.yml
+
+    secrets:
+      repo-token:
+        description: |
+          Token to use to authorize label changes.
+          Typically the GITHUB_TOKEN secret
+        required: true
+
+jobs:
+  triage:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.github-token }}
+          sync-labels: ${{ env.SYNC_LABELS }}
+          configuration-path: ${{ env.CONFIGURATION_PATH }}
+        env:
+          SYNC_LABELS: ${{ inputs.sync-labels }}
+          CONFIGURATION_PATH: ${{ inputs.configuration-path }}
