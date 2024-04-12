@@ -85,11 +85,11 @@ on:
 
       build-environments:
         description: |
-          Optional input to set the environment variables to set for the build command.
-          'Environment variables in json array (e.g., ["BASE_URL=http://example.com", "SERVICE=app"])'
+          Optional input to set the environment variables to use for the build.
+          The input syntax corresponds to the setup-environment-variables's one.
         required: false
         type: string
-        default: "[]"
+        default: ""
 
       # Deploy inputs
       s3-sync-command:
@@ -208,7 +208,7 @@ jobs:
           npm-install-options: ${{ inputs.npm-install-options }}
 
       - name: Set environment variables
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/setup-environment-variables@v1
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/setup-environment-variables@v2
         with:
           environment-variables: ${{ inputs.build-environments }}
 
