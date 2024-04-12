@@ -1,5 +1,5 @@
 name: Internal Label
-run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} [${{ github.sha }}]"
+run-name: "${{ github.workflow }} for ${{ github.ref_name }} [${{ github.sha }}]"
 
 on:
   pull_request:
