@@ -1,0 +1,30 @@
+name: Teste for reusable-pre-processing
+run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} / ${{ inputs.environment }} [${{ github.sha }}]"
+
+on:
+  workflow_call:
+    inputs:
+      workflow-inputs:
+        description: |
+          The inputs of the workflow
+        required: true
+        type: string
+        default: '{"foo":"bar","hoge":"fuga","boolean":false,"num":123}'
+  workflow_dispatch:
+    inputs:
+      workflow-inputs:
+        type: string
+        required: true
+        description: |
+          The inputs of the workflow
+        default: '{"foo":"bar","hoge":"fuga","boolean":false,"num":123}'
+  pull_request:
+    paths:
+      - .github/workflows/reusable-pre-processing.yml
+      - .github/workflows/_internal-test-reusable-pre-processing.yml
+
+jobs:
+  exercise:
+    uses: ./.github/workflows/reusable-pre-processing.yml
+    with:
+      workflow-inputs: ${{ inputs.workflow-inputs }}

@@ -1,0 +1,23 @@
+name: Pre Processing
+
+on:
+  workflow_call:
+    inputs:
+      workflow-inputs:
+        description: |
+          The inputs of the workflow
+        required: true
+        type: string
+        default: "{}"
+
+jobs:
+  pre-processing:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Create Inputs Summary
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v1
+        with:
+          workflow-inputs: ${{ toJSON(fromJson(inputs.workflow-inputs)) }}
