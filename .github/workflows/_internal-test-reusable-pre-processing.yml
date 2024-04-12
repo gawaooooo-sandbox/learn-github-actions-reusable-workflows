@@ -13,4 +13,4 @@ jobs:
   exercise:
     uses: ./.github/workflows/reusable-pre-processing.yml
     with:
-      workflow-inputs: '{"foo":"bar","hoge":"fuga","boolean":false,"num":123}'
+      workflow-inputs: ${{ toJSON('{"foo":"bar","hoge":"fuga","boolean":false,"num":123}') }}
