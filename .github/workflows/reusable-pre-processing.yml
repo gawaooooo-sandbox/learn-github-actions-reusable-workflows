@@ -20,4 +20,4 @@ jobs:
       - name: Create Inputs Summary
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v1
         with:
-          workflow-inputs: ${{ toJSON(fromJson(inputs.workflow-inputs)) }}
+          workflow-inputs: ${{ toJSON(inputs.workflow-inputs) }}
