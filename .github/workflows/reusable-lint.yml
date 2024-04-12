@@ -149,7 +149,6 @@ jobs:
           node-auth-token: ${{ secrets.node-auth-token }}
           checkout-ref: ${{ inputs.checkout-ref }}
           npm-install-options: ${{ inputs.install-options }}
-          create-inputs-summary: "true"
 
       - name: Run format check
         if: ${{ inputs.enable-format-check }}

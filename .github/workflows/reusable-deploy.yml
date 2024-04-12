@@ -206,7 +206,6 @@ jobs:
           node-auth-token: ${{ secrets.node-auth-token }}
           checkout-ref: ${{ inputs.checkout-ref }}
           npm-install-options: ${{ inputs.npm-install-options }}
-          create-inputs-summary: "true"
 
       - name: Set environment variables
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/setup-environment-variables@v1
