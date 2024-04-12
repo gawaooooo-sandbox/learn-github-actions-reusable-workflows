@@ -162,14 +162,18 @@ on:
         required: true
 
 jobs:
+  # pre-processing:
+  #   runs-on: ubuntu-22.04
+  #   timeout-minutes: 5
+  #   steps:
+  #     - name: create inputs summary
+  #       uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v1
+  #       with:
+  #         workflow-inputs: ${{ toJSON(inputs) }}
   pre-processing:
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    steps:
-      - name: create inputs summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v1
-        with:
-          workflow-inputs: ${{ toJSON(inputs) }}
+    uses: ./.github/workflows/reusable-pre-processing.yml
+    with:
+      workflow-inputs: ${{ toJSON(inputs) }}
 
   deploy:
     name: Deploy to ${{ inputs.environment }}
