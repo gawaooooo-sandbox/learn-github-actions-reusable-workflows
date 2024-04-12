@@ -17,12 +17,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Debug Input
-        run: |
-          echo "${{ toJSON(inputs.workflow-inputs) }}"
-          echo "${{ inputs.workflow-inputs }}"
       - name: Create Inputs Summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v1
+        # uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v1
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@refactor/inputs-summary
         with:
-          # workflow-inputs: ${{ toJSON(inputs.workflow-inputs) }}
           workflow-inputs: ${{ inputs.workflow-inputs }}
