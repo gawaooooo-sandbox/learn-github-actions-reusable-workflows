@@ -58,7 +58,6 @@ jobs:
       environment: ${{ inputs.environment }}
       node-version-file: test/package.json
       build-command: build
-      # build-environments: '["BLANK=abc space", "TEST_CONFIG=test", "PROD=prod", "BASE_URL=https://example.com", "TEST_VAR=${{ vars.TEST_VAR }}"]'
       build-environments: >-
         BLANK="abc space"
         TEST_CONFIG="test"
@@ -90,38 +89,6 @@ jobs:
           set -x
           echo "S3_DEPLOY_COMMAND: $S3_DEPLOY_COMMAND"
 
-          # job自体がfailになり、WFがfail状態になるので、エラー確認jobは実行しない
-  # exercise-fail:
-  #   uses: ./.github/workflows/reusable-deploy.yml
-  #   with:
-  #     working-directory: test
-  #     environment: ${{ inputs.environment }}
-  #     node-version-file: test/package.json
-  #     build-command: build
-  #     build-environments: '["BLANK=abc space" "TEST_CONFIG=test", "PROD=prod", "BASE_URL=https://example.com", "TEST_VAR=${{ vars.TEST_VAR }}"]'
-  #     s3-sync-command: ./dist s3://example-bucket -dryrun --exclude "*.js"
-  #     enable-aws-deploy: false
-  #   secrets:
-  #     node-auth-token: ${{ secrets.GITHUB_TOKEN }}
-  #     aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-  #   permissions:
-  #     contents: write
-  #     packages: read
-  #     id-token: write
-
-  # verify-fail:
-  #   runs-on: ubuntu-22.04
-  #   timeout-minutes: 5
-  #   needs: [exercise-fail]
-  #   if: ${{ failure() }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-
-  #     - name: Verify or Handle Error
-  #       run: |
-  #         echo "exercise-fail failed. OK!"
-
   exercise-matrix:
     permissions:
       contents: write
@@ -139,14 +106,14 @@ jobs:
             checkout-ref: ${{ github.head_ref }}
             npm-install-options: "--no-audit --if-presets"
             build-command: build
-            build-environments: '["TEST_CONFIG=develop-test", "PROD=false", "BASE_URL=https://example.com", "TEST_VAR=${{ vars.TEST_VAR }}"]'
+            build-environments: 'TEST_CONFIG="develop-test" PROD="false" BASE_URL="https://example.com" TEST_VAR="${{ vars.TEST_VAR }}"'
             s3-sync-command: ./dist s3://example-bucket --delete --dryrun --exclude "*.json"
             enable-aws-deploy: false
 
           - environment: prod
             build-command: generate
             checkout-ref: ${{ github.ref }}
-            build-environments: '["TEST_CONFIG=production-test", "PROD=true", "BASE_URL=https://example.com/prod", "TEST_VAR=${{ vars.TEST_VAR }}"]'
+            build-environments: 'TEST_CONFIG="production-test" PROD="false" BASE_URL="https://example.com/prod" TEST_VAR="${{ vars.TEST_VAR }}"'
             s3-sync-command: ./outputs/public s3://example-prod-bucket --delete --dryrun --exclude "node_modules/*" --exclude "abc/*" --exclude "def/*"
             enable-aws-deploy: false
     uses: ./.github/workflows/reusable-deploy.yml
