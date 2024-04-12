@@ -13,7 +13,7 @@ GitHub Actions で デプロイを行うための再利用可能なワークフ�
 | auto-merge-source-ref | <pre>The source ref to merge from. Used if enable-auto-merge is true.</pre> | `string` | `${{ github.ref }}` | no |
 | auto-merge-target-branch | <pre>The target branch to merge into. Used if enable-auto-merge is true.</pre> | `string` | n/a | no |
 | build-command | <pre>Optional input to set the build command to run.<br>`npm run build` -> `build`<br>`npm run generate` -> `generate` (default)</pre> | `string` | `generate` | no |
-| build-environments | <pre>Optional input to set the environment variables to set for the build command.<br>'Environment variables in json array (e.g., ["BASE_URL=http://example.com", "SERVICE=app"])'</pre> | `string` | `[]` | no |
+| build-environments | <pre>Optional input to set the environment variables to use for the build.<br>The input syntax corresponds to the setup-environment-variables's one.</pre> | `string` | `` | no |
 | checkout-ref | <pre>Optional input to set the ref to checkout.<br>The input syntax corresponds to the actions/checkout's one.</pre> | `string` | `${{ github.head_ref }}` | no |
 | enable-auto-merge | <pre>Whether to perform an automatic merge before deployment.</pre> | `boolean` | `false` | no |
 | enable-aws-deploy | <pre>Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.<br>`true` -> use AWS credentials and deploy the build artifacts to the S3 URI<br>`false` -> print the command to deploy the build artifacts to the S3 URI</pre> | `boolean` | `true` | no |
