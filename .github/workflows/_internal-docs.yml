@@ -47,8 +47,8 @@ jobs:
     uses: ./.github/workflows/docs-generator.yml
     with:
       commit-message: Update document
-      yaml-files: ${{ needs.prepare.outputs.yaml-files }}
-      markdown-files: ${{ needs.prepare.outputs.markdown-files }}
+      yaml-files: ${{ toJSON(needs.prepare.outputs.yaml-files) }}
+      markdown-files: ${{ toJSON(needs.prepare.outputs.markdown-files) }}
     permissions:
       contents: write
       pull-requests: write
