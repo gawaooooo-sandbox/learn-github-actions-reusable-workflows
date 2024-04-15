@@ -5,7 +5,7 @@ on:
     inputs:
       environment:
         description: |
-          Required input to set the environment to deploy.
+          Required. Specifies the environment where the deployment will occur, such as 'production' or 'staging'.
         type: string
         required: true
 
@@ -82,17 +82,19 @@ on:
       # Build inputs
       build-command:
         description: |
-          Optional input to set the build command to run.
-          `npm run build` -> `build`
-          `npm run generate` -> `generate` (default)
+          Optional. Specifies the command to execute for building the project.
+          Adjust according to the scripts defined in your package.json.
+          Default: "generate"
+          Example: "`npm run build` -> `build`"
         type: string
         required: false
         default: "generate"
 
       build-environments:
         description: |
-          Optional input to set the environment variables to use for the build.
-          The input syntax corresponds to the setup-environment-variables's one.
+          Optional. Sets the environment variables for the build process.
+          Use the format as specified by the setup-environment-variables action.
+          Example: "KEY='value' ANOTHER_KEY='another value'"
         type: string
         required: false
         default: ""
@@ -100,23 +102,25 @@ on:
       # Deploy inputs
       s3-sync-command:
         description: |
-          Optional input to set the command to deploy the build artifacts to the S3 URI.
-          e.g. `./dist s3://example-bucket --delete --exclude "hoge/*"`
+          Required. Defines the command to synchronize build artifacts to an AWS S3 bucket.
+          Include any necessary flags and paths for deployment.
+          Example: "`./dist s3://example-bucket --delete --exclude 'logs/*'`"
         type: string
         required: true
 
       s3-aws-region:
         description: |
-          Optional input to set the AWS region to deploy the build artifacts.
+          Optional. Specifies the AWS region for the S3 bucket to ensure correct deployment targeting.
+          Default: "ap-northeast-1"
         type: string
         required: false
         default: "ap-northeast-1"
 
       enable-aws-deploy:
         description: |
-          Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.
-          `true` -> use AWS credentials and deploy the build artifacts to the S3 URI
-          `false` -> print the command to deploy the build artifacts to the S3 URI
+          Optional. Determines whether to use AWS credentials for deployment.
+          Set to true to perform deployment or false to only print the deployment command.
+          Default: true
         type: boolean
         required: false
         default: true
@@ -124,20 +128,22 @@ on:
       # auto merge
       enable-auto-merge:
         description: |
-          Whether to perform an automatic merge before deployment.
+          Optional. Specifies whether to perform an automatic merge before deployment.
+          Default: false
         type: boolean
         required: false
         default: false
 
       auto-merge-target-branch:
         description: |
-          The target branch to merge into. Used if enable-auto-merge is true.
+          Optional. The target branch into which the source will be merged if auto-merge is enabled.
         type: string
         required: false
 
       auto-merge-source-ref:
         description: |
-          The source ref to merge from. Used if enable-auto-merge is true.
+          Optional. The source reference from which to merge into the target branch if auto-merge is enabled.
+          If not specified, the default is the current GitHub reference.
         type: string
         required: false
         default: ${{ github.ref }}
@@ -145,26 +151,27 @@ on:
     outputs:
       s3-deploy-command:
         description: |
-          The command to deploy the build artifacts to the S3 URI.
+          The command used to deploy build artifacts to the S3 URI.
+          Primarily used for debugging purposes.
         value: ${{ jobs.deploy.outputs.s3-deploy-command }}
 
     secrets:
       node-auth-token:
         description: |
-          Optional secret to set the authentication token to use for the npm commands.
-          The input syntax corresponds to the setup-node's one.
-          When using GitHub Packages, specify `secrets.GITHUB_TOKEN`
-          When using npm, specify `secrets.NPM_AUTH_TOKEN`
+          Optional. Specifies the authentication token for npm commands.
+          Recommended to use `secrets.GITHUB_TOKEN` for GitHub Packages or `secrets.NPM_AUTH_TOKEN` for private npm registry access.
         required: false
 
       github-token:
         description: |
-          Optional secret to set the GitHub token to use for the auto merge.
+          Optional. Specifies the GitHub token to use for the auto merge process.
         required: false
 
       aws-role-arn:
         description: |
-          Required secret to set the AWS IAM Role ARN to assume for the deployment.
+          Required. Specify the ARN of your AWS Role for this action.
+          It is recommended to manage the ARN value securely using GitHub Secrets.
+          Reference the secret in your workflow by specifying the secret name in the 'aws-role-arn' field.
         required: true
 
 jobs:
