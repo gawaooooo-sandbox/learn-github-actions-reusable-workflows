@@ -74,8 +74,13 @@ jobs:
         run: |
           set -x
 
-          IFS=',' read -r -a yaml_files <<< "${{ steps.input-files.outputs.yaml-files }}"
-          IFS=',' read -r -a markdown_files <<< "${{ steps.input-files.outputs.markdown-files }}"
+          # Use jq to parse the JSON array properly and remove unwanted characters
+          yaml_files=$(echo '${{ steps.input-files.outputs.yaml-files }}' | jq -r '.[]')
+          markdown_files=$(echo '${{ steps.input-files.outputs.markdown-files }}' | jq -r '.[]')
+
+          # Convert strings to arrays
+          IFS=$'\n' read -r -d '' -a yaml_files <<< "$yaml_files"
+          IFS=$'\n' read -r -d '' -a markdown_files <<< "$markdown_files"
 
           for index in "${!yaml_files[@]}"; do
             yaml_file=${yaml_files[index]}
