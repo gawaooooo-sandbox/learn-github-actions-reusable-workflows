@@ -69,24 +69,21 @@ jobs:
           set -x
 
           # Use jq to parse the JSON array properly and remove unwanted characters
-          yaml_files=$(echo "${{ env.YAML_FILES }}" | jq -r '.[]')
-          markdown_files=$(echo "${{ env.MARKDOWN_FILES }}" | jq -r '.[]')
+          yaml_files=$(echo "${{ env.YAML_FILES }}" | jq -r '.[] | @text')
+          markdown_files=$(echo "${{ env.MARKDOWN_FILES }}" | jq -r '.[] | @text')
 
-          # Convert strings to arrays
-          IFS=$'\n' read -r -a yaml_files <<< "$yaml_files"
-          IFS=$'\n' read -r -a markdown_files <<< "$markdown_files"
-          unset IFS  # IFSの設定を解除
+          # Convert newline-separated strings to arrays
+          IFS=$'\n' read -r -a yaml_files <<< "$yaml_files_str"
+          IFS=$'\n' read -r -a markdown_files <<< "$markdown_files_str"
 
           echo "YAML files array: ${yaml_files[*]}"
           echo "Markdown files array: ${markdown_files[*]}"
 
           for index in "${!yaml_files[@]}"; do
             yaml_file=${yaml_files[index]}
-            echo "$index"
-            echo "$yaml_file"
-
             markdown_file=${markdown_files[index]}
-            echo "$markdown_file"
+
+            echo "Processing $yaml_file and $markdown_file"
 
             # Check if the Markdown file exists, if not, create an empty file
             if [ ! -f "$markdown_file" ]; then
