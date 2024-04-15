@@ -8,20 +8,22 @@ on:
   workflow_call:
     inputs:
       yaml-file:
-        required: true
+        description: |
+          The YAML file for the action or the reusable workflow
         type: string
-        description: "The YAML file for the action or the reusable workflow"
+        required: true
       markdown-file:
-        default: "README.md"
+        description: |
+          The Markdown file for the injection target
+        type: string
         required: false
-        type: string
-        description: "The Markdown file for the injection target"
+        default: "README.md"
       ref:
-        required: true
+        description: |
+          The git ref
         type: string
-        description: "The git ref"
-permissions:
-  contents: write
+        required: true
+
 defaults:
   run:
     shell: bash
@@ -41,6 +43,8 @@ jobs:
   generate:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
+    permissions:
+      contents: write
     env:
       YAML_FILE: ${{ inputs.yaml-file }}
       MD_FILE: ${{ inputs.markdown-file }}
