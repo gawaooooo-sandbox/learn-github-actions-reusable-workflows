@@ -13,13 +13,10 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        type: choice
-        required: true
         description: "Choose the environment"
+        type: environment
+        required: true
         default: "develop"
-        options:
-          - develop
-          - prod
   pull_request:
     paths:
       - .github/workflows/deploy.yml
@@ -52,7 +49,22 @@ jobs:
             cat index.js
           fi
 
+  setup-env:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    environment: ${{ inputs.environment }}
+    outputs:
+      test-var: ${{ steps.set-outputs.outputs.test-var }}
+    steps:
+      - name: Set outputs
+        id: set-outputs
+        run: |
+          set -x
+          echo "test-var=${{ vars.TEST_VAR }}" >> "$GITHUB_OUTPUT"
+
   exercise:
+    name: Exercise ${{ inputs.environment }}
+    needs: [setup-env]
     uses: ./.github/workflows/deploy.yml
     with:
       working-directory: test
@@ -64,7 +76,7 @@ jobs:
         TEST_CONFIG="test"
         PROD="prod"
         BASE_URL="https://example.com"
-        TEST_VAR="${{ vars.TEST_VAR }}"
+        TEST_VAR="${{ needs.setup-env.outputs.test-var }}"
       s3-sync-command: ./dist s3://example-bucket -dryrun --exclude "*.js"
       enable-aws-deploy: false
     secrets:
