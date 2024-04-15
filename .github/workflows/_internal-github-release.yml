@@ -18,7 +18,7 @@ concurrency: ${{ github.workflow }}
 
 jobs:
   call:
-    uses: ./.github/workflows/reusable-github-release.yml
+    uses: ./.github/workflows/github-release.yml
     with:
       level: ${{ inputs.level }}
     permissions:
