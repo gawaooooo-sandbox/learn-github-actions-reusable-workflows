@@ -8,9 +8,10 @@ GitHub Actions で ワークフローや action のドキュメントを自動�
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| ref | <pre>Required. The git ref (such as a branch, tag, or commit SHA) that the documentation generation should be based on.<br>This ref will be checked out for processing.</pre> | `string` | n/a | yes |
-| yaml-file | <pre>Required. Specifies the path to the YAML file of the action or reusable workflow for which the documentation should be generated.</pre> | `string` | n/a | yes |
-| markdown-file | <pre>Optional. Specifies the target Markdown file where the generated documentation will be injected.<br>If not specified, 'README.md' is used as default.<br>Default: "README.md"</pre> | `string` | `README.md` | no |
+| commit-message | <pre>The commit message.</pre> | `string` | n/a | yes |
+| markdown-files | <pre>A JSON array of Markdown file paths where documentation should be injected.</pre> | `string` | n/a | yes |
+| yaml-files | <pre>A JSON array of YAML file paths for documentation generation.</pre> | `string` | n/a | yes |
+| ref | <pre>The git ref to check out for documentation generation.</pre> | `string` | n/a | no |
 
 ## Secrets
 
@@ -18,7 +19,9 @@ N/A
 
 ## Outputs
 
-N/A
+| Name | Description |
+| :--- | :---------- |
+| branch | Name of the pushed branch. |
 
 ## Permissions
 
