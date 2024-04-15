@@ -35,32 +35,30 @@ jobs:
 
   test-matrix:
     needs: [test]
-    permissions:
-      contents: read
-      packages: read
+
     strategy:
       matrix:
-        install-options: ["", "--no-audit --ignore-scripts"]
+        npm-install-options: ["", "--no-audit --ignore-scripts"]
         include:
-          - install-options: ""
+          - npm-install-options: ""
             lint-script: "npm run test"
             checkout-ref: ${{ github.ref }}
-          - install-options: "--no-audit --ignore-scripts"
+          - npm-install-options: "--no-audit --ignore-scripts"
             lint-script: "npm run test && npm run test:script"
             checkout-ref: ${{ github.head_ref}}
     uses: ./.github/workflows/lint.yml
     with:
-      install-options: ${{ matrix.install-options }}
+      npm-install-options: ${{ matrix.npm-install-options }}
       lint-script: ${{ matrix.lint-script }}
       checkout-ref: ${{ matrix.checkout-ref }}
       working-directory: test
       node-version-file: test/package.json
-
-  test-with-token:
-    needs: [test]
     permissions:
       contents: read
       packages: read
+
+  test-with-token:
+    needs: [test]
     uses: ./.github/workflows/lint.yml
     with:
       enable-format-check: true
@@ -68,3 +66,6 @@ jobs:
       node-version-file: test/package.json
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: read
+      packages: read

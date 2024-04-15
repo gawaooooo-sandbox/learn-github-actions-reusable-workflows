@@ -10,14 +10,14 @@ GitHub Actions で ラベルの設定を行うための再利用可能なワー�
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| configuration-path | <pre>The path to the label configuration file.</pre> | `string` | `.github/labeler.yml` | no |
-| sync-labels | <pre>Whether or not to remove labels when matching files are reverted or no longer changed by the PR</pre> | `boolean` | `true` | no |
+| configuration-path | <pre>Optional. Specifies the path to the label configuration file where label rules are defined.<br>This file determines which labels should be applied based on file paths changed in the pull request.<br>Default: .github/labeler.yml</pre> | `string` | `.github/labeler.yml` | no |
+| sync-labels | <pre>Optional. Controls whether labels should be removed if matching files are reverted or no longer changed by the pull request.<br>Set to true to enable this behavior.<br>Default: true</pre> | `boolean` | `true` | no |
 
 ## Secrets
 
 | Name | Description | Required |
 | :--- | :---------- | :------: |
-| repo-token | <pre>Token to use to authorize label changes.<br>Typically the GITHUB_TOKEN secret</pre> | yes |
+| repo-token | <pre>Required. Token used to authorize label changes within the repository.<br>This is typically set to the GITHUB_TOKEN provided by GitHub to interact with the GitHub API.</pre> | yes |
 
 ## Outputs
 
