@@ -1,4 +1,4 @@
-# reusable-make-wf-docs
+# docs-generator
 
 GitHub Actions で ワークフローや action のドキュメントを自動生成するための再利用可能なワークフロー
 

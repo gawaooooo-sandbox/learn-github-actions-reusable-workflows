@@ -4,7 +4,8 @@ run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ g
 on:
   pull_request:
     paths:
-      - ".github/workflows/reusable-*.yml"
+      - ".github/workflows/**.yml"
+      - "!**/*internal*.yml"
 permissions:
   contents: write
 defaults:
@@ -20,27 +21,27 @@ jobs:
       matrix:
         yaml-file:
           [
-            .github/workflows/reusable-lint.yml,
-            .github/workflows/reusable-make-wf-docs.yml,
-            .github/workflows/reusable-deploy.yml,
-            .github/workflows/reusable-yaml-lint.yml,
-            .github/workflows/reusable-github-release.yml,
-            .github/workflows/reusable-label.yml,
+            .github/workflows/lint.yml,
+            .github/workflows/docs-generator.yml,
+            .github/workflows/deploy.yml,
+            .github/workflows/yaml-lint.yml,
+            .github/workflows/github-release.yml,
+            .github/workflows/label.yml,
           ]
         include:
-          - yaml-file: .github/workflows/reusable-lint.yml
-            markdown-file: docs/reusable-lint.md
-          - yaml-file: .github/workflows/reusable-make-wf-docs.yml
-            markdown-file: docs/reusable-make-wf-docs.md
-          - yaml-file: .github/workflows/reusable-deploy.yml
-            markdown-file: docs/reusable-deploy.md
-          - yaml-file: .github/workflows/reusable-yaml-lint.yml
-            markdown-file: docs/reusable-yaml-lint.md
-          - yaml-file: .github/workflows/reusable-github-release.yml
-            markdown-file: docs/reusable-github-release.md
-          - yaml-file: .github/workflows/reusable-label.yml
-            markdown-file: docs/reusable-label.md
-    uses: ./.github/workflows/reusable-make-wf-docs.yml
+          - yaml-file: .github/workflows/lint.yml
+            markdown-file: docs/lint.md
+          - yaml-file: .github/workflows/docs-generator.yml
+            markdown-file: docs/docs-generator.md
+          - yaml-file: .github/workflows/deploy.yml
+            markdown-file: docs/deploy.md
+          - yaml-file: .github/workflows/yaml-lint.yml
+            markdown-file: docs/yaml-lint.md
+          - yaml-file: .github/workflows/github-release.yml
+            markdown-file: docs/github-release.md
+          - yaml-file: .github/workflows/label.yml
+            markdown-file: docs/label.md
+    uses: ./.github/workflows/docs-generator.yml
     with:
       yaml-file: ${{ matrix.yaml-file }}
       markdown-file: ${{ matrix.markdown-file }}

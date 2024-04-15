@@ -1,4 +1,4 @@
-# reusable-label
+# label
 
 GitHub Actions で ラベルの設定を行うための再利用可能なワークフロー
 
