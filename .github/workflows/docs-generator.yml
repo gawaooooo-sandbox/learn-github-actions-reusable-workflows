@@ -9,18 +9,21 @@ on:
     inputs:
       yaml-file:
         description: |
-          The YAML file for the action or the reusable workflow
+          Required. Specifies the path to the YAML file of the action or reusable workflow for which the documentation should be generated.
         type: string
         required: true
       markdown-file:
         description: |
-          The Markdown file for the injection target
+          Optional. Specifies the target Markdown file where the generated documentation will be injected.
+          If not specified, 'README.md' is used as default.
+          Default: "README.md"
         type: string
         required: false
         default: "README.md"
       ref:
         description: |
-          The git ref
+          Required. The git ref (such as a branch, tag, or commit SHA) that the documentation generation should be based on.
+          This ref will be checked out for processing.
         type: string
         required: true
 
