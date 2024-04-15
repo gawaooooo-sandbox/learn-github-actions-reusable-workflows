@@ -75,9 +75,10 @@ jobs:
           # Convert strings to arrays
           IFS=$'\n' read -r -a yaml_files <<< "$yaml_files"
           IFS=$'\n' read -r -a markdown_files <<< "$markdown_files"
+          unset IFS  # IFSの設定を解除
 
-          echo "$yaml_files"
-          echo "$_markdown_files"
+          echo "YAML files array: ${yaml_files[*]}"
+          echo "Markdown files array: ${markdown_files[*]}"
 
           for index in "${!yaml_files[@]}"; do
             yaml_file=${yaml_files[index]}
