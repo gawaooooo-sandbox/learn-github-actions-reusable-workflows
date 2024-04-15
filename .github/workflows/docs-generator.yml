@@ -21,17 +21,22 @@ on:
         type: string
         required: true
 
-      # ref:
-      #   description: |
-      #     The git ref to check out for documentation generation.
-      #   type: string
-      #   required: true
+      ref:
+        description: |
+          The git ref to check out for documentation generation.
+        type: string
+        required: false
 
       commit-message:
         description: |
           The commit message.
         type: string
         required: true
+
+    outputs:
+      branch:
+        value: ${{ jobs.generate.outputs.branch }}
+        description: Name of the pushed branch.
 
 defaults:
   run:
@@ -57,28 +62,38 @@ jobs:
       pull-requests: write
     env:
       BASE_BRANCH: ${{ github.event.repository.default_branch }}
+    outputs:
+      branch: ${{ steps.git-push.outputs.branch }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.BASE_BRANCH }}
+          ref: ${{ inputs.ref || env.BASE_BRANCH }}
 
       - name: Generate Documentation for Multiple Files
         run: |
           set -x
 
           # Use jq to parse the JSON array properly and remove unwanted characters
-          yaml_files=$(echo "${{ env.YAML_FILES }}" | jq -r '.[]')
-          markdown_files=$(echo "${{ env.MARKDOWN_FILES }}" | jq -r '.[]')
+          yaml_files_str=$(echo "${{ env.YAML_FILES }}" | jq -r '.[]')
+          markdown_files_str=$(echo "${{ env.MARKDOWN_FILES }}" | jq -r '.[]')
 
-          # Convert strings to arrays
-          IFS=$'\n' read -r -d '' -a yaml_files <<< "$yaml_files"
-          IFS=$'\n' read -r -d '' -a markdown_files <<< "$markdown_files"
+          echo "yaml_files_str: ${yaml_files_str}"
+          echo "markdown_files_str: ${markdown_files_str}"
+
+          # Convert newline-separated strings to arrays using mapfile
+          mapfile -t yaml_files <<< "$yaml_files_str"
+          mapfile -t markdown_files <<< "$markdown_files_str"
+
+          echo "YAML files array: ${yaml_files[*]}"
+          echo "Markdown files array: ${markdown_files[*]}"
 
           for index in "${!yaml_files[@]}"; do
             yaml_file=${yaml_files[index]}
             markdown_file=${markdown_files[index]}
+
+            echo "Processing $yaml_file and $markdown_file"
 
             # Check if the Markdown file exists, if not, create an empty file
             if [ ! -f "$markdown_file" ]; then
