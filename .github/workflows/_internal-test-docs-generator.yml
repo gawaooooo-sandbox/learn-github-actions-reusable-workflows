@@ -1,0 +1,55 @@
+name: Test for docs-generator
+run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} [${{ github.sha }}]"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/docs-generator.yml
+      - .github/workflows/_internal-docs-generator.yml
+
+concurrency:
+  group: test-docs-generator-{{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    outputs:
+      yaml-files: ${{ steps.collect.outputs.yaml-files }}
+      markdown-files: ${{ steps.collect.outputs.markdown-files }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Collect .yml and .md files
+        id: collect
+        run: |
+          set -x
+
+          yaml_files="$(find .github/workflows -name '*.yml' -not -path '*internal*')"
+
+          # path/to/file1.yml → docs/file1.md
+          markdown_files="${yaml_files//.github\/workflows\//docs/}"
+          markdown_files="${markdown_files//.yml/.md}"
+
+          echo "yaml-files=$(echo "$yaml_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+          echo "markdown-files=$(echo "$markdown_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: [prepare]
+    uses: ./.github/workflows/docs-generator.yml
+    with:
+      commit-message: Update document test
+      yaml-files: ${{ toJSON(needs.prepare.outputs.yaml-files) }}
+      markdown-files: ${{ toJSON(needs.prepare.outputs.markdown-files) }}
+      ref: ${{github.head_ref}}
+    permissions:
+      contents: write
+      pull-requests: write

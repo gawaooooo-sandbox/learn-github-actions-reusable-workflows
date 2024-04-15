@@ -21,11 +21,11 @@ on:
         type: string
         required: true
 
-      # ref:
-      #   description: |
-      #     The git ref to check out for documentation generation.
-      #   type: string
-      #   required: true
+      ref:
+        description: |
+          The git ref to check out for documentation generation.
+        type: string
+        required: false
 
       commit-message:
         description: |
@@ -62,7 +62,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.BASE_BRANCH }}
+          ref: ${{ inputs.ref || env.BASE_BRANCH }}
 
       - name: Generate Documentation for Multiple Files
         run: |
