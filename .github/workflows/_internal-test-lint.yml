@@ -40,17 +40,17 @@ jobs:
       packages: read
     strategy:
       matrix:
-        install-options: ["", "--no-audit --ignore-scripts"]
+        npm-install-options: ["", "--no-audit --ignore-scripts"]
         include:
-          - install-options: ""
+          - npm-install-options: ""
             lint-script: "npm run test"
             checkout-ref: ${{ github.ref }}
-          - install-options: "--no-audit --ignore-scripts"
+          - npm-install-options: "--no-audit --ignore-scripts"
             lint-script: "npm run test && npm run test:script"
             checkout-ref: ${{ github.head_ref}}
     uses: ./.github/workflows/lint.yml
     with:
-      install-options: ${{ matrix.install-options }}
+      npm-install-options: ${{ matrix.npm-install-options }}
       lint-script: ${{ matrix.lint-script }}
       checkout-ref: ${{ matrix.checkout-ref }}
       working-directory: test

@@ -65,7 +65,7 @@ on:
         # TODO: github.ref?
         default: ${{ github.head_ref }}
 
-      install-options:
+      npm-install-options:
         description: |
           Optional. Additional command-line options to pass to the `npm ci` command during dependencies installation.
           Example: "--prefer-offline --no-audit"
@@ -166,7 +166,7 @@ jobs:
           npm-scope: ${{ inputs.npm-scope }}
           node-auth-token: ${{ secrets.node-auth-token }}
           checkout-ref: ${{ inputs.checkout-ref }}
-          npm-install-options: ${{ inputs.install-options }}
+          npm-install-options: ${{ inputs.npm-install-options }}
 
       - name: Run format check
         if: ${{ inputs.enable-format-check }}
