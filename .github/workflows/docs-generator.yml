@@ -65,16 +65,17 @@ jobs:
           ref: ${{ env.BASE_BRANCH }}
 
       - name: Parse Input Files
+        id: input-files
         run: |
-          echo "YAML_FILES=${{ inputs.yaml-files }}" >> $GITHUB_ENV
-          echo "MARKDOWN_FILES=${{ inputs.markdown-files }}" >> $GITHUB_ENV
+          echo "yaml-files=${{ inputs.yaml-files }}" >> "$GITHUB_OUTPUT"
+          echo "markdown-files=${{ inputs.markdown-files }}" >> "$GITHUB_OUTPUT"
 
       - name: Generate Documentation for Multiple Files
         run: |
           set -x
 
-          IFS=',' read -r -a yaml_files <<< "$YAML_FILES"
-          IFS=',' read -r -a markdown_files <<< "$MARKDOWN_FILES"
+          IFS=',' read -r -a yaml_files <<< "${{ steps.input-files.outputs.yaml-files }}"
+          IFS=',' read -r -a markdown_files <<< "${{ steps.input-files.outputs.markdown-files }}"
 
           for index in "${!yaml_files[@]}"; do
             yaml_file=${yaml_files[index]}
