@@ -167,7 +167,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: create inputs summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v2
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v3
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
 
@@ -196,7 +196,7 @@ jobs:
           source_ref: ${{ inputs.auto-merge-source-ref }}
 
       - name: Setup Node.js and Install dependencies
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-npm-setup@v2
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/node-setup-and-dependencies@v3
         with:
           node-version: ${{ inputs.node-version }}
           node-version-file: ${{ inputs.node-version-file }}
@@ -208,7 +208,7 @@ jobs:
           npm-install-options: ${{ inputs.npm-install-options }}
 
       - name: Set environment variables
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/setup-environment-variables@v2
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/setup-environment-variables@v3
         with:
           environment-variables: ${{ inputs.build-environments }}
 
@@ -219,7 +219,7 @@ jobs:
 
       - name: Deploy to ${{ inputs.environment }} [${{ inputs.s3-sync-command }}]
         id: deploy
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/aws-s3-deploy-conditionally@v2
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/aws-s3-deploy-conditionally@v3
         with:
           environment: ${{ inputs.environment }}
           aws-role-arn: ${{ secrets.aws-role-arn }}
