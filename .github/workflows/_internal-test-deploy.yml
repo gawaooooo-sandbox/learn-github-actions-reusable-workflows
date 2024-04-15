@@ -13,13 +13,10 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        type: choice
+        type: environment
         required: true
         description: "Choose the environment"
         default: "develop"
-        options:
-          - develop
-          - prod
   pull_request:
     paths:
       - .github/workflows/deploy.yml
