@@ -64,19 +64,13 @@ jobs:
         with:
           ref: ${{ env.BASE_BRANCH }}
 
-      - name: Parse Input Files
-        id: input-files
-        run: |
-          echo "yaml-files=${{ inputs.yaml-files }}" >> "$GITHUB_OUTPUT"
-          echo "markdown-files=${{ inputs.markdown-files }}" >> "$GITHUB_OUTPUT"
-
       - name: Generate Documentation for Multiple Files
         run: |
           set -x
 
           # Use jq to parse the JSON array properly and remove unwanted characters
-          yaml_files=$(echo "${{ steps.input-files.outputs.yaml-files }}" | jq -r '.[]')
-          markdown_files=$(echo "${{ steps.input-files.outputs.markdown-files }}" | jq -r '.[]')
+          yaml_files=$(echo "${{ env.YAML_FILES }}" | jq -r '.[]')
+          markdown_files=$(echo '${{ env.MARKDOWN_FILES }}' | jq -r '.[]')
 
           # Convert strings to arrays
           IFS=$'\n' read -r -d '' -a yaml_files <<< "$yaml_files"
@@ -94,6 +88,9 @@ jobs:
             fi
             docker run --rm -v "$(pwd):/work" -w "/work" ghcr.io/tmknom/actdocs inject --sort --file "$markdown_file" "$yaml_file"
           done
+        env:
+          YAML_FILES: ${{ inputs.yaml-files }}
+          MARKDOWN_FILES: ${{ inputs.markdown-files }}
 
       - name: Configure Git
         run: |
