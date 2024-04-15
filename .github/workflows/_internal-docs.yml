@@ -2,7 +2,9 @@ name: Generate reusable workflow docs
 run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} [${{ github.sha }}]"
 
 on:
-  pull_request:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
     paths:
       - ".github/workflows/**.yml"
       - "!**/*internal*.yml"
@@ -16,35 +18,37 @@ defaults:
     shell: bash
 
 jobs:
-  docs:
-    strategy:
-      matrix:
-        yaml-file:
-          [
-            .github/workflows/lint.yml,
-            .github/workflows/docs-generator.yml,
-            .github/workflows/deploy.yml,
-            .github/workflows/yaml-lint.yml,
-            .github/workflows/github-release.yml,
-            .github/workflows/label.yml,
-          ]
-        include:
-          - yaml-file: .github/workflows/lint.yml
-            markdown-file: docs/lint.md
-          - yaml-file: .github/workflows/docs-generator.yml
-            markdown-file: docs/docs-generator.md
-          - yaml-file: .github/workflows/deploy.yml
-            markdown-file: docs/deploy.md
-          - yaml-file: .github/workflows/yaml-lint.yml
-            markdown-file: docs/yaml-lint.md
-          - yaml-file: .github/workflows/github-release.yml
-            markdown-file: docs/github-release.md
-          - yaml-file: .github/workflows/label.yml
-            markdown-file: docs/label.md
+  prepare:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    outputs:
+      yaml-files: ${{ steps.collect.outputs.yaml-files }}
+      markdown-files: ${{ steps.collect.outputs.markdown-files }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Collect .yml and .md files
+        id: collect
+        run: |
+          set -x
+
+          yaml_files="$(find .github/workflows -name '*.yml' -not -path '*internal*')"
+
+          # path/to/file1.yml → docs/file1.md
+          markdown_files="${yaml_files//.github\/workflows\//docs/}"
+          markdown_files="${markdown_files//.yml/.md}"
+
+          echo "yaml-files=$(echo "$yaml_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+          echo "markdown-files=$(echo "$markdown_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+
+  generate:
+    needs: [prepare]
     uses: ./.github/workflows/docs-generator.yml
     with:
-      yaml-file: ${{ matrix.yaml-file }}
-      markdown-file: ${{ matrix.markdown-file }}
-      ref: ${{ github.head_ref }}
+      commit-message: Update document
+      yaml-files: ${{ needs.prepare.outputs.yaml-files }}
+      markdown-files: ${{ needs.prepare.outputs.markdown-files }}
     permissions:
       contents: write
+      pull-requests: write
