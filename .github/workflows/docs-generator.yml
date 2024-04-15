@@ -35,8 +35,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: create inputs summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@main
+      - name: Create inputs summary
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v3
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
 
