@@ -72,6 +72,9 @@ jobs:
           yaml_files_str=$(echo "${{ env.YAML_FILES }}" | jq -r '.[] | @text')
           markdown_files_str=$(echo "${{ env.MARKDOWN_FILES }}" | jq -r '.[] | @text')
 
+          echo "yaml_files_str: ${yaml_files_str}"
+          echo "markdown_files_str: ${markdown_files_str}"
+
           # Convert newline-separated strings to arrays
           IFS=$'\n' read -r -a yaml_files <<< "$yaml_files_str"
           IFS=$'\n' read -r -a markdown_files <<< "$markdown_files_str"
