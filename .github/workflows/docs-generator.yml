@@ -76,9 +76,16 @@ jobs:
           IFS=$'\n' read -r -a yaml_files <<< "$yaml_files"
           IFS=$'\n' read -r -a markdown_files <<< "$markdown_files"
 
+          echo "$yaml_files"
+          echo "$_markdown_files"
+
           for index in "${!yaml_files[@]}"; do
             yaml_file=${yaml_files[index]}
+            echo "$index"
+            echo "$yaml_file"
+
             markdown_file=${markdown_files[index]}
+            echo "$markdown_file"
 
             # Check if the Markdown file exists, if not, create an empty file
             if [ ! -f "$markdown_file" ]; then
