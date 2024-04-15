@@ -8,20 +8,25 @@ on:
   workflow_call:
     inputs:
       yaml-file:
-        required: true
+        description: |
+          Required. Specifies the path to the YAML file of the action or reusable workflow for which the documentation should be generated.
         type: string
-        description: "The YAML file for the action or the reusable workflow"
+        required: true
       markdown-file:
-        default: "README.md"
+        description: |
+          Optional. Specifies the target Markdown file where the generated documentation will be injected.
+          If not specified, 'README.md' is used as default.
+          Default: "README.md"
+        type: string
         required: false
-        type: string
-        description: "The Markdown file for the injection target"
+        default: "README.md"
       ref:
-        required: true
+        description: |
+          Required. The git ref (such as a branch, tag, or commit SHA) that the documentation generation should be based on.
+          This ref will be checked out for processing.
         type: string
-        description: "The git ref"
-permissions:
-  contents: write
+        required: true
+
 defaults:
   run:
     shell: bash
@@ -33,14 +38,16 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: create inputs summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@main
+      - name: Create inputs summary
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v3
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
 
   generate:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
+    permissions:
+      contents: write
     env:
       YAML_FILE: ${{ inputs.yaml-file }}
       MD_FILE: ${{ inputs.markdown-file }}

@@ -6,14 +6,14 @@ on:
     paths:
       - ".github/workflows/**.yml"
       - "!**/*internal*.yml"
-permissions:
-  contents: write
-defaults:
-  run:
-    shell: bash
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   docs:
@@ -46,3 +46,5 @@ jobs:
       yaml-file: ${{ matrix.yaml-file }}
       markdown-file: ${{ matrix.markdown-file }}
       ref: ${{ github.head_ref }}
+    permissions:
+      contents: write

@@ -5,9 +5,10 @@ on:
   workflow_call:
     inputs:
       level:
+        description: |
+          Bump up to [patch / minor / major]
         type: string
         required: true
-        description: Bump up to [patch / minor / major]
 
 defaults:
   run:
