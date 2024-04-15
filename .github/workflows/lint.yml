@@ -8,8 +8,8 @@ on:
           Optional. Specifies the directory where the workflow should execute.
           Use this to change the default context if your project has a specific structure.
           Example: "src/app"
-        required: false
         type: string
+        required: false
         default: "."
 
       node-version:
@@ -17,8 +17,8 @@ on:
           Optional. Defines the version of Node.js to use.
           Specify a version number to ensure consistent runtime environments across different executions.
           Example: "20.x"
-        required: false
         type: string
+        required: false
 
       node-version-file:
         description: |
@@ -26,8 +26,8 @@ on:
           overriding the 'node-version' input if both are specified.
           Default: ".nvmrc"
           Example: "package.json"
-        required: false
         type: string
+        required: false
         default: ".nvmrc"
 
       node-caching:
@@ -36,8 +36,8 @@ on:
           Leave this as the default or set to an empty string to disable caching.
           Default: "npm"
           Example: "yarn"
-        required: false
         type: string
+        required: false
         default: "npm"
 
       npm-registry-url:
@@ -45,23 +45,23 @@ on:
           Optional. Sets the npm registry URL, which can be used to define custom registries
           for npm package installations.
           Example: "https://npm.pkg.github.com"
-        required: false
         type: string
+        required: false
 
       npm-scope:
         description: |
           Optional. Specifies the scope for npm package installations,
           affecting where packages are searched for and where they are published.
           Example: "@myorg"
-        required: false
         type: string
+        required: false
 
       checkout-ref:
         description: |
           Optional. Determines the specific reference (such as a branch, tag, or commit SHA) to checkout.
           Example: "refs/heads/feature-branch"
-        required: false
         type: string
+        required: false
         # TODO: github.ref?
         default: ${{ github.head_ref }}
 
@@ -69,16 +69,16 @@ on:
         description: |
           Optional. Additional command-line options to pass to the `npm ci` command during dependencies installation.
           Example: "--prefer-offline --no-audit"
-        required: false
         type: string
+        required: false
 
       enable-format-check:
         description: |
           Optional. Enables a format check step within the workflow.
           Set to true to activate this step.
           Default: false
-        required: false
         type: boolean
+        required: false
         default: false
 
       format-check-script:
@@ -86,8 +86,8 @@ on:
           Optional. The npm script to run for formatting checks.
           This is only used if 'enable-format-check' is true.
           Default: "npm run format:check"
-        required: false
         type: string
+        required: false
         default: "npm run format:check"
 
       enable-lint:
@@ -95,8 +95,8 @@ on:
           Optional. Activates the linting step.
           Set to true to run lint checks.
           Default: true
-        required: false
         type: boolean
+        required: false
         default: true
 
       lint-script:
@@ -104,8 +104,8 @@ on:
           Optional. The npm script to run for linting.
           This is used if 'enable-lint' is true.
           Default: "npm run lint"
-        required: false
         type: string
+        required: false
         default: "npm run lint"
 
       enable-type-check:
@@ -113,8 +113,8 @@ on:
           Optional. Turns on type checking as part of the workflow.
           Set to true to enforce type validations.
           Default: false
-        required: false
         type: boolean
+        required: false
         default: false
 
       typecheck-script:
@@ -122,8 +122,8 @@ on:
           Optional. The npm script to run for type checks.
           This is used if 'enable-type-check' is true.
           Default: "npm run type-check"
-        required: false
         type: string
+        required: false
         default: "npm run type-check"
 
     secrets:
