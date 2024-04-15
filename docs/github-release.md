@@ -6,9 +6,9 @@ GitHub Actions で GitHub リリースを行うための再利用可能なワー
 
 ## Inputs
 
-| Name  | Description                        | Type     | Default | Required |
-| :---- | :--------------------------------- | :------- | :------ | :------: |
-| level | Bump up to [patch / minor / major] | `string` | n/a     |   yes    |
+| Name | Description | Type | Default | Required |
+| :--- | :---------- | :--- | :------ | :------: |
+| level | Bump up to [patch / minor / major] | `string` | n/a | yes |
 
 ## Secrets
 
@@ -23,3 +23,5 @@ N/A
 N/A
 
 <!-- actdocs end -->
+
+

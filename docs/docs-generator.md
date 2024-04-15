@@ -6,11 +6,11 @@ GitHub Actions で ワークフローや action のドキュメントを自動�
 
 ## Inputs
 
-| Name          | Description                                           | Type     | Default     | Required |
-| :------------ | :---------------------------------------------------- | :------- | :---------- | :------: |
-| ref           | The git ref                                           | `string` | n/a         |   yes    |
-| yaml-file     | The YAML file for the action or the reusable workflow | `string` | n/a         |   yes    |
-| markdown-file | The Markdown file for the injection target            | `string` | `README.md` |    no    |
+| Name | Description | Type | Default | Required |
+| :--- | :---------- | :--- | :------ | :------: |
+| ref | The git ref | `string` | n/a | yes |
+| yaml-file | The YAML file for the action or the reusable workflow | `string` | n/a | yes |
+| markdown-file | The Markdown file for the injection target | `string` | `README.md` | no |
 
 ## Secrets
 
@@ -22,9 +22,9 @@ N/A
 
 ## Permissions
 
-| Scope    | Access |
-| :------- | :----- |
-| contents | write  |
+| Scope | Access |
+| :--- | :---- |
+| contents | write |
 
 <!-- actdocs end -->
 
