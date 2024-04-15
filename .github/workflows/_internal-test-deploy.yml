@@ -1,4 +1,4 @@
-name: Test for reusable-deploy
+name: Test for deploy
 run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} / ${{ inputs.environment }} [${{ github.sha }}]"
 
 on:
@@ -22,11 +22,11 @@ on:
           - prod
   pull_request:
     paths:
-      - .github/workflows/reusable-deploy.yml
-      - .github/workflows/_internal-test-reusable-deploy.yml
+      - .github/workflows/deploy.yml
+      - .github/workflows/_internal-test-deploy.yml
 
 concurrency:
-  group: test-reusable-deploy-${{ github.workflow }}-${{ github.ref }}
+  group: test-deploy-{{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 defaults:
@@ -52,7 +52,7 @@ jobs:
             cat index.js
           fi
   exercise:
-    uses: ./.github/workflows/reusable-deploy.yml
+    uses: ./.github/workflows/deploy.yml
     with:
       working-directory: test
       environment: ${{ inputs.environment }}
@@ -116,7 +116,7 @@ jobs:
             build-environments: 'TEST_CONFIG="production-test" PROD="false" BASE_URL="https://example.com/prod" TEST_VAR="${{ vars.TEST_VAR }}"'
             s3-sync-command: ./outputs/public s3://example-prod-bucket --delete --dryrun --exclude "node_modules/*" --exclude "abc/*" --exclude "def/*"
             enable-aws-deploy: false
-    uses: ./.github/workflows/reusable-deploy.yml
+    uses: ./.github/workflows/deploy.yml
     with:
       working-directory: test
       environment: ${{ matrix.environment }}
@@ -137,7 +137,7 @@ jobs:
       contents: write
       packages: read
       id-token: write
-    uses: ./.github/workflows/reusable-deploy.yml
+    uses: ./.github/workflows/deploy.yml
     with:
       working-directory: test
       environment: ${{ inputs.environment }}
