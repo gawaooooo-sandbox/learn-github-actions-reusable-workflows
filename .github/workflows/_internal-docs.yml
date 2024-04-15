@@ -34,7 +34,10 @@ jobs:
           set -x
 
           yaml_files="$(find .github/workflows -name '*.yml' -not -path '*internal*')"
-          markdown_files="$(echo "$yaml_files" | sed 's#\(.*\)/\(.*\)\.yml#docs/\2.md#')"  # path/to/file1.yml → docs/file1.md
+
+          # path/to/file1.yml → docs/file1.md
+          markdown_files="${yaml_files//.github\/workflows\//docs/}"
+          markdown_files="${markdown_files//.yml/.md}"
 
           echo "yaml-files=$(echo "$yaml_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
           echo "markdown-files=$(echo "$markdown_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
