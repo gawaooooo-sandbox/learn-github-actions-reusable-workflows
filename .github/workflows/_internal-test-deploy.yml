@@ -13,9 +13,9 @@ on:
   workflow_dispatch:
     inputs:
       environment:
+        description: "Choose the environment"
         type: environment
         required: true
-        description: "Choose the environment"
         default: "develop"
   pull_request:
     paths:
