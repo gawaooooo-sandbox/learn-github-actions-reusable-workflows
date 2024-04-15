@@ -51,6 +51,7 @@ jobs:
           if [ -f index.js ]; then
             cat index.js
           fi
+
   exercise:
     uses: ./.github/workflows/deploy.yml
     with:
@@ -90,10 +91,6 @@ jobs:
           echo "S3_DEPLOY_COMMAND: $S3_DEPLOY_COMMAND"
 
   exercise-matrix:
-    permissions:
-      contents: write
-      packages: read
-      id-token: write
     strategy:
       max-parallel: 2
       fail-fast: false
@@ -131,12 +128,12 @@ jobs:
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-
-  exercise-auto-merge:
     permissions:
       contents: write
       packages: read
       id-token: write
+
+  exercise-auto-merge:
     uses: ./.github/workflows/deploy.yml
     with:
       working-directory: test
@@ -157,3 +154,7 @@ jobs:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       github-token: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      packages: read
+      id-token: write
