@@ -69,15 +69,15 @@ jobs:
           set -x
 
           # Use jq to parse the JSON array properly and remove unwanted characters
-          yaml_files_str=$(echo "${{ env.YAML_FILES }}" | jq -r '.[] | @text')
-          markdown_files_str=$(echo "${{ env.MARKDOWN_FILES }}" | jq -r '.[] | @text')
+          yaml_files_str=$(echo "${{ env.YAML_FILES }}" | jq -r '.[]')
+          markdown_files_str=$(echo "${{ env.MARKDOWN_FILES }}" | jq -r '.[]')
 
           echo "yaml_files_str: ${yaml_files_str}"
           echo "markdown_files_str: ${markdown_files_str}"
 
-          # Convert newline-separated strings to arrays
-          IFS=$'\n' read -r -a yaml_files <<< "$yaml_files_str"
-          IFS=$'\n' read -r -a markdown_files <<< "$markdown_files_str"
+          # Convert newline-separated strings to arrays using mapfile
+          mapfile -t yaml_files <<< "$yaml_files_str"
+          mapfile -t markdown_files <<< "$markdown_files_str"
 
           echo "YAML files array: ${yaml_files[*]}"
           echo "Markdown files array: ${markdown_files[*]}"
