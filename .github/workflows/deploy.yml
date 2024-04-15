@@ -6,30 +6,30 @@ on:
       working-directory:
         description: |
           Optional input to set the working directory.
-        required: false
         type: string
+        required: false
         default: "."
 
       environment:
         description: |
           Required input to set the environment to deploy.
-        required: true
         type: string
+        required: true
 
       # Set up Node.js  & install dependencies inputs
       node-version:
         description: |
           Optional input to set the version of Node.js used to build the project.
           The input syntax corresponds to the setup-node's one.
-        required: false
         type: string
+        required: false
 
       node-version-file:
         description: |
           Optional input to set the file that contains the version of Node.js used to build the project.
           The input syntax corresponds to the setup-node's one.
-        required: false
         type: string
+        required: false
         default: ".nvmrc"
 
       node-caching:
@@ -37,8 +37,8 @@ on:
           Optional input to set up caching for the setup-node action.
           The input syntax corresponds to the setup-node's one.
           Set to an empty string if caching isn't needed.
-        required: false
         type: string
+        required: false
         default: "npm"
 
       npm-registry-url:
@@ -46,8 +46,8 @@ on:
           Optional input to set the registry URL to use for the npm commands.
           The input syntax corresponds to the setup-node's one.
           When using GitHub Packages, specify `https://npm.pkg.github.com`
-        required: false
         type: string
+        required: false
 
       npm-scope:
         description: |
@@ -55,23 +55,23 @@ on:
           The input syntax corresponds to the setup-node's one.
           `hoge package` -> `@hoge`
           GitHub Packages -> `@owner` (use `github.repository_owner`)
-        required: false
         type: string
+        required: false
 
       checkout-ref:
         description: |
           Optional input to set the ref to checkout.
           The input syntax corresponds to the actions/checkout's one.
-        required: false
         type: string
+        required: false
         # TODO: github.ref?
         default: ${{ github.head_ref }}
 
       npm-install-options:
         description: |
           Optional input to set the options to pass to the `npm ci` command.
-        required: false
         type: string
+        required: false
 
       # Build inputs
       build-command:
@@ -79,16 +79,16 @@ on:
           Optional input to set the build command to run.
           `npm run build` -> `build`
           `npm run generate` -> `generate` (default)
-        required: false
         type: string
+        required: false
         default: "generate"
 
       build-environments:
         description: |
           Optional input to set the environment variables to use for the build.
           The input syntax corresponds to the setup-environment-variables's one.
-        required: false
         type: string
+        required: false
         default: ""
 
       # Deploy inputs
@@ -96,14 +96,14 @@ on:
         description: |
           Optional input to set the command to deploy the build artifacts to the S3 URI.
           e.g. `./dist s3://example-bucket --delete --exclude "hoge/*"`
-        required: true
         type: string
+        required: true
 
       s3-aws-region:
         description: |
           Optional input to set the AWS region to deploy the build artifacts.
-        required: false
         type: string
+        required: false
         default: "ap-northeast-1"
 
       enable-aws-deploy:
@@ -111,29 +111,29 @@ on:
           Optional input to set whether to use AWS credentials for the deployment and the command to deploy the build artifacts to the S3 URI.
           `true` -> use AWS credentials and deploy the build artifacts to the S3 URI
           `false` -> print the command to deploy the build artifacts to the S3 URI
-        required: false
         type: boolean
+        required: false
         default: true
 
       # auto merge
       enable-auto-merge:
         description: |
           Whether to perform an automatic merge before deployment.
+        type: boolean
         required: false
         default: false
-        type: boolean
 
       auto-merge-target-branch:
         description: |
           The target branch to merge into. Used if enable-auto-merge is true.
-        required: false
         type: string
+        required: false
 
       auto-merge-source-ref:
         description: |
           The source ref to merge from. Used if enable-auto-merge is true.
-        required: false
         type: string
+        required: false
         default: ${{ github.ref }}
 
     outputs:
