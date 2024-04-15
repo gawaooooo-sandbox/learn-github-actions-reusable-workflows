@@ -49,7 +49,19 @@ jobs:
       commit-message: Update document test
       yaml-files: ${{ toJSON(needs.prepare.outputs.yaml-files) }}
       markdown-files: ${{ toJSON(needs.prepare.outputs.markdown-files) }}
-      ref: ${{github.head_ref}}
+      # ref: ${{github.head_ref}}
     permissions:
       contents: write
       pull-requests: write
+
+  teardown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [test]
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: gh pr close "${{ env.BRANCH }}" || true
+      - run: git push origin "${{ env.BRANCH }}" --delete || true
+    env:
+      BRANCH: ${{ needs.test.outputs.branch }}
