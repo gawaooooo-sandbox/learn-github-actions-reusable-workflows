@@ -103,8 +103,12 @@ jobs:
           fi
 
           # Output the YAML and Markdown files as JSON arrays
-          echo "YAML_FILES=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
-          echo "MARKDOWN_FILES=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
+          echo "YAML_FILES='$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')'" >> $GITHUB_ENV
+          echo "MARKDOWN_FILES='$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')'" >> $GITHUB_ENV
+
+
+          # echo "YAML_FILES=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
+          # echo "MARKDOWN_FILES=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
 
           # echo "YAML_FILES=$(echo "$yaml_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_ENV"
           # echo "MARKDOWN_FILES=$(echo "$markdown_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_ENV"
