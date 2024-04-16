@@ -1,23 +1,18 @@
-# アクション／Reusable Workflowsのドキュメントを自動生成する
-#  @see https://zenn.dev/tmknom/books/pragmatic-composite-action/viewer/docs
-#  @see https://zenn.dev/tmknom/articles/actdocs-github-actions
-#  @see https://github.com/tmknom/docs-workflows/blob/main/.github/workflows/composite-action.yml
-#  @see https://github.com/tmknom/git-push-action/blob/main/action.yml
-
 name: Generate Documentation
 
 on:
   workflow_call:
     inputs:
-      yaml-files:
+      doc-type:
         description: |
-          A JSON array of YAML file paths for documentation generation.
+          Type of documentation to generate: workflow or composite.
         type: string
-        required: true
+        required: false
+        default: "workflow"
 
-      markdown-files:
+      commit-message:
         description: |
-          A JSON array of Markdown file paths where documentation should be injected.
+          The commit message.
         type: string
         required: true
 
@@ -27,15 +22,9 @@ on:
         type: string
         required: false
 
-      commit-message:
-        description: |
-          The commit message.
-        type: string
-        required: true
-
     outputs:
       branch:
-        value: ${{ jobs.generate.outputs.branch }}
+        value: ${{ jobs.prepare-and-generate.outputs.branch }}
         description: Name of the pushed branch.
 
 defaults:
@@ -54,7 +43,8 @@ jobs:
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
 
-  generate:
+  prepare-and-generate:
+    name: Generate ${{ inputs.doc-type }} documentation
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:
@@ -71,13 +61,49 @@ jobs:
         with:
           ref: ${{ inputs.ref || env.BASE_BRANCH }}
 
-      - name: Generate Documentation for Multiple Files
+      - name: Collect YAML ans Markdown files
+        id: collect
+        env:
+          DOC_TYPE: ${{ inputs.doc-type }}
         run: |
           set -x
 
+          if [ "${DOC_TYPE}" == "workflow" ]; then
+            # Find all YAML files in the workflows directory
+            yaml_files="$(find .github/workflows -name '*.yml' -not -path '*internal*')"
+
+            # path/to/file1.yml → docs/file1.md
+            markdown_files="${yaml_files//.github\/workflows\//docs/}"
+            markdown_files="${markdown_files//.yml/.md}"
+
+          elif [ "${DOC_TYPE}" == "composite" ]; then
+            # Find all YAML files in the composite directory
+            yaml_files="$(find composite -name 'action.yml')"
+
+            # composite/path/to/file1/action.yml → docs/path/to/file1.md
+            markdown_files="${yaml_files//composite\//docs/}"
+            markdown_files="${markdown_files//\/action.yml/.md}"
+
+          else
+            echo "Error: Invalid doc-type value '${DOC_TYPE}'. It must be either 'workflow' or 'composite'."
+            exit 1
+          fi
+
+          # Output the YAML and Markdown files as JSON arrays
+          echo "yaml-files=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "${GITHUB_OUTPUT}"
+          echo "markdown-files=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "${GITHUB_OUTPUT}"
+
+      - name: Generate Documentation for Multiple Files
+        env:
+          YAML_FILES: ${{ steps.collect.outputs.yaml-files }}
+          MARKDOWN_FILES: ${{ steps.collect.outputs.markdown-files }}
+        run: |
+          echo "::group::Generate Documentation for Multiple Files"
+          set -x
+
           # Use jq to parse the JSON array properly and remove unwanted characters
-          yaml_files_str=$(echo "${{ env.YAML_FILES }}" | jq -r '.[]')
-          markdown_files_str=$(echo "${{ env.MARKDOWN_FILES }}" | jq -r '.[]')
+          yaml_files_str=$(echo "${YAML_FILES:-}" | jq -r '.[]')
+          markdown_files_str=$(echo "${MARKDOWN_FILES:-}" | jq -r '.[]')
 
           echo "yaml_files_str: ${yaml_files_str}"
           echo "markdown_files_str: ${markdown_files_str}"
@@ -103,9 +129,7 @@ jobs:
             fi
             docker run --rm -v "$(pwd):/work" -w "/work" ghcr.io/tmknom/actdocs inject --sort --file "$markdown_file" "$yaml_file"
           done
-        env:
-          YAML_FILES: ${{ inputs.yaml-files }}
-          MARKDOWN_FILES: ${{ inputs.markdown-files }}
+          echo "::endgroup::"
 
       - name: Configure Git
         run: |
