@@ -43,13 +43,13 @@ jobs:
           echo "yaml-files=$(echo "$yaml_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
           echo "markdown-files=$(echo "$markdown_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
 
-  generate:
-    needs: [prepare]
-    uses: ./.github/workflows/docs-generator.yml
-    with:
-      commit-message: Update document
-      yaml-files: ${{ toJSON(needs.prepare.outputs.yaml-files) }}
-      markdown-files: ${{ toJSON(needs.prepare.outputs.markdown-files) }}
-    permissions:
-      contents: write
-      pull-requests: write
+  # generate:
+  #   needs: [prepare]
+  #   uses: ./.github/workflows/docs-generator.yml
+  #   with:
+  #     commit-message: Update document
+  #     yaml-files: ${{ toJSON(needs.prepare.outputs.yaml-files) }}
+  #     markdown-files: ${{ toJSON(needs.prepare.outputs.markdown-files) }}
+  #   permissions:
+  #     contents: write
+  #     pull-requests: write
