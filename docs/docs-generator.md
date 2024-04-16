@@ -9,8 +9,7 @@ GitHub Actions で ワークフローや action のドキュメントを自動�
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
 | commit-message | <pre>The commit message.</pre> | `string` | n/a | yes |
-| markdown-files | <pre>A JSON array of Markdown file paths where documentation should be injected.</pre> | `string` | n/a | yes |
-| yaml-files | <pre>A JSON array of YAML file paths for documentation generation.</pre> | `string` | n/a | yes |
+| doc-type | <pre>Type of documentation to generate: workflow or composite.</pre> | `string` | `workflow` | no |
 | ref | <pre>The git ref to check out for documentation generation.</pre> | `string` | n/a | no |
 
 ## Secrets
