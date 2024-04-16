@@ -103,17 +103,11 @@ jobs:
           fi
 
           # Output the YAML and Markdown files as JSON arrays
-          echo "YAML_FILES='$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')'" >> $GITHUB_ENV
-          echo "MARKDOWN_FILES='$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')'" >> $GITHUB_ENV
-
-
-          # echo "YAML_FILES=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
-          # echo "MARKDOWN_FILES=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
+          echo "YAML_FILES=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
+          echo "MARKDOWN_FILES=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
 
           # echo "YAML_FILES=$(echo "$yaml_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_ENV"
           # echo "MARKDOWN_FILES=$(echo "$markdown_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_ENV"
-          # echo "YAML_FILES=$(echo "${yaml_files[*]}" | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_ENV}"
-          # echo "MARKDOWN_FILES=$(echo "${markdown_files[*]}" | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_ENV}"
 
       - name: Generate Documentation for Multiple Files
         run: |
@@ -121,8 +115,8 @@ jobs:
           set -x
 
           # Use jq to parse the JSON array properly and remove unwanted characters
-          yaml_files_str=$(echo "${{ env.YAML_FILES }}" | jq -r '.[]')
-          markdown_files_str=$(echo "$${{ env.MARKDOWN_FILES }}" | jq -r '.[]')
+          yaml_files_str=$(echo '${{ env.YAML_FILES }}' | jq -r '.[]')
+          markdown_files_str=$(echo '$${{ env.MARKDOWN_FILES }}' | jq -r '.[]')
 
           echo "yaml_files_str: ${yaml_files_str}"
           echo "markdown_files_str: ${markdown_files_str}"
