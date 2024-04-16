@@ -8,6 +8,7 @@ on:
     paths:
       - ".github/workflows/**.yml"
       - "!**/*internal*.yml"
+      - ".github/workflows/_internal-docs.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
