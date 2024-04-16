@@ -80,7 +80,6 @@ jobs:
         run: |
           set -x
 
-
           if [ "${DOC_TYPE}" == "workflow" ]; then
             # Find all YAML files in the workflows directory
             yaml_files="$(find .github/workflows -name '*.yml' -not -path '*internal*')"
@@ -103,20 +102,20 @@ jobs:
           fi
 
           # Output the YAML and Markdown files as JSON arrays
-          echo "YAML_FILES=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
-          echo "MARKDOWN_FILES=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_ENV"
-
-          # echo "YAML_FILES=$(echo "$yaml_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_ENV"
-          # echo "MARKDOWN_FILES=$(echo "$markdown_files" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_ENV"
+          echo "yaml-files=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "${GITHUB_OUTPUT}"
+          echo "markdown-files=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "${GITHUB_OUTPUT}"
 
       - name: Generate Documentation for Multiple Files
+        env:
+          YAML_FILES: ${{ steps.collect.outputs.yaml-files }}
+          MARKDOWN_FILES: ${{ steps.collect.outputs.markdown-files }}
         run: |
           echo "::group::Generate Documentation for Multiple Files"
           set -x
 
           # Use jq to parse the JSON array properly and remove unwanted characters
-          yaml_files_str=$(echo '${{ env.YAML_FILES }}' | jq -r '.[]')
-          markdown_files_str=$(echo '${{ env.MARKDOWN_FILES }}' | jq -r '.[]')
+          yaml_files_str=$(echo '${YAML_FILES}' | jq -r '.[]')
+          markdown_files_str=$(echo '${MARKDOWN_FILES}' | jq -r '.[]')
 
           echo "yaml_files_str: ${yaml_files_str}"
           echo "markdown_files_str: ${markdown_files_str}"
