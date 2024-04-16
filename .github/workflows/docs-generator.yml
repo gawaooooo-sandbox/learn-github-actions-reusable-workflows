@@ -114,8 +114,8 @@ jobs:
           set -x
 
           # Use jq to parse the JSON array properly and remove unwanted characters
-          yaml_files_str=$(echo "${YAML_FILES}" | jq -r '.[]')
-          markdown_files_str=$(echo "${MARKDOWN_FILES}" | jq -r '.[]')
+          yaml_files_str=$(echo "${YAML_FILES:-}" | jq -r '.[]')
+          markdown_files_str=$(echo "${MARKDOWN_FILES:-}" | jq -r '.[]')
 
           echo "yaml_files_str: ${yaml_files_str}"
           echo "markdown_files_str: ${markdown_files_str}"
