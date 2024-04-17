@@ -66,6 +66,7 @@ on:
       checkout-ref:
         description: |
           Optional. Determines the specific reference (such as a branch, tag, or commit SHA) to checkout.
+          When `enable-auto-merge` is enabled, this setting is ignored, and `auto-merge-target-branch` is used after the merge.
           Example: "refs/heads/feature-branch"
         type: string
         required: false
@@ -136,7 +137,8 @@ on:
 
       auto-merge-target-branch:
         description: |
-          Optional. The target branch into which the source will be merged if auto-merge is enabled.
+          Optional. Specifies the target branch into which the source will be merged if auto-merge is enabled.
+          When `enable-auto-merge` is enabled, this branch will be used to merge changes and subsequently deploy to the specified environment.
         type: string
         required: false
 
@@ -217,7 +219,7 @@ jobs:
           npm-registry-url: ${{ inputs.npm-registry-url }}
           npm-scope: ${{ inputs.npm-scope }}
           node-auth-token: ${{ secrets.node-auth-token }}
-          checkout-ref: ${{ inputs.checkout-ref }}
+          checkout-ref: ${{ inputs.enable-auto-merge && inputs.auto-merge-target-branch || inputs.checkout-ref }}
           npm-install-options: ${{ inputs.npm-install-options }}
 
       - name: Set environment variables
