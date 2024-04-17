@@ -155,6 +155,7 @@ jobs:
         if: ${{steps.git-diff-status.outputs.diff == 'true'}}
         env:
           MESSAGE: ${{ inputs.commit-message }}
+          TZ: Asia/Tokyo
         run: |
           echo "::group::Git push"
           set -x
