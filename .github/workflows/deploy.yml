@@ -70,8 +70,7 @@ on:
           Example: "refs/heads/feature-branch"
         type: string
         required: false
-        # TODO: github.ref?
-        default: ${{ github.head_ref }}
+        default: ${{ github.ref }}
 
       npm-install-options:
         description: |
@@ -148,7 +147,7 @@ on:
           If not specified, the default is the current GitHub reference.
         type: string
         required: false
-        default: ${{ github.ref }}
+        default: ${{ github.head_ref }}
 
     outputs:
       s3-deploy-command:
