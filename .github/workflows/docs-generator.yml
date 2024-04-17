@@ -1,31 +1,31 @@
-# アクション／Reusable Workflowsのドキュメントを自動生成する
-#  @see https://zenn.dev/tmknom/books/pragmatic-composite-action/viewer/docs
-#  @see https://zenn.dev/tmknom/articles/actdocs-github-actions
-
 name: Generate Documentation
 
 on:
   workflow_call:
     inputs:
-      yaml-file:
+      doc-type:
         description: |
-          Required. Specifies the path to the YAML file of the action or reusable workflow for which the documentation should be generated.
-        type: string
-        required: true
-      markdown-file:
-        description: |
-          Optional. Specifies the target Markdown file where the generated documentation will be injected.
-          If not specified, 'README.md' is used as default.
-          Default: "README.md"
+          Type of documentation to generate: workflow or composite.
         type: string
         required: false
-        default: "README.md"
-      ref:
+        default: "workflow"
+
+      commit-message:
         description: |
-          Required. The git ref (such as a branch, tag, or commit SHA) that the documentation generation should be based on.
-          This ref will be checked out for processing.
+          The commit message.
         type: string
         required: true
+
+      ref:
+        description: |
+          The git ref to check out for documentation generation.
+        type: string
+        required: false
+
+    outputs:
+      branch:
+        value: ${{ jobs.prepare-and-generate.outputs.branch }}
+        description: Name of the pushed branch.
 
 defaults:
   run:
@@ -43,41 +43,139 @@ jobs:
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
 
-  generate:
+  prepare-and-generate:
+    name: Generate ${{ inputs.doc-type }} documentation
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:
       contents: write
+      pull-requests: write
     env:
-      YAML_FILE: ${{ inputs.yaml-file }}
-      MD_FILE: ${{ inputs.markdown-file }}
+      BASE_BRANCH: ${{ github.event.repository.default_branch }}
+    outputs:
+      branch: ${{ steps.git-push.outputs.branch }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          ref: ${{ inputs.ref }}
+          ref: ${{ inputs.ref || env.BASE_BRANCH }}
 
-      - name: Inject document
+      - name: Collect YAML ans Markdown files
+        id: collect
+        env:
+          DOC_TYPE: ${{ inputs.doc-type }}
         run: |
-          docker run --rm -v "$(pwd):/work" -w "/work" \
-          ghcr.io/tmknom/actdocs inject --sort \
-          --file "${MD_FILE}" "${YAML_FILE}"
+          set -x
 
-      - name: Git push
-        run: |
-          echo "### 📖 Inject document result" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${DOC_TYPE}" == "workflow" ]; then
+            # Find all YAML files in the workflows directory
+            yaml_files="$(find .github/workflows -name '*.yml' -not -path '*internal*')"
 
-          if [[ "$(git status -s)" == "" ]]; then
-            echo 'skipped'
-            echo "- ⏭️ skipp: ${MD_FILE}" >> "$GITHUB_STEP_SUMMARY"
-            exit 0
+            # path/to/file1.yml → docs/file1.md
+            markdown_files="${yaml_files//.github\/workflows\//docs/}"
+            markdown_files="${markdown_files//.yml/.md}"
+
+          elif [ "${DOC_TYPE}" == "composite" ]; then
+            # Find all YAML files in the composite directory
+            yaml_files="$(find composite -name 'action.yml')"
+
+            # composite/path/to/file1/action.yml → docs/path/to/file1.md
+            markdown_files="${yaml_files//composite\//docs/}"
+            markdown_files="${markdown_files//\/action.yml/.md}"
+
+          else
+            echo "Error: Invalid doc-type value '${DOC_TYPE}'. It must be either 'workflow' or 'composite'."
+            exit 1
           fi
+
+          # Output the YAML and Markdown files as JSON arrays
+          echo "yaml-files=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "${GITHUB_OUTPUT}"
+          echo "markdown-files=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "${GITHUB_OUTPUT}"
+
+      - name: Generate Documentation for Multiple Files
+        env:
+          YAML_FILES: ${{ steps.collect.outputs.yaml-files }}
+          MARKDOWN_FILES: ${{ steps.collect.outputs.markdown-files }}
+        run: |
+          echo "::group::Generate Documentation for Multiple Files"
+          set -x
+
+          # Use jq to parse the JSON array properly and remove unwanted characters
+          yaml_files_str=$(echo "${YAML_FILES:-}" | jq -r '.[]')
+          markdown_files_str=$(echo "${MARKDOWN_FILES:-}" | jq -r '.[]')
+
+          echo "yaml_files_str: ${yaml_files_str}"
+          echo "markdown_files_str: ${markdown_files_str}"
+
+          # Convert newline-separated strings to arrays using mapfile
+          mapfile -t yaml_files <<< "$yaml_files_str"
+          mapfile -t markdown_files <<< "$markdown_files_str"
+
+          echo "YAML files array: ${yaml_files[*]}"
+          echo "Markdown files array: ${markdown_files[*]}"
+
+          for index in "${!yaml_files[@]}"; do
+            yaml_file=${yaml_files[index]}
+            markdown_file=${markdown_files[index]}
+
+            echo "Processing $yaml_file and $markdown_file"
+
+            # Check if the Markdown file exists, if not, create an empty file
+            if [ ! -f "$markdown_file" ]; then
+              echo "Creating empty Markdown file: $markdown_file"
+              mkdir -p "$(dirname "$markdown_file")"  # Ensure the directory exists
+              touch "$markdown_file"
+            fi
+            docker run --rm -v "$(pwd):/work" -w "/work" ghcr.io/tmknom/actdocs inject --sort --file "$markdown_file" "$yaml_file"
+          done
+          echo "::endgroup::"
+
+      - name: Configure Git
+        run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "${MD_FILE}"
-          git commit -m "Update ${MD_FILE}"
-          git push
 
-          echo "- ✅ update: ${MD_FILE}" >> "$GITHUB_STEP_SUMMARY"
+      - name: Git diff status
+        id: git-diff-status
+        run: |
+          echo "::group::Git diff status"
+          set -x
+          if [[ -z $(git status --porcelain) ]]; then
+            echo "No changes to commit."
+            echo "diff=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "Changes detected."
+            echo "diff=true" >> "${GITHUB_OUTPUT}"
+          fi
+          echo "::endgroup::"
+
+      - name: Git push
+        id: git-push
+        if: ${{steps.git-diff-status.outputs.diff == 'true'}}
+        env:
+          MESSAGE: ${{ inputs.commit-message }}
+          TZ: Asia/Tokyo
+        run: |
+          echo "::group::Git push"
+          set -x
+
+          branch="docs/$(date +%Y%m%d-%H%M%S)-${GITHUB_RUN_ID}"
+          log="Generated by ${GITHUB_WORKFLOW} workflow."
+          url="- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+          git switch -c "${branch}"
+          git add .
+          git commit -m "${MESSAGE}" -m "${log}" -m "${url}"
+          git push origin "${branch}"
+          echo "branch=${branch}" >> "${GITHUB_OUTPUT}"
+          echo "::endgroup::"
+
+      - name: Create PR
+        if: ${{ steps.git-push.outcome == 'success'}}
+        env:
+          BRANCH: ${{ steps.git-push.outputs.branch }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -x
+          gh pr create --base "${BASE_BRANCH}" --head "${BRANCH}" --fill-first

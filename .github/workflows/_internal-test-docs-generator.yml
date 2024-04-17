@@ -1,0 +1,43 @@
+name: Test for docs-generator
+run-name: "${{ github.workflow }} for ${{ github.ref_name }} Triggered by: ${{ github.event_name }} [${{ github.sha }}]"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/docs-generator.yml
+      - .github/workflows/_internal-docs-generator.yml
+
+concurrency:
+  group: test-docs-generator-{{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  excersise:
+    uses: ./.github/workflows/docs-generator.yml
+    with:
+      commit-message: Update document test
+      doc-type: workflow
+    permissions:
+      contents: write
+      pull-requests: write
+
+  teardown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [excersise]
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: gh pr close "${BRANCH}" || true
+      - run: git push origin "${BRANCH}" --delete || true
+    env:
+      BRANCH: ${{ needs.excersise.outputs.branch }}
+    permissions:
+      contents: write
+      pull-requests: write

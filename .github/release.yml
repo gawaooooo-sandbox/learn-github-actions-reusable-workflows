@@ -9,3 +9,6 @@ changelog:
     - title: Bump Dependencies 🔥
       labels:
         - dependencies
+    - title: Other Changes 📝
+      labels:
+        - "*"
