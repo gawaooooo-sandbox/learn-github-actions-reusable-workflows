@@ -176,7 +176,7 @@ jobs:
         if: ${{ steps.git-push.outcome == 'success'}}
         env:
           BRANCH: ${{ steps.git-push.outputs.branch }}
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -xeu
           gh pr create --base "${BASE_BRANCH}" --head "${BRANCH}" --fill-first
