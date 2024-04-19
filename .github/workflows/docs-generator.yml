@@ -12,7 +12,7 @@ on:
 
       commit-message:
         description: |
-          The commit message.
+          Provide a commit message that describes the documentation updates.
         type: string
         required: true
 
