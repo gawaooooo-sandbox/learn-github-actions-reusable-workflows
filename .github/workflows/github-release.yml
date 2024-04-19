@@ -24,21 +24,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate Input
+        run: |
+          set -xeu
+
+          if [[ "${{ inputs.level }}" =~ ^(major|minor|patch)$ ]]; then
+            echo "BUMP_LEVEL=${{ inputs.level }}" >> "$GITHUB_ENV"
+          else
+            echo "Error: Invalid input for 'level'. Allowed values are 'major', 'minor', or 'patch'."
+            exit 1
+          fi
+
       - name: Git Config
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Bump Version
-        env:
-          BUMP_LEVEL: ${{ inputs.level}}
         run: |
-          set -x
+          set -xeu
+
           git fetch --tag
           current="$(git tag --sort=-v:refname | head -1)"
-          if [[ "${current}" == "" ]]; then
-            current="v0.0.0"
-          fi
+          current="${current:-v0.0.0}"
 
           IFS='.' read -ra versions <<<"${current#v}"
           major="${versions[0]}"
@@ -58,17 +66,14 @@ jobs:
             patch)
               patch="$((patch + 1))"
               ;;
-            *)
-              printf "invalid argument: %s" "${BUMP_LEVEL}" >&2
-              exit 1
-              ;;
           esac
 
-          echo "VERSION=v${major}.${minor}.${patch}" >> "${GITHUB_ENV}"
+          echo "VERSION=v${major}.${minor}.${patch}" >> "$GITHUB_ENV"
 
       - name: Push version tag
         run: |
-          set -x
+          set -xeu
+
           major="${VERSION%%.*}"
           git tag --force --message "${VERSION}" "${VERSION}"
           git tag --force --message "${VERSION}" "${major}"
@@ -76,8 +81,9 @@ jobs:
           git push --force origin "${major}"
 
       - name: Release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          set -x
+          set -xeu
+
           gh release create "${VERSION}" --title "${VERSION}" --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
