@@ -8,7 +8,7 @@ GitHub Actions で ワークフローや action のドキュメントを自動�
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| commit-message | <pre>The commit message.</pre> | `string` | n/a | yes |
+| commit-message | <pre>Provide a commit message that describes the documentation updates.</pre> | `string` | n/a | yes |
 | doc-type | <pre>Type of documentation to generate: workflow or composite.</pre> | `string` | `workflow` | no |
 | ref | <pre>The git ref to check out for documentation generation.</pre> | `string` | n/a | no |
 
