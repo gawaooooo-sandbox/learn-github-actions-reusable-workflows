@@ -170,17 +170,17 @@ jobs:
       - name: Run format check
         if: ${{ inputs.enable-format-check }}
         run: |
-          set -x
+          set -xeu
           ${{ inputs.format-check-script }}
 
       - name: Run linter
         if: ${{ inputs.enable-lint }}
         run: |
-          set -x
+          set -xeu
           ${{ inputs.lint-script }}
 
       - name: Run type check
         if: ${{ inputs.enable-type-check }}
         run: |
-          set -x
+          set -xeu
           ${{ inputs.typecheck-script }}
