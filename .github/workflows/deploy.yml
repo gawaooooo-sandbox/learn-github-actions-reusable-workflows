@@ -228,7 +228,7 @@ jobs:
 
       - name: Build ${{ inputs.environment }}
         run: |
-          set -x
+          set -xeu
           npm run ${{ inputs.build-command }}
 
       - name: Deploy to ${{ inputs.environment }} [${{ inputs.s3-sync-command }}]
