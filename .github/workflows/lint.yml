@@ -62,7 +62,6 @@ on:
           Example: "refs/heads/feature-branch"
         type: string
         required: false
-        # TODO: github.ref?
         default: ${{ github.head_ref }}
 
       npm-install-options:
