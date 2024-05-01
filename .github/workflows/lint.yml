@@ -135,15 +135,6 @@ on:
         required: false
 
 jobs:
-  pre-processing:
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    steps:
-      - name: create inputs summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v3
-        with:
-          workflow-inputs: ${{ toJSON(inputs) }}
-
   lint:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
