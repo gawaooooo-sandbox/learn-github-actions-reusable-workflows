@@ -132,9 +132,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Configure Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v3
 
       - name: Git diff status
         id: git-diff-status
