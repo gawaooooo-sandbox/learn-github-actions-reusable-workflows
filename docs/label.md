@@ -15,9 +15,7 @@ GitHub Actions で ラベルの設定を行うための再利用可能なワー�
 
 ## Secrets
 
-| Name | Description | Required |
-| :--- | :---------- | :------: |
-| repo-token | <pre>Required. Token used to authorize label changes within the repository.<br>This is typically set to the GITHUB_TOKEN provided by GitHub to interact with the GitHub API.</pre> | yes |
+N/A
 
 ## Outputs
 

@@ -31,7 +31,6 @@ GitHub Actions で デプロイを行うための再利用可能なワークフ�
 | Name | Description | Required |
 | :--- | :---------- | :------: |
 | aws-role-arn | <pre>Required. Specify the ARN of your AWS Role for this action.<br>It is recommended to manage the ARN value securely using GitHub Secrets.<br>Reference the secret in your workflow by specifying the secret name in the 'aws-role-arn' field.</pre> | yes |
-| github-token | <pre>Optional. Specifies the GitHub token to use for the auto merge process.</pre> | no |
 | node-auth-token | <pre>Optional. Specifies the authentication token for npm commands.<br>Recommended to use `secrets.GITHUB_TOKEN` for GitHub Packages or `secrets.NPM_AUTH_TOKEN` for private npm registry access.</pre> | no |
 
 ## Outputs
