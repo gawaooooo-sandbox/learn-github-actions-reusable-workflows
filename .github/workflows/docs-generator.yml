@@ -35,7 +35,7 @@ jobs:
   prepare-and-generate:
     name: Generate ${{ inputs.doc-type }} documentation
     runs-on: ubuntu-22.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write
