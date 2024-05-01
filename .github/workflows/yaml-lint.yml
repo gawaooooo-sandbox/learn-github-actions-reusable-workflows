@@ -30,6 +30,7 @@ jobs:
               allowed-values: ["true", "false", "on"]
             comments:
               min-spaces-from-content: 1
+              comments-indentation: disable
             braces:
               max-spaces-inside: 1
             line-length:
