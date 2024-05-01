@@ -21,13 +21,6 @@ on:
         required: false
         default: .github/labeler.yml
 
-    secrets:
-      repo-token:
-        description: |
-          Required. Token used to authorize label changes within the repository.
-          This is typically set to the GITHUB_TOKEN provided by GitHub to interact with the GitHub API.
-        required: true
-
 jobs:
   triage:
     runs-on: ubuntu-22.04
