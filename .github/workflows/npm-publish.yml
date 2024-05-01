@@ -1,0 +1,107 @@
+name: Publish to GitHub Packages
+
+on:
+  workflow_call:
+    inputs:
+      # npm-auto-bump
+      label-name:
+        description: |
+          バージョンを更新するラベル名
+          release/(patch|minor|major) のいずれかを指定します
+        type: string
+        required: true
+
+      # npm-dev-publish
+      version-type:
+        description: |
+          npm version コマンドの引数。
+          'prepatch', 'preminor', 'premajor'などの pre release タイプを指定することを想定。
+        type: string
+        required: true
+
+      publish-tag:
+        description: |
+          npm publish コマンドの --tag オプション。
+          'latest', 'beta', 'alpha', 'next'などがあります。
+          開発中のバージョンをテスト目的で公開する場合は'next'タグが適しています。
+        type: string
+        required: true
+
+      # npm-release-publish
+      pr-number:
+        description: |
+          プルリクエスト番号
+        type: string
+        required: true
+
+      # common
+      checkout-ref:
+        description: |
+          チェックアウトするリファレンス
+        type: string
+        required: false
+        default: ${{ github.head_ref || github.ref }}
+      node-version-file:
+        description: |
+          Node.jsのバージョンを指定するファイルのパス
+        type: string
+        required: false
+        default: ".nvmrc"
+      npm-install-command:
+        description: |
+          npm install コマンド
+        type: string
+        required: false
+        default: "ci"
+
+jobs:
+  auto-version:
+    if: github.event.action == 'labeled' && startsWith(github.event.label.name, 'release/')
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Npm Auto Bump
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/npm-auto-bump@v3
+        with:
+          label-name: ${{ inputs.label-name }}
+          checkout-ref: ${{ inputs.checkout-ref }}
+          node-version-file: ${{ inputs.node-version-file }}
+
+  publish-release-package:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: read
+    steps:
+      - name: Publising Release Package
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/npm-release-publish@v3
+        with:
+          pr-number: ${{ inputs.pr-number }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          node-version-file: ${{ inputs.node-version-file }}
+          npm-install-command: ${{ inputs.npm-install-command }}
+
+  publish-dev-package:
+    # 手動ディスパッチトリガーは、開発用のブランチから開発用のパッケージを公開するときのみ使用
+    # 正式なリリースは、プルリクエストの自動マージによる公開で行う
+    if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: Publising Development Package
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/npm-dev-publish@v3
+        with:
+          version-type: ${{ inputs.version-type }}
+          publish-tag: ${{ inputs.publish-tag }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          checkout-ref: ${{ inputs.checkout-ref }}
+          node-version-file: ${{ inputs.node-version-file }}
+          npm-install-command: ${{ inputs.npm-install-command }}
