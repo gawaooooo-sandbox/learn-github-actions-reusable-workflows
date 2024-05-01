@@ -163,11 +163,6 @@ on:
           Recommended to use `secrets.GITHUB_TOKEN` for GitHub Packages or `secrets.NPM_AUTH_TOKEN` for private npm registry access.
         required: false
 
-      github-token:
-        description: |
-          Optional. Specifies the GitHub token to use for the auto merge process.
-        required: false
-
       aws-role-arn:
         description: |
           Required. Specify the ARN of your AWS Role for this action.
@@ -201,7 +196,7 @@ jobs:
         if: ${{ inputs.enable-auto-merge }}
         uses: everlytic/branch-merge@c4a244dc23143f824ae6c022a10732566cb8e973 # v1.1.5
         with:
-          github_token: ${{ secrets.github-token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           target_branch: ${{ inputs.auto-merge-target-branch }}
           source_ref: ${{ inputs.auto-merge-source-ref }}
 

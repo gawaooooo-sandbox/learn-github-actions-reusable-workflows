@@ -168,7 +168,6 @@ jobs:
     secrets:
       node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: write
       packages: read
