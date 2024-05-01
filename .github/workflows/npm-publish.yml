@@ -83,7 +83,6 @@ jobs:
         with:
           pr-number: ${{ inputs.pr-number }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          checkout-ref: ${{ inputs.checkout-ref }}
           node-version-file: ${{ inputs.node-version-file }}
           npm-install-command: ${{ inputs.npm-install-command }}
 
