@@ -35,10 +35,8 @@ jobs:
             exit 1
           fi
 
-      - name: Git Config
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Configure Git
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v3
 
       - name: Bump Version
         run: |
