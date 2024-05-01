@@ -32,21 +32,10 @@ defaults:
     shell: bash
 
 jobs:
-  pre-processing:
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    steps:
-      - name: Create inputs summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v3
-        with:
-          workflow-inputs: ${{ toJSON(inputs) }}
-
   prepare-and-generate:
     name: Generate ${{ inputs.doc-type }} documentation
     runs-on: ubuntu-22.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write
@@ -56,6 +45,11 @@ jobs:
       branch: ${{ steps.git-push.outputs.branch }}
 
     steps:
+      - name: Create inputs summary
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v3
+        with:
+          workflow-inputs: ${{ toJSON(inputs) }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -85,7 +79,7 @@ jobs:
             markdown_files="${markdown_files//\/action.yml/.md}"
 
           else
-            echo "Error: Invalid doc-type value '${DOC_TYPE}'. It must be either 'workflow' or 'composite'."
+            echo "::error::Invalid doc-type value '${DOC_TYPE}'. It must be either 'workflow' or 'composite'."
             exit 1
           fi
 
@@ -132,9 +126,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Configure Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v3
 
       - name: Git diff status
         id: git-diff-status

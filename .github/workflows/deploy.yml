@@ -176,15 +176,6 @@ on:
         required: true
 
 jobs:
-  pre-processing:
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    steps:
-      - name: Create inputs summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v3
-        with:
-          workflow-inputs: ${{ toJSON(inputs) }}
-
   deploy:
     name: Deploy to ${{ inputs.environment }}
     runs-on: ubuntu-22.04
@@ -201,6 +192,11 @@ jobs:
       s3-deploy-command: ${{ steps.deploy.outputs.s3-deploy-command }}
 
     steps:
+      - name: Create inputs summary
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v3
+        with:
+          workflow-inputs: ${{ toJSON(inputs) }}
+
       - name: Merge branch if auto-merge is enabled (${{ inputs.auto-merge-source-ref }} -> ${{ inputs.auto-merge-target-branch }})
         if: ${{ inputs.enable-auto-merge }}
         uses: everlytic/branch-merge@c4a244dc23143f824ae6c022a10732566cb8e973 # v1.1.5
