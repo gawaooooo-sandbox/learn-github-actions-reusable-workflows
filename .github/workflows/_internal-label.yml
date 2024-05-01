@@ -11,8 +11,6 @@ concurrency:
 jobs:
   call:
     uses: ./.github/workflows/label.yml
-    secrets:
-      repo-token: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: read
       pull-requests: write
