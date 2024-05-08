@@ -46,7 +46,7 @@ jobs:
 
     steps:
       - name: Create inputs summary
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v3
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/inputs-summary@v4
         with:
           workflow-inputs: ${{ toJSON(inputs) }}
 
@@ -126,7 +126,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Configure Git
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v3
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v4
 
       - name: Git diff status
         id: git-diff-status
