@@ -36,7 +36,7 @@ jobs:
           fi
 
       - name: Configure Git
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v3
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v4
 
       - name: Bump Version
         run: |
