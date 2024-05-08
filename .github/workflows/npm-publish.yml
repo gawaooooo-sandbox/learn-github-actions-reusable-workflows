@@ -63,7 +63,7 @@ jobs:
       contents: write
     steps:
       - name: Npm Auto Bump
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/npm-bump-from-label@feature/update-npm-publish
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/npm-bump-from-label@v4
         with:
           label-name: ${{ inputs.label-name }}
           checkout-ref: ${{ inputs.checkout-ref }}
@@ -79,7 +79,7 @@ jobs:
       pull-requests: read
     steps:
       - name: Publish on Merge
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/npm-auto-publish-on-merge@feature/update-npm-publish
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/npm-auto-publish-on-merge@v4
         with:
           pr-number: ${{ inputs.pr-number }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -97,7 +97,7 @@ jobs:
       packages: write
     steps:
       - name: Publish Manual
-        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/npm-manual-publish@feature/update-npm-publish
+        uses: gawaooooo-sandbox/learn-github-actions-custom/composite/npm-manual-publish@v4
         with:
           version-type: ${{ inputs.version-type }}
           publish-tag: ${{ inputs.publish-tag }}
