@@ -18,11 +18,38 @@ for index in "${!yaml_files[@]}"; do
   yaml_file=${yaml_files[index]}
   markdown_file=${markdown_files[index]}
 
+  # Remove the extension from the YAML file name
+  yaml_file_base=$(basename "$yaml_file" .yml)
+  yaml_file_base=$(basename "$yaml_file_base" .yaml)
+
   # Check if the Markdown file exists, if not, create an empty file
   if [ ! -f "$markdown_file" ]; then
     mkdir -p "$(dirname "$markdown_file")"
-    touch "$markdown_file"
+    cat <<EOF > "$markdown_file"
+---
+title: ${yaml_file_base}
+layout: default
+---
+
+# ${yaml_file_base}
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+{% raw %}
+<!-- actdocs start -->
+
+<!-- actdocs end -->
+{% endraw %}
+EOF
   fi
+
   docker run --rm -v "$(pwd):/work" -w "/work" ghcr.io/tmknom/actdocs inject --sort --file "$markdown_file" "$yaml_file"
 done
 
