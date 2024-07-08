@@ -52,6 +52,7 @@ jobs:
     uses: ./.github/workflows/docs-generator.yml
     needs: setup
     with:
+      ref: ${{ github.ref }}
       commit-message: Update document test
       doc-type: workflow
     permissions:
