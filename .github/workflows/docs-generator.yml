@@ -64,14 +64,14 @@ jobs:
 
       - name: Collect YAML ans Markdown files
         id: collect
-        run: scripts/collect_files.sh ${{ inputs.doc-type }}
+        run: .github/scripts/collect_files.sh ${{ inputs.doc-type }}
 
       - name: Generate Documentation for Multiple Files
-        run: scripts/generate_docs.sh "${{ steps.collect.outputs.yaml-files }}" "${{ steps.collect.outputs.markdown-files }}"
+        run: .github/scripts/generate_docs.sh "${{ steps.collect.outputs.yaml-files }}" "${{ steps.collect.outputs.markdown-files }}"
 
       - name: Convert <pre> to <code> in Markdown files
         if: ${{ inputs.convert-pre-to-code }}
-        run: scripts/convert_pre_to_code.sh "${{ steps.collect.outputs.markdown-files }}"
+        run: .github/scripts/convert_pre_to_code.sh "${{ steps.collect.outputs.markdown-files }}"
 
       - name: Configure Git
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v3
