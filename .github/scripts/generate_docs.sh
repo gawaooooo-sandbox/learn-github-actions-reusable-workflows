@@ -50,7 +50,7 @@ layout: default
 EOF
   fi
 
-  docker run --rm -v "$(pwd):/work" -w "/work" ghcr.io/tmknom/actdocs inject --sort --file "$markdown_file" "$yaml_file"
+  docker run --rm -v "$(pwd):/work" -w "/work" ghcr.io/tmknom/actdocs inject --omit --sort --file "$markdown_file" "$yaml_file"
 done
 
 echo "::endgroup::"
