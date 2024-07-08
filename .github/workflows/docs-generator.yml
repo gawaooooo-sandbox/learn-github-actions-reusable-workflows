@@ -62,6 +62,12 @@ jobs:
         with:
           ref: ${{ inputs.ref || env.BASE_BRANCH }}
 
+      - name: Set execute permissions on scripts
+        run: |
+          chmod +x .github/scripts/collect_files.sh
+          chmod +x .github/scripts/generate_docs.sh
+          chmod +x .github/scripts/convert_pre_to_code.sh
+
       - name: Collect YAML ans Markdown files
         id: collect
         run: .github/scripts/collect_files.sh ${{ inputs.doc-type }}
