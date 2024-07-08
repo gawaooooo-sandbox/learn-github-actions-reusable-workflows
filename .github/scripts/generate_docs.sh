@@ -7,8 +7,10 @@ YAML_FILES=$1
 MARKDOWN_FILES=$2
 
 # Use jq to parse the JSON array properly and remove unwanted characters
-yaml_files_str=$(echo "${YAML_FILES:-}" | jq -r '.[]')
-markdown_files_str=$(echo "${MARKDOWN_FILES:-}" | jq -r '.[]')
+# yaml_files_str=$(echo "${YAML_FILES:-}" | jq -r '.[]')
+# markdown_files_str=$(echo "${MARKDOWN_FILES:-}" | jq -r '.[]')
+yaml_files_str=$(echo "${YAML_FILES}" | jq -r '.[]')
+markdown_files_str=$(echo "${MARKDOWN_FILES}" | jq -r '.[]')
 
 # Convert newline-separated strings to arrays using mapfile
 mapfile -t yaml_files <<< "$yaml_files_str"
