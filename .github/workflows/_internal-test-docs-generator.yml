@@ -52,7 +52,6 @@ jobs:
     uses: ./.github/workflows/docs-generator.yml
     needs: setup
     with:
-      ref: ${{ github.ref }}
       commit-message: Update document test
       doc-type: workflow
     permissions:
@@ -66,6 +65,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.excersise.outputs.branch }}
+
       - name: Verify generated documentation
         run: |
           echo "Verifying the generated documentation"
