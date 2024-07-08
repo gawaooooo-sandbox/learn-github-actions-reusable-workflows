@@ -5,8 +5,8 @@ echo "::group::Convert <pre> to <code> in Markdown files"
 
 MARKDOWN_FILES=$1
 
-markdown_files_str=$(echo "${MARKDOWN_FILES:-}" | jq -r '.[]')
-mapfile -t markdown_files <<< "$markdown_files_str"
+# カンマ区切りの文字列を配列に変換
+IFS=',' read -r -a markdown_files <<< "$MARKDOWN_FILES"
 
 for markdown_file in "${markdown_files[@]}"; do
   sed -i 's/<pre>/<code>/g' "$markdown_file"
