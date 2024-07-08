@@ -54,6 +54,7 @@ jobs:
     with:
       commit-message: Update document test
       doc-type: workflow
+      ref: ${{ github.ref }}
     permissions:
       contents: write
       pull-requests: write
