@@ -62,22 +62,120 @@ jobs:
         with:
           ref: ${{ inputs.ref || env.BASE_BRANCH }}
 
-      - name: Set execute permissions on scripts
-        run: |
-          chmod +x .github/scripts/collect_files.sh
-          chmod +x .github/scripts/generate_docs.sh
-          chmod +x .github/scripts/convert_pre_to_code.sh
-
       - name: Collect YAML ans Markdown files
         id: collect
-        run: .github/scripts/collect_files.sh ${{ inputs.doc-type }}
+        run: |
+          echo "::group::Collect YAML and Markdown files"
+
+          set -xeu
+
+          DOC_TYPE="${{ inputs.doc-type }}"
+          if [ "${DOC_TYPE}" == "workflow" ]; then
+            # Find all YAML files in the workflows directory
+            yaml_files=$(find .github/workflows -name '*.yml' -not -path '*internal*' | paste -sd "," -)
+
+            # path/to/file1.yml → docs/file1.md
+            markdown_files=$(echo "$yaml_files" | sed 's/.github\/workflows\//docs\//g' | sed 's/.yml/.md/g')
+
+          elif [ "${DOC_TYPE}" == "composite" ]; then
+            # Find all YAML files in the composite directory
+            yaml_files=$(find composite -name 'action.yml' | paste -sd "," -)
+
+            # composite/path/to/file1/action.yml → docs/path/to/file1.md
+            markdown_files=$(echo "$yaml_files" | sed 's/composite\//docs\//g' | sed 's/\/action.yml/.md/g')
+
+          else
+            echo "::error::Invalid doc-type value '${DOC_TYPE}'. It must be either 'workflow' or 'composite'."
+            exit 1
+          fi
+
+          # Output the list of YAML and Markdown files
+          echo "yaml-files=$yaml_files" >> "$GITHUB_OUTPUT"
+          echo "markdown-files=$markdown_files" >> "$GITHUB_OUTPUT"
+
+          echo "::endgroup::"
 
       - name: Generate Documentation for Multiple Files
-        run: .github/scripts/generate_docs.sh "${{ steps.collect.outputs.yaml-files }}" "${{ steps.collect.outputs.markdown-files }}"
+        run: |
+          echo "::group::Generate Documentation for Multiple Files"
+
+          set -xeu
+
+          YAML_FILES="${{ steps.collect.outputs.yaml-files }}"
+          MARKDOWN_FILES="${{ steps.collect.outputs.markdown-files }}"
+
+          # カンマ区切りの文字列を配列に変換
+          IFS=',' read -r -a yaml_files <<< "$YAML_FILES"
+          IFS=',' read -r -a markdown_files <<< "$MARKDOWN_FILES"
+
+          echo "YAML files array:"
+          for file in "${yaml_files[@]}"; do
+            echo "$file"
+          done
+
+          echo "Markdown files array:"
+          for file in "${markdown_files[@]}"; do
+            echo "$file"
+          done
+
+          for index in "${!yaml_files[@]}"; do
+            yaml_file=${yaml_files[index]}
+            markdown_file=${markdown_files[index]}
+
+            # Remove the extension from the YAML file name
+            yaml_file_base=$(basename "$yaml_file" .yml)
+            yaml_file_base=$(basename "$yaml_file_base" .yaml)
+
+            # Check if the Markdown file exists, if not, create an empty file
+            if [ ! -f "$markdown_file" ]; then
+              mkdir -p "$(dirname "$markdown_file")"
+              cat <<EOF > "$markdown_file"
+          ---
+          title: ${yaml_file_base}
+          layout: default
+          ---
+
+          # ${yaml_file_base}
+          {: .no_toc }
+
+          ## Table of contents
+          {: .no_toc .text-delta }
+
+          1. TOC
+          {:toc}
+
+          ---
+
+          {% raw %}
+          <!-- actdocs start -->
+
+          <!-- actdocs end -->
+          {% endraw %}
+          EOF
+            fi
+
+            docker run --rm -v "$(pwd):/work" -w "/work" ghcr.io/tmknom/actdocs inject --omit --sort --file "$markdown_file" "$yaml_file"
+          done
+
+          echo "::endgroup::"
 
       - name: Convert <pre> to <code> in Markdown files
         if: ${{ inputs.convert-pre-to-code }}
-        run: .github/scripts/convert_pre_to_code.sh "${{ steps.collect.outputs.markdown-files }}"
+        run: |
+          echo "::group::Convert <pre> to <code> in Markdown files"
+
+          set -xeu
+
+          MARKDOWN_FILES="${{ steps.collect.outputs.markdown-files }}"
+
+          IFS=',' read -r -a markdown_files <<< "$MARKDOWN_FILES"
+
+          for markdown_file in "${markdown_files[@]}"; do
+            sed -i 's/<pre>/<code>/g' "$markdown_file"
+            sed -i 's#</pre>#</code>#g' "$markdown_file"
+          done
+
+          echo "::endgroup::"
 
       - name: Configure Git
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v3
