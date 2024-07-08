@@ -88,7 +88,7 @@ jobs:
           echo "::group::Git diff status"
           set -xeu
 
-          if [[ -z $(git status --porcelain) ]]; then
+          if [[ -z $(git diff --name-only -- '*.md') ]]; then
             echo "No changes to commit."
             echo "diff=false" >> "$GITHUB_OUTPUT"
           else
@@ -112,11 +112,15 @@ jobs:
           url="- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
           git switch -c "${branch}"
-          git add .
+          git add *.md
           git commit -m "${MESSAGE}" -m "${log}" -m "${url}"
           git push origin "${branch}"
           echo "branch=${branch}" >> "$GITHUB_OUTPUT"
           echo "::endgroup::"
+
+      - name: Fetch to update remote branches
+        if: ${{ steps.git-push.outcome == 'success'}}
+        run: git fetch
 
       - name: Create PR
         if: ${{ steps.git-push.outcome == 'success'}}
