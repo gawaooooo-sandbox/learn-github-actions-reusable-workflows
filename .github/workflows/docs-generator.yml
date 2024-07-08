@@ -22,6 +22,13 @@ on:
         type: string
         required: false
 
+      convert-pre-to-code:
+        description: |
+          Convert <pre> tags to <code> tags in generated Markdown files.
+        type: boolean
+        required: false
+        default: true
+
     outputs:
       branch:
         value: ${{ jobs.prepare-and-generate.outputs.branch }}
@@ -61,6 +68,10 @@ jobs:
 
       - name: Generate Documentation for Multiple Files
         run: scripts/generate_docs.sh "${{ steps.collect.outputs.yaml-files }}" "${{ steps.collect.outputs.markdown-files }}"
+
+      - name: Convert <pre> to <code> in Markdown files
+        if: ${{ inputs.convert-pre-to-code }}
+        run: scripts/convert_pre_to_code.sh "${{ steps.collect.outputs.markdown-files }}"
 
       - name: Configure Git
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v3
