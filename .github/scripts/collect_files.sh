@@ -33,7 +33,12 @@ fi
 # Output the YAML and Markdown files as JSON arrays
 # echo "yaml-files=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
 # echo "markdown-files=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
-echo "yaml-files=${yaml_files}" >> "$GITHUB_OUTPUT"
-echo "markdown-files=${markdown_files}" >> "$GITHUB_OUTPUT"
+
+# Remove newlines and output as single line
+yaml_files_single_line=$(echo "$yaml_files" | jq -c .)
+markdown_files_single_line=$(echo "$markdown_files" | jq -c .)
+
+echo "yaml-files=$yaml_files_single_line" >> "$GITHUB_OUTPUT"
+echo "markdown-files=$markdown_files_single_line" >> "$GITHUB_OUTPUT"
 
 echo "::endgroup::"
