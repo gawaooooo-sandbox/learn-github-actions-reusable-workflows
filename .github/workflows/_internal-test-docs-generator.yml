@@ -18,24 +18,92 @@ defaults:
     shell: bash
 
 jobs:
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create test workflow file
+        run: |
+          echo "Creating test workflow file"
+          mkdir -p .github/workflows
+          cat <<EOF > .github/workflows/test-workflow.yml
+          name: Test Workflow
+          on: workflow_call:
+          inputs:
+            example-input:
+              description: "An example input for testing"
+              required: true
+              type: string
+          jobs:
+            test:
+              runs-on: ubuntu-latest
+              steps:
+                - name: Checkout code
+                  uses: actions/checkout@v4
+                - name: Run a sample test
+                  run: echo "This is a test with input"
+          EOF
+
   excersise:
+    name: Execute docs-generator
     uses: ./.github/workflows/docs-generator.yml
+    needs: setup
     with:
       commit-message: Update document test
       doc-type: workflow
+      ref: ${{ github.ref }}
     permissions:
       contents: write
       pull-requests: write
 
-  teardown:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: [excersise]
-    if: ${{ always() }}
+  verify:
+    name: Verify Documentation
+    runs-on: ubuntu-22.04
+    needs: excersise
     steps:
-      - uses: actions/checkout@v4
-      - run: gh pr close "${BRANCH}" || true
-      - run: git push origin "${BRANCH}" --delete || true
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.excersise.outputs.branch }}
+
+      - name: Verify generated documentation
+        run: |
+          echo "Verifying the generated documentation"
+          # 生成されたMarkdownファイルの中身を出力
+          echo "Generated Markdown Files:"
+          cat docs/*.md
+
+          # ここに検証コマンドを追加
+          # 例えば、生成されたMarkdownファイルの内容を確認するスクリプトなど
+          if grep -q "<pre>" docs/*.md; then
+            echo "Found <pre> tags, conversion failed."
+            exit 1
+          fi
+          echo "All <pre> tags successfully converted to <code>."
+
+  teardown:
+    name: Teardown
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    needs: [verify, excersise]
+    if: ${{ !cancelled() }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Delete test workflow file
+        run: |
+          echo "Deleting test workflow file"
+          rm -f .github/workflows/test-workflow.yml
+
+      - name: Close PR
+        run: gh pr close "${BRANCH}" || true
+
+      - name: Delete branch
+        run: git push origin "${BRANCH}" --delete || true
     env:
       BRANCH: ${{ needs.excersise.outputs.branch }}
     permissions:
