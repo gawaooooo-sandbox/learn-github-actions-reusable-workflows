@@ -18,39 +18,9 @@ defaults:
     shell: bash
 
 jobs:
-  setup:
-    name: Setup Environment
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Create test workflow file
-        run: |
-          echo "Creating test workflow file"
-          mkdir -p .github/workflows
-          cat <<EOF > .github/workflows/test-workflow.yml
-          name: Test Workflow
-          on: workflow_call:
-          inputs:
-            example-input:
-              description: "An example input for testing"
-              required: true
-              type: string
-          jobs:
-            test:
-              runs-on: ubuntu-latest
-              steps:
-                - name: Checkout code
-                  uses: actions/checkout@v4
-                - name: Run a sample test
-                  run: echo "This is a test with input"
-          EOF
-
   excersise:
     name: Execute docs-generator
     uses: ./.github/workflows/docs-generator.yml
-    needs: setup
     with:
       commit-message: Update document test
       doc-type: workflow
@@ -93,11 +63,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Delete test workflow file
-        run: |
-          echo "Deleting test workflow file"
-          rm -f .github/workflows/test-workflow.yml
 
       - name: Close PR
         run: gh pr close "${BRANCH}" || true
