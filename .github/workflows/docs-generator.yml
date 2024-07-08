@@ -22,6 +22,13 @@ on:
         type: string
         required: false
 
+      convert-pre-to-code:
+        description: |
+          Convert <pre> tags to <code> tags in generated Markdown files.
+        type: boolean
+        required: false
+        default: true
+
     outputs:
       branch:
         value: ${{ jobs.prepare-and-generate.outputs.branch }}
@@ -55,75 +62,22 @@ jobs:
         with:
           ref: ${{ inputs.ref || env.BASE_BRANCH }}
 
+      - name: Set execute permissions on scripts
+        run: |
+          chmod +x .github/scripts/collect_files.sh
+          chmod +x .github/scripts/generate_docs.sh
+          chmod +x .github/scripts/convert_pre_to_code.sh
+
       - name: Collect YAML ans Markdown files
         id: collect
-        env:
-          DOC_TYPE: ${{ inputs.doc-type }}
-        run: |
-          set -xeu
-
-          if [ "${DOC_TYPE}" == "workflow" ]; then
-            # Find all YAML files in the workflows directory
-            yaml_files="$(find .github/workflows -name '*.yml' -not -path '*internal*')"
-
-            # path/to/file1.yml → docs/file1.md
-            markdown_files="${yaml_files//.github\/workflows\//docs/}"
-            markdown_files="${markdown_files//.yml/.md}"
-
-          elif [ "${DOC_TYPE}" == "composite" ]; then
-            # Find all YAML files in the composite directory
-            yaml_files="$(find composite -name 'action.yml')"
-
-            # composite/path/to/file1/action.yml → docs/path/to/file1.md
-            markdown_files="${yaml_files//composite\//docs/}"
-            markdown_files="${markdown_files//\/action.yml/.md}"
-
-          else
-            echo "::error::Invalid doc-type value '${DOC_TYPE}'. It must be either 'workflow' or 'composite'."
-            exit 1
-          fi
-
-          # Output the YAML and Markdown files as JSON arrays
-          echo "yaml-files=$(echo "$yaml_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
-          echo "markdown-files=$(echo "$markdown_files" | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
+        run: .github/scripts/collect_files.sh ${{ inputs.doc-type }}
 
       - name: Generate Documentation for Multiple Files
-        env:
-          YAML_FILES: ${{ steps.collect.outputs.yaml-files }}
-          MARKDOWN_FILES: ${{ steps.collect.outputs.markdown-files }}
-        run: |
-          echo "::group::Generate Documentation for Multiple Files"
-          set -xeu
+        run: .github/scripts/generate_docs.sh "${{ steps.collect.outputs.yaml-files }}" "${{ steps.collect.outputs.markdown-files }}"
 
-          # Use jq to parse the JSON array properly and remove unwanted characters
-          yaml_files_str=$(echo "${YAML_FILES:-}" | jq -r '.[]')
-          markdown_files_str=$(echo "${MARKDOWN_FILES:-}" | jq -r '.[]')
-
-          echo "yaml_files_str: ${yaml_files_str}"
-          echo "markdown_files_str: ${markdown_files_str}"
-
-          # Convert newline-separated strings to arrays using mapfile
-          mapfile -t yaml_files <<< "$yaml_files_str"
-          mapfile -t markdown_files <<< "$markdown_files_str"
-
-          echo "YAML files array: ${yaml_files[*]}"
-          echo "Markdown files array: ${markdown_files[*]}"
-
-          for index in "${!yaml_files[@]}"; do
-            yaml_file=${yaml_files[index]}
-            markdown_file=${markdown_files[index]}
-
-            echo "Processing $yaml_file and $markdown_file"
-
-            # Check if the Markdown file exists, if not, create an empty file
-            if [ ! -f "$markdown_file" ]; then
-              echo "Creating empty Markdown file: $markdown_file"
-              mkdir -p "$(dirname "$markdown_file")"  # Ensure the directory exists
-              touch "$markdown_file"
-            fi
-            docker run --rm -v "$(pwd):/work" -w "/work" ghcr.io/tmknom/actdocs inject --sort --file "$markdown_file" "$yaml_file"
-          done
-          echo "::endgroup::"
+      - name: Convert <pre> to <code> in Markdown files
+        if: ${{ inputs.convert-pre-to-code }}
+        run: .github/scripts/convert_pre_to_code.sh "${{ steps.collect.outputs.markdown-files }}"
 
       - name: Configure Git
         uses: gawaooooo-sandbox/learn-github-actions-custom/composite/git-config@v3
@@ -134,7 +88,7 @@ jobs:
           echo "::group::Git diff status"
           set -xeu
 
-          if [[ -z $(git status --porcelain) ]]; then
+          if [[ -z $(git diff --name-only -- 'docs/*.md') ]]; then
             echo "No changes to commit."
             echo "diff=false" >> "$GITHUB_OUTPUT"
           else
@@ -158,11 +112,15 @@ jobs:
           url="- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
           git switch -c "${branch}"
-          git add .
+          git add docs/*.md
           git commit -m "${MESSAGE}" -m "${log}" -m "${url}"
           git push origin "${branch}"
           echo "branch=${branch}" >> "$GITHUB_OUTPUT"
           echo "::endgroup::"
+
+      - name: Fetch to update remote branches
+        if: ${{ steps.git-push.outcome == 'success'}}
+        run: git fetch
 
       - name: Create PR
         if: ${{ steps.git-push.outcome == 'success'}}
