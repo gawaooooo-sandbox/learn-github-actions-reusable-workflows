@@ -44,7 +44,7 @@ jobs:
                 - name: Checkout code
                   uses: actions/checkout@v4
                 - name: Run a sample test
-                  run: echo "This is a test with input \${{ inputs.example-input }}"
+                  run: echo "This is a test with input"
           EOF
 
   excersise:
@@ -84,7 +84,7 @@ jobs:
     name: Teardown
     runs-on: ubuntu-22.04
     timeout-minutes: 5
-    needs: [verify]
+    needs: [verify, excersise]
     if: ${{ !cancelled() }}
     steps:
       - name: Checkout repository
