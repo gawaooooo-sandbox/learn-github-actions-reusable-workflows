@@ -22,9 +22,9 @@ on:
         type: string
         required: false
 
-      convert-pre-to-code:
+      remove-pre-tags:
         description: |
-          Convert <pre> tags to <code> tags in generated Markdown files.
+          Remove <pre> tags from the generated Markdown files.
         type: boolean
         required: false
         default: true
@@ -159,21 +159,36 @@ jobs:
 
           echo "::endgroup::"
 
-      - name: Convert <pre> to <code> in Markdown files
-        if: ${{ inputs.convert-pre-to-code }}
+      - name: Remove <pre> tags from the generated Markdown files.
+        if: ${{ inputs.remove-pre-tags }}
         run: |
-          echo "::group::Convert <pre> to <code> in Markdown files"
+          echo "::group::Remove <pre> tags from the generated Markdown files."
 
           set -xeu
 
           MARKDOWN_FILES="${{ steps.collect.outputs.markdown-files }}"
 
+          # Check if MARKDOWN_FILES is not empty
+          if [[ -z "$MARKDOWN_FILES" ]]; then
+            echo "::notice::No markdown files to process."
+            exit 0
+          fi
+
+          # Save the original IFS
+          ORIGINAL_IFS=$IFS
           IFS=',' read -r -a markdown_files <<< "$MARKDOWN_FILES"
 
           for markdown_file in "${markdown_files[@]}"; do
-            sed -i 's/<pre>/<code>/g' "$markdown_file"
-            sed -i 's#</pre>#</code>#g' "$markdown_file"
+            if [[ -f "$markdown_file" ]]; then
+              sed -i 's/<pre>//g' "$markdown_file"
+              sed -i 's#</pre>##g' "$markdown_file"
+            else
+              echo "::notice::File not found: $markdown_file"
+            fi
           done
+
+          # Restore the original IFS
+          IFS=$ORIGINAL_IFS
 
           echo "::endgroup::"
 
