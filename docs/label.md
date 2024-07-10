@@ -27,8 +27,8 @@ GitHub Actions で ラベルの設定を行うための再利用可能なワー�
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| configuration-path | Optional. Specifies the path to the label configuration file where label rules are defined.<br>This file determines which labels should be applied based on file paths changed in the pull request.<br>Default: .github/labeler.yml | `string` | `.github/labeler.yml` | no |
-| sync-labels | Optional. Controls whether labels should be removed if matching files are reverted or no longer changed by the pull request.<br>Set to true to enable this behavior.<br>Default: true | `boolean` | `true` | no |
+| configuration-path | Specifies the path to the label configuration file where label rules are defined.<br>This file determines which labels should be applied based on file paths changed in the pull request. | `string` | `.github/labeler.yml` | no |
+| sync-labels | Controls whether labels should be removed if matching files are reverted or no longer changed by the pull request.<br>Set to true to enable this behavior. | `boolean` | `true` | no |
 
 <!-- actdocs end -->
 

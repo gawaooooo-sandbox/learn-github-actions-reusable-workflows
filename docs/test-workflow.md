@@ -22,7 +22,7 @@ layout: default
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| test | これはテストです<br>テストです | `string` | `test` | no |
+| test | これはテストです<br>テストです<br><br>`testtest` | `string` | `test` | no |
 
 <!-- actdocs end -->
 
