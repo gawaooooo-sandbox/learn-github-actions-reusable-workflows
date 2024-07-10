@@ -1,6 +1,23 @@
-# docs-generator
+---
+title: docs-generator
+layout: default
+---
 
+# docs-generator
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## Description
 GitHub Actions で ワークフローや action のドキュメントを自動生成するための再利用可能なワークフロー
+
+{% raw %}
 
 <!-- actdocs start -->
 
@@ -20,6 +37,8 @@ GitHub Actions で ワークフローや action のドキュメントを自動�
 | branch | Name of the pushed branch. |
 
 <!-- actdocs end -->
+
+{% endraw %}
 
 ## 参考
 

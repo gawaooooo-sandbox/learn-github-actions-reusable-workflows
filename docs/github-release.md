@@ -1,6 +1,23 @@
-# github-release
+---
+title: github-release
+layout: default
+---
 
+# github-release
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## Description
 GitHub Actions で GitHub リリースを行うための再利用可能なワークフロー
+
+{% raw %}
 
 <!-- actdocs start -->
 
@@ -12,4 +29,4 @@ GitHub Actions で GitHub リリースを行うための再利用可能なワー
 
 <!-- actdocs end -->
 
-
+{% endraw %}
