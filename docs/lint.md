@@ -1,6 +1,24 @@
+---
+title: lint
+layout: default
+---
+
 # lint
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## Description
 
 GitHub Actions で 静的解析・フォーマットチェック・型チェックを行うための再利用可能なワークフロー
+
+{% raw %}
 
 <!-- actdocs start -->
 
@@ -31,4 +49,4 @@ GitHub Actions で 静的解析・フォーマットチェック・型チェッ�
 
 <!-- actdocs end -->
 
-
+{% endraw %}

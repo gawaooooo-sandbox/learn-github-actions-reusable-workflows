@@ -1,4 +1,23 @@
+---
+title: npm-publish
+layout: default
+---
 
+# npm-publish
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## Description
+GitHub Packages publish workflow
+
+{% raw %}
 
 <!-- actdocs start -->
 
@@ -16,4 +35,4 @@
 
 <!-- actdocs end -->
 
-
+{% endraw %}
