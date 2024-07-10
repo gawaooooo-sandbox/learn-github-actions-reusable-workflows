@@ -8,7 +8,7 @@ GitHub Actions で GitHub リリースを行うための再利用可能なワー
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| level | <code>Bump up to [patch / minor / major]</code> | `string` | n/a | yes |
+| level | Bump up to [patch / minor / major] | `string` | n/a | yes |
 
 <!-- actdocs end -->
 
