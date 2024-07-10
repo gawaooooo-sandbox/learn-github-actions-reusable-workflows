@@ -8,10 +8,10 @@ GitHub Actions で ワークフローや action のドキュメントを自動�
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| commit-message | <code>Provide a commit message that describes the documentation updates.</code> | `string` | n/a | yes |
-| convert-pre-to-code | <code>Convert <code> tags to <code> tags in generated Markdown files.</code> | `boolean` | `true` | no |
-| doc-type | <code>Type of documentation to generate: workflow or composite.</code> | `string` | `workflow` | no |
-| ref | <code>The git ref to check out for documentation generation.</code> | `string` | n/a | no |
+| commit-message | Provide a commit message that describes the documentation updates. | `string` | n/a | yes |
+| doc-type | Type of documentation to generate: workflow or composite. | `string` | `workflow` | no |
+| ref | The git ref to check out for documentation generation. | `string` | n/a | no |
+| remove-pre-tags | Remove  tags from the generated Markdown files. | `boolean` | `true` | no |
 
 ## Outputs
 
