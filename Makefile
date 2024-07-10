@@ -28,7 +28,7 @@ generate_docs: create_docs_dir
 		output="$(DOCS_DIR)/$$(basename $$workflow .yml).md"; \
 		echo "Generating docs for $$workflow"; \
 		docker run --rm -v "$$(pwd):/work" -w "/work" \
-		$(ACTDOCS_IMAGE) inject --sort --omit --file=$$output $$workflow; \
+		$(ACTDOCS_IMAGE) inject --omit --file=$$output $$workflow; \
 	done
 
 .PHONY: remove_pre_tags
@@ -61,7 +61,7 @@ generate_single_doc:
 	fi
 	@echo "Generating doc for $(WORKFLOW)"
 	@docker run --rm -v "$$(pwd):/work" -w "/work" \
-	$(ACTDOCS_IMAGE) inject --sort --omit --file=$(DOCS_DIR)/$(WORKFLOW).md $(WORKFLOWS_DIR)/$(WORKFLOW).yml
+	$(ACTDOCS_IMAGE) inject --omit --file=$(DOCS_DIR)/$(WORKFLOW).md $(WORKFLOWS_DIR)/$(WORKFLOW).yml
 
 .PHONY: remove_single_pre_tags
 remove_single_pre_tags:
