@@ -1,6 +1,22 @@
+---
+title: deploy
+layout: default
+---
 # deploy
+{: .no_toc }
 
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## Description
 GitHub Actions で デプロイを行うための再利用可能なワークフロー
+
+{% raw %}
 
 <!-- actdocs start -->
 
@@ -41,4 +57,4 @@ GitHub Actions で デプロイを行うための再利用可能なワークフ�
 
 <!-- actdocs end -->
 
-
+{% endraw %}
