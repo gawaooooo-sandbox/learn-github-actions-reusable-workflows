@@ -52,7 +52,7 @@ jobs:
             echo "Found <pre> tags, conversion failed."
             exit 1
           fi
-          echo "All <pre> tags successfully converted to <code>."
+          echo "All <pre> tags successfully remove."
 
   teardown:
     name: Teardown
