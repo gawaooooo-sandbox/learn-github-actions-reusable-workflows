@@ -5,15 +5,16 @@ on:
     inputs:
       environment:
         description: |
-          Required. Specifies the environment where the deployment will occur, such as 'production' or 'staging'.
+          Specifies the environment where the deployment will occur, such as `production` or `staging`.
         type: string
         required: true
 
       working-directory:
         description: |
-          Optional. Specifies the directory where the workflow should execute.
+          Specifies the directory where the workflow should execute.
           Use this to change the default context if your project has a specific structure.
-          Example: "src/app"
+
+          Example: `"src/app"`
         type: string
         required: false
         default: "."
@@ -21,80 +22,74 @@ on:
       # Set up Node.js  & install dependencies inputs
       node-version:
         description: |
-          Optional. Defines the version of Node.js to use.
+          Defines the version of Node.js to use.
           Specify a version number to ensure consistent runtime environments across different executions.
-          Example: "20.x"
         type: string
         required: false
 
       node-version-file:
         description: |
-          Optional. Path to a file containing the Node.js version requirement,
+          Path to a file containing the Node.js version requirement,
           overriding the 'node-version' input if both are specified.
-          Default: ".nvmrc"
-          Example: "package.json"
         type: string
         required: false
         default: ".nvmrc"
 
       node-caching:
         description: |
-          Optional. Configures caching for Node.js dependencies.
+          Configures caching for Node.js dependencies.
           Leave this as the default or set to an empty string to disable caching.
-          Default: "npm"
-          Example: "yarn"
         type: string
         required: false
         default: "npm"
 
       npm-registry-url:
         description: |
-          Optional. Sets the npm registry URL, which can be used to define custom registries
-          for npm package installations.
-          Example: "https://npm.pkg.github.com"
+          Sets the npm registry URL, which can be used to define custom registries for npm package installations.
+
+          Example: `"https://npm.pkg.github.com"`
         type: string
         required: false
 
       npm-scope:
         description: |
-          Optional. Specifies the scope for npm package installations,
-          affecting where packages are searched for and where they are published.
-          Example: "@myorg"
+          Specifies the scope for npm package installations, affecting where packages are searched for and where they are published.
+
+          Example: `"@myorg"`
         type: string
         required: false
 
       checkout-ref:
         description: |
-          Optional. Determines the specific reference (such as a branch, tag, or commit SHA) to checkout.
+          Determines the specific reference (such as a branch, tag, or commit SHA) to checkout.
           When `enable-auto-merge` is enabled, this setting is ignored, and `auto-merge-target-branch` is used after the merge.
-          Example: "refs/heads/feature-branch"
         type: string
         required: false
         default: ${{ github.ref }}
 
       npm-install-options:
         description: |
-          Optional. Additional command-line options to pass to the `npm ci` command during dependencies installation.
-          Example: "--prefer-offline --no-audit"
+          Additional command-line options to pass to the `npm ci` command during dependencies installation.
+
+          Example: `"--prefer-offline --no-audit"`
         type: string
         required: false
 
       # Build inputs
       build-command:
         description: |
-          Optional. Specifies the command to execute for building the project.
-          Adjust according to the scripts defined in your package.json.
-          Default: "generate"
-          Example: "`npm run build` -> `build`"
+          Specifies the command to execute for building the project.
+          Adjust according to the scripts defined in your `package.json`.
         type: string
         required: false
         default: "generate"
 
       build-environments:
         description: |
-          Optional. Sets the environment variables for the build process.
-          Use the format as specified by the setup-environment-variables action.
-          Example: "KEY='value' ANOTHER_KEY='another value'"
+          Sets the environment variables for the build process.
+          Use the format as specified by the `setup-environment-variables` action.
+
+          Example: `"KEY='value' ANOTHER_KEY='another value'"`
         type: string
         required: false
         default: ""
@@ -102,25 +97,24 @@ on:
       # Deploy inputs
       s3-sync-command:
         description: |
-          Required. Defines the command to synchronize build artifacts to an AWS S3 bucket.
+          Defines the command to synchronize build artifacts to an AWS S3 bucket.
           Include any necessary flags and paths for deployment.
-          Example: "`./dist s3://example-bucket --delete --exclude 'logs/*'`"
+
+          Example: `"./dist s3://example-bucket --delete --exclude 'logs/*'"`
         type: string
         required: true
 
       s3-aws-region:
         description: |
-          Optional. Specifies the AWS region for the S3 bucket to ensure correct deployment targeting.
-          Default: "ap-northeast-1"
+          Specifies the AWS region for the S3 bucket to ensure correct deployment targeting.
         type: string
         required: false
         default: "ap-northeast-1"
 
       enable-aws-deploy:
         description: |
-          Optional. Determines whether to use AWS credentials for deployment.
+          Determines whether to use AWS credentials for deployment.
           Set to true to perform deployment or false to only print the deployment command.
-          Default: true
         type: boolean
         required: false
         default: true
@@ -128,22 +122,21 @@ on:
       # auto merge
       enable-auto-merge:
         description: |
-          Optional. Specifies whether to perform an automatic merge before deployment.
-          Default: false
+          Specifies whether to perform an automatic merge before deployment.
         type: boolean
         required: false
         default: false
 
       auto-merge-target-branch:
         description: |
-          Optional. Specifies the target branch into which the source will be merged if auto-merge is enabled.
+          Specifies the target branch into which the source will be merged if auto-merge is enabled.
           When `enable-auto-merge` is enabled, this branch will be used to merge changes and subsequently deploy to the specified environment.
         type: string
         required: false
 
       auto-merge-source-ref:
         description: |
-          Optional. The source reference from which to merge into the target branch if auto-merge is enabled.
+          The source reference from which to merge into the target branch if auto-merge is enabled.
           If not specified, the default is the current GitHub reference.
         type: string
         required: false
@@ -159,15 +152,15 @@ on:
     secrets:
       node-auth-token:
         description: |
-          Optional. Specifies the authentication token for npm commands.
+          Specifies the authentication token for npm commands.
           Recommended to use `secrets.GITHUB_TOKEN` for GitHub Packages or `secrets.NPM_AUTH_TOKEN` for private npm registry access.
         required: false
 
       aws-role-arn:
         description: |
-          Required. Specify the ARN of your AWS Role for this action.
+          Specify the ARN of your AWS Role for this action.
           It is recommended to manage the ARN value securely using GitHub Secrets.
-          Reference the secret in your workflow by specifying the secret name in the 'aws-role-arn' field.
+          Reference the secret in your workflow by specifying the secret name in the `aws-role-arn` field.
         required: true
 
 jobs:

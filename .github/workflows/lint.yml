@@ -5,122 +5,104 @@ on:
     inputs:
       working-directory:
         description: |
-          Optional. Specifies the directory where the workflow should execute.
+          Specifies the directory where the workflow should execute.
           Use this to change the default context if your project has a specific structure.
-          Example: "src/app"
         type: string
         required: false
         default: "."
 
       node-version:
         description: |
-          Optional. Defines the version of Node.js to use.
+          Defines the version of Node.js to use.
           Specify a version number to ensure consistent runtime environments across different executions.
-          Example: "20.x"
         type: string
         required: false
 
       node-version-file:
         description: |
-          Optional. Path to a file containing the Node.js version requirement,
+          Path to a file containing the Node.js version requirement,
           overriding the 'node-version' input if both are specified.
-          Default: ".nvmrc"
-          Example: "package.json"
         type: string
         required: false
         default: ".nvmrc"
 
       node-caching:
         description: |
-          Optional. Configures caching for Node.js dependencies.
+          Configures caching for Node.js dependencies.
           Leave this as the default or set to an empty string to disable caching.
-          Default: "npm"
-          Example: "yarn"
         type: string
         required: false
         default: "npm"
 
       npm-registry-url:
         description: |
-          Optional. Sets the npm registry URL, which can be used to define custom registries
-          for npm package installations.
-          Example: "https://npm.pkg.github.com"
+          Sets the npm registry URL, which can be used to define custom registries for npm package installations.
         type: string
         required: false
 
       npm-scope:
         description: |
-          Optional. Specifies the scope for npm package installations,
-          affecting where packages are searched for and where they are published.
-          Example: "@myorg"
+          Specifies the scope for npm package installations, affecting where packages are searched for and where they are published.
         type: string
         required: false
 
       checkout-ref:
         description: |
-          Optional. Determines the specific reference (such as a branch, tag, or commit SHA) to checkout.
-          Example: "refs/heads/feature-branch"
+          Determines the specific reference (such as a branch, tag, or commit SHA) to checkout.
         type: string
         required: false
         default: ${{ github.head_ref }}
 
       npm-install-options:
         description: |
-          Optional. Additional command-line options to pass to the `npm ci` command during dependencies installation.
-          Example: "--prefer-offline --no-audit"
+          Additional command-line options to pass to the `npm ci` command during dependencies installation.
         type: string
         required: false
 
       enable-format-check:
         description: |
-          Optional. Enables a format check step within the workflow.
+          Enables a format check step within the workflow.
           Set to true to activate this step.
-          Default: false
         type: boolean
         required: false
         default: false
 
       format-check-script:
         description: |
-          Optional. The npm script to run for formatting checks.
-          This is only used if 'enable-format-check' is true.
-          Default: "npm run format:check"
+          The npm script to run for formatting checks.
+          This is only used if `enable-format-check` is true.
         type: string
         required: false
         default: "npm run format:check"
 
       enable-lint:
         description: |
-          Optional. Activates the linting step.
+          Activates the linting step.
           Set to true to run lint checks.
-          Default: true
         type: boolean
         required: false
         default: true
 
       lint-script:
         description: |
-          Optional. The npm script to run for linting.
-          This is used if 'enable-lint' is true.
-          Default: "npm run lint"
+          The npm script to run for linting.
+          This is used if `enable-lint` is true.
         type: string
         required: false
         default: "npm run lint"
 
       enable-type-check:
         description: |
-          Optional. Turns on type checking as part of the workflow.
+          Turns on type checking as part of the workflow.
           Set to true to enforce type validations.
-          Default: false
         type: boolean
         required: false
         default: false
 
       typecheck-script:
         description: |
-          Optional. The npm script to run for type checks.
-          This is used if 'enable-type-check' is true.
-          Default: "npm run type-check"
+          The npm script to run for type checks.
+          This is used if `enable-type-check` is true.
         type: string
         required: false
         default: "npm run type-check"
@@ -128,10 +110,7 @@ on:
     secrets:
       node-auth-token:
         description: |
-          Optional. Authentication token used for npm commands,
-          especially when accessing private packages or registries.
-          Example: Use `secrets.GITHUB_TOKEN` for GitHub Packages or
-          `secrets.NPM_AUTH_TOKEN` for private npm registry access.
+          Authentication token used for npm commands, especially when accessing private packages or registries.
         required: false
 
 jobs:

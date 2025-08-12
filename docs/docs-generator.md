@@ -1,6 +1,23 @@
-# docs-generator
+---
+title: docs-generator
+layout: default
+---
 
+# docs-generator
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## Description
 GitHub Actions で ワークフローや action のドキュメントを自動生成するための再利用可能なワークフロー
+
+{% raw %}
 
 <!-- actdocs start -->
 
@@ -8,13 +25,10 @@ GitHub Actions で ワークフローや action のドキュメントを自動�
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| commit-message | <pre>Provide a commit message that describes the documentation updates.</pre> | `string` | n/a | yes |
-| doc-type | <pre>Type of documentation to generate: workflow or composite.</pre> | `string` | `workflow` | no |
-| ref | <pre>The git ref to check out for documentation generation.</pre> | `string` | n/a | no |
-
-## Secrets
-
-N/A
+| commit-message | Provide a commit message that describes the documentation updates. | `string` | n/a | yes |
+| doc-type | Type of documentation to generate: workflow or composite. | `string` | `workflow` | no |
+| ref | The git ref to check out for documentation generation. | `string` | n/a | no |
+| remove-pre-tags | Remove  tags from the generated Markdown files. | `boolean` | `true` | no |
 
 ## Outputs
 
@@ -22,11 +36,9 @@ N/A
 | :--- | :---------- |
 | branch | Name of the pushed branch. |
 
-## Permissions
-
-N/A
-
 <!-- actdocs end -->
+
+{% endraw %}
 
 ## 参考
 

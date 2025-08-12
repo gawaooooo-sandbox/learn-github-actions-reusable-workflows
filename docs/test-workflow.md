@@ -1,9 +1,9 @@
 ---
-title: github-release
+title: test-workflow
 layout: default
 ---
 
-# github-release
+# test-workflow
 {: .no_toc }
 
 ## Table of contents
@@ -14,9 +14,6 @@ layout: default
 
 ---
 
-## Description
-GitHub Actions で GitHub リリースを行うための再利用可能なワークフロー
-
 {% raw %}
 
 <!-- actdocs start -->
@@ -25,7 +22,7 @@ GitHub Actions で GitHub リリースを行うための再利用可能なワー
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| level | Bump up to [patch / minor / major] | `string` | n/a | yes |
+| test | これはテストです<br>テストです<br><br>`testtest` | `string` | `test` | no |
 
 <!-- actdocs end -->
 

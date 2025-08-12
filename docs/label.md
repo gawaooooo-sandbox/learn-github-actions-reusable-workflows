@@ -1,8 +1,25 @@
-# label
+---
+title: label
+layout: default
+---
 
+# label
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## Description
 GitHub Actions で ラベルの設定を行うための再利用可能なワークフロー
 
 `actions/labeler` を利用してラベルの設定を行う
+
+{% raw %}
 
 <!-- actdocs start -->
 
@@ -10,21 +27,9 @@ GitHub Actions で ラベルの設定を行うための再利用可能なワー�
 
 | Name | Description | Type | Default | Required |
 | :--- | :---------- | :--- | :------ | :------: |
-| configuration-path | <pre>Optional. Specifies the path to the label configuration file where label rules are defined.<br>This file determines which labels should be applied based on file paths changed in the pull request.<br>Default: .github/labeler.yml</pre> | `string` | `.github/labeler.yml` | no |
-| sync-labels | <pre>Optional. Controls whether labels should be removed if matching files are reverted or no longer changed by the pull request.<br>Set to true to enable this behavior.<br>Default: true</pre> | `boolean` | `true` | no |
-
-## Secrets
-
-N/A
-
-## Outputs
-
-N/A
-
-## Permissions
-
-N/A
+| configuration-path | Specifies the path to the label configuration file where label rules are defined.<br>This file determines which labels should be applied based on file paths changed in the pull request. | `string` | `.github/labeler.yml` | no |
+| sync-labels | Controls whether labels should be removed if matching files are reverted or no longer changed by the pull request.<br>Set to true to enable this behavior. | `boolean` | `true` | no |
 
 <!-- actdocs end -->
 
-
+{% endraw %}

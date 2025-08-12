@@ -5,18 +5,16 @@ on:
     inputs:
       sync-labels:
         description: |
-          Optional. Controls whether labels should be removed if matching files are reverted or no longer changed by the pull request.
+          Controls whether labels should be removed if matching files are reverted or no longer changed by the pull request.
           Set to true to enable this behavior.
-          Default: true
         type: boolean
         required: false
         default: true
 
       configuration-path:
         description: |
-          Optional. Specifies the path to the label configuration file where label rules are defined.
+          Specifies the path to the label configuration file where label rules are defined.
           This file determines which labels should be applied based on file paths changed in the pull request.
-          Default: .github/labeler.yml
         type: string
         required: false
         default: .github/labeler.yml
