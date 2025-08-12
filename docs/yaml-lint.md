@@ -22,23 +22,6 @@ GitHub Actions で YAML ファイルの静的解析を行うための再利用�
 {% raw %}
 
 <!-- actdocs start -->
-
-## Inputs
-
-N/A
-
-## Secrets
-
-N/A
-
-## Outputs
-
-N/A
-
-## Permissions
-
-N/A
-
 <!-- actdocs end -->
 
 {% endraw %}
