@@ -30,6 +30,8 @@ GitHub Actions で ワークフローや action のドキュメントを自動�
 | ref | The git ref to check out for documentation generation. | `string` | n/a | no |
 | remove-pre-tags | Remove  tags from the generated Markdown files. | `boolean` | `true` | no |
 
+
+
 ## Outputs
 
 | Name | Description |
